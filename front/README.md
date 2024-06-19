@@ -34,3 +34,10 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+1- git checkout develop
+2- git pull origin develop
+3- git checkout -b feature/nombredeloqueharan (ej: feature/addedusersmodule)
+4- git add .
+5- git commit -m "Añadido el modulo de usuarios"
+6- git push origin feature/addedusersmodule
