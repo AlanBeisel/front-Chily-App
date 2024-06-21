@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -48,9 +47,6 @@ export function LoginForm() {
 
 
   return (
-    <div className="flex flex-col bg-red-500 w-full h-full items-center justify-center min-h-screen bg-red-00 p-4 lg:h-full lg:w-full">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold mb-6 text-center">Iniciar Sesión</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -81,14 +77,14 @@ export function LoginForm() {
             />
             <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded">Enviar</Button>
           </form>
-        </Form>
         <div className="mt-4 text-center">
           <p className="text-black">
             ¿Aún no estás registrado?
-            <Button onClick={onRegister} type="button" className="ml-2 bg-white hover:bg-gray-200 text-red-600 py-2 rounded">Registrarme</Button>
           </p>
+          <Button onClick={onRegister} type="button" className="ml-2 bg-white hover:bg-gray-200 text-red-600 py-2 rounded">Registrarme</Button>
+
         </div>
-      </div>
-    </div>
+        </Form>
+
   )
 }
