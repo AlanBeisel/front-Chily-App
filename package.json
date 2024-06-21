@@ -8,8 +8,8 @@
     "commit": "git-cz",
     "start": "next start",
     "lint": "next lint",
-    "format": "next lint --fix && prettier '**/*.{json,yaml}' --write --ignore-path .gitignore",
-    "prepare": "husky install"
+    "format": "next lint --fix && prettier '**/*.{json,yaml,tsx}' --write --ignore-path .gitignore",
+    "prepare": "husky"
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
