@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { AiOutlineShoppingCart, AiOutlineMenu, AiOutlineClose, AiOutlineDown } from 'react-icons/ai';
+import { AiOutlineShoppingCart, AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
 import { useRouter, usePathname } from 'next/navigation';
 
 const pageNames: { [key: string]: string } = {
