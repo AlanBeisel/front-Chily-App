@@ -11,7 +11,8 @@ const pageNames: { [key: string]: string } = {
     '/login': 'Iniciar Sesión',
     '/register': 'Registrarme',
     '/cart': 'Carrito'
-};
+
+  };
 
 
 export const Navbar: React.FC = () => {
@@ -75,7 +76,7 @@ export const Navbar: React.FC = () => {
             src="https://scontent.fros2-2.fna.fbcdn.net/v/t39.30808-6/294605266_729767591661554_8943081080553740766_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeEVsd0dE5OTtBR8r2flSEeDV9_OOF-Ig9FX3844X4iD0UCeM0I6IR_iUgEjVa3NBviwAD54R6K_E-wx19-lNgJc&_nc_ohc=bpg8Kf7YInAQ7kNvgHxk-s6&_nc_ht=scontent.fros2-2.fna&oh=00_AYCrlMBn2yCB3rWVKWKJeV2C2fjzHyZh5WIqfkS8oVagGg&oe=66791FC6"
             alt="Chily"
             id="logo"
-            className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 mr-4 rounded-xl"
+            className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 mr-4 rounded-sm"
         />
         <a href="/home" className="text-4xl font-bold">
             {currentPage}

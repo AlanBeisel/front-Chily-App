@@ -8,7 +8,7 @@ import { SearchBar } from "../components/SearchBar/searchBar";
 export default function Home() {
 
     return(
-        <div className="flex flex-col min-h-screen bg-gray-100">
+        <div className="flex flex-col min-h-screen w-full bg-gray-100">
         <Navbar />
         <main className="flex-grow p-4">
         <SearchBar/>

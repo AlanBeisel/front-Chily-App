@@ -7,7 +7,7 @@ import { MenuList } from '../components/MenuComponents/MenuList';
 
 export default function Menu() {
     return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen w-full bg-gray-100">
         <Navbar />
         <main className="flex-grow p-4">
         <h1 className="text-3xl font-bold text-red-500 mb-4">Menu</h1>

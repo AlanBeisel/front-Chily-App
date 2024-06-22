@@ -1,11 +1,13 @@
-"use client"
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+"use client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function Landing() {
-  const [locationPermission, setLocationPermission] = useState<boolean | null>(null);
-  const router = useRouter()
+  const [locationPermission, setLocationPermission] = useState<boolean | null>(
+    null
+  );
+  const router = useRouter();
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -21,21 +23,25 @@ export default function Landing() {
         (position) => {
           const { latitude, longitude } = position.coords;
           console.log("Ubicación obtenida:", { latitude, longitude });
-          router.push("/home")
+          router.push("/home");
         },
         (error) => {
           console.error("Error al obtener la ubicación:", error);
-          alert("No se pudo obtener la ubicación. Por favor, inténtalo de nuevo.");
+          alert(
+            "No se pudo obtener la ubicación. Por favor, inténtalo de nuevo."
+          );
         }
       );
     }
   };
 
   return (
-    <div className="bg-red-500 min-h-screen flex flex-col items-center justify-between p-8">
+    <div className="bg-red-500 min-h-screen w-full flex flex-col items-center justify-between p-8">
       <h1 className="text-4xl font-bold text-white mb-4">Donde Chily</h1>
       <div className="flex flex-col items-center">
-        <h2 className="text-3xl font-bold text-yellow-300 mb-4">¡Bienvenido!</h2>
+        <h2 className="text-3xl font-bold text-yellow-300 mb-4">
+          ¡Bienvenido!
+        </h2>
         <Image
           src="/LogoLay.png"
           alt="Chily Mascot"
