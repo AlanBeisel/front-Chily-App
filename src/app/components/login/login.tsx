@@ -85,17 +85,14 @@ export function LoginForm() {
                   placeholder="*********"
                   {...field}
                   type="password"
-                  className="w-full p-2 border border-gray-300 rounded"
+                  className="w-full p-2 border border-gray-300 rounded text-black"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-white" />
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded"
-        >
+        <Button type="submit" variant="submit" size="submit">
           Enviar
         </Button>
       </form>

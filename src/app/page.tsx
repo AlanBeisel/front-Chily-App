@@ -36,7 +36,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="bg-red-500 min-h-screen flex flex-col items-center justify-between p-8">
+    <div className="bg-red-500 min-h-screen h-full flex flex-col items-center justify-between p-8 w-full">
       <h1 className="text-4xl font-bold text-white mb-4">Donde Chily</h1>
       <div className="flex flex-col items-center">
         <h2 className="text-3xl font-bold text-yellow-300 mb-4">
@@ -64,7 +64,6 @@ export default function Landing() {
           </p>
         )}
       </div>
-      <div className="h-16"></div>
     </div>
   );
 }
