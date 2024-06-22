@@ -13,6 +13,7 @@ import {
 } from '@/app/components/ui/form';
 import { Input } from '@/app/components/ui/input';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const formSchema = z.object({
   email: z
@@ -56,18 +57,17 @@ export function LoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-black">Correo electrónico</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="example@gmail.com"
+                  placeholder="correo electronico"
                   {...field}
-                  className="w-full p-2 border border-gray-300 rounded"
+                  className="border w-[220px] border-gray-300 rounded-full text-black mb-[10px]"
                 />
               </FormControl>
               <FormMessage />
@@ -79,33 +79,36 @@ export function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-black">Contraseña</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="*********"
+                  placeholder="contraseña"
                   {...field}
                   type="password"
-                  className="w-full p-2 border border-gray-300 rounded text-black"
+                  className="rounded-full w-[220px] border border-gray-300 text-black mb-[38px]"
                 />
               </FormControl>
               <FormMessage className="text-white" />
             </FormItem>
           )}
         />
-        <Button type="submit" variant="submit" size="submit">
-          Enviar
+        <Button
+          className="rounded-[10px]"
+          type="submit"
+          variant="submit"
+          size="submit"
+        >
+          Iniciar sesión
         </Button>
       </form>
-      <div className="mt-4 text-center">
-        <p className="text-black">¿Aún no estás registrado?</p>
-        <Button
-          onClick={onRegister}
-          type="button"
-          className="ml-2 bg-white hover:bg-gray-200 text-red-600 py-2 rounded"
-        >
-          Registrarme
-        </Button>
-      </div>
+      <h2 className="text-sm font-regular mt-[15px]">
+        ¿Aún no estás{' '}
+        {
+          <Link href="/register" className="underline font-semibold">
+            registrado
+          </Link>
+        }
+        ?
+      </h2>
     </Form>
   );
 }
