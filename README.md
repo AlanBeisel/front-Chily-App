@@ -1,0 +1,52 @@
+# next-starter
+
+A powerful Next.js starter with a focus on developer experience, tailored for your needs. This starter includes various tools and features to help you build production-ready applications quickly. Nothing is hidden from you, so you have the freedom to make the necessary adjustments to fit your needs and preferences.
+
+## Features
+
+- ⚡ Next.js 14 with App Router 
+- ✅ Zod for validation
+- 📝 React Hook Forms for form handling
+- 🔥 Type checking TypeScript
+- 💎 Integration with Tailwind CSS
+- 📏 Linter with ESLint (default NextJS, NextJS Core Web Vitals, Tailwind CSS and Airbnb configuration)
+- 💖 Code Formatter with Prettier
+- 🦊 Husky for Git Hooks
+- 🚫 Lint-staged for running linters on Git staged files
+- 📓 Write standard compliant commit messages with Commitizen
+- 🗂 VSCode configuration: Debug, Settings, Tasks and extension ESLint, Prettier, TypeScript
+- 🗺️ Sitemap.xml and robots.txt with next-sitemap
+
+
+## Philosophy
+
+This starter is designed with transparency in mind. Everything is open and customizable to match your specific needs and preferences. Key principles include:
+
+- Easy to customize
+- Minimal code
+- SEO-friendly
+- 🚀 Production-ready
+
+## Requirements
+
+- Node.js >= 18.17
+- npm
+
+## Getting Started
+
+1. Clone this repository.
+2. Install dependencies with `npm install`.
+3. Start the development server with `npm run dev`.
+4. Build your application with `npm run build`.
+5. Deploy to production with `npm start`.
+
+## Commit (Husky + Lint + Commitizen)
+
+Commit with `git commit` will start run lint and commitizen.
+
+## Customization
+
+You can easily configure Next js Boilerplate by making a search in the whole project with `FIXME:` for making quick customization. Here is some of the most important files to customize:
+
+- `next-sitemap.config.js`: sitemap configuration
+- `.env`: default environment variables
