@@ -56,11 +56,7 @@ export function LoginForm() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input
-                  placeholder="correo electronico"
-                  {...field}
-                  className="border w-[220px] border-gray-300 rounded-full text-black mb-[10px]"
-                />
+                <Input placeholder="correo electronico" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -72,23 +68,13 @@ export function LoginForm() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input
-                  placeholder="contraseña"
-                  {...field}
-                  type="password"
-                  className="rounded-full w-[220px] border border-gray-300 text-black mb-[38px]"
-                />
+                <Input placeholder="contraseña" {...field} type="password" />
               </FormControl>
               <FormMessage className="text-white" />
             </FormItem>
           )}
         />
-        <Button
-          className="rounded-[10px]"
-          type="submit"
-          variant="submit"
-          size="submit"
-        >
+        <Button type="submit" variant="submit" size="submit">
           Iniciar sesión
         </Button>
       </form>
