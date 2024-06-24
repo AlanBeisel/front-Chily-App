@@ -3,15 +3,17 @@ import Image from 'next/image';
 
 interface MenuItemProps {
   name: string;
+  description: string;
   price: number;
-  image: string;
+  img: string;
+  category: string
 }
 
-export const MenuItem: React.FC<MenuItemProps> = ({ name, price, image }) => {
+export const MenuItem: React.FC<MenuItemProps> = ({ name, price, img }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-4 mb-4">
       <Image
-        src={image}
+        src={img}
         alt={name}
         width={200}
         height={200}
