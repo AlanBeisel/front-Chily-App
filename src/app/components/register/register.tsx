@@ -12,6 +12,7 @@ import {
 } from '@/app/components/ui/form';
 import { Input } from '@/app/components/ui/input';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z
   .object({
@@ -64,9 +65,15 @@ export function RegisterForm() {
     console.log(values);
   }
 
+  const router = useRouter();
+
+  function handleGoogleLogin() {
+    router.push('http://back.com/auth/google/login');
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-[320px]">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-[310px]">
         <FormField
           control={form.control}
           name="name"
@@ -144,6 +151,15 @@ export function RegisterForm() {
         }
         ?
       </h2>
+      <Button
+        onClick={handleGoogleLogin}
+        type="submit"
+        variant="submit"
+        size="submit"
+        className="w-[320px] bg-white h-[40px] text-black mb-[15px]"
+      >
+        Registrarme con google
+      </Button>
     </Form>
   );
 }

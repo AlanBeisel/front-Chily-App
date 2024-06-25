@@ -12,6 +12,7 @@ import {
 } from '@/app/components/ui/form';
 import { Input } from '@/app/components/ui/input';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   email: z
@@ -46,10 +47,15 @@ export function LoginForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
+  const router = useRouter();
+
+  function handleGoogleLogin() {
+    router.push('http://back.com/auth/google/login');
+  }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-[310px]">
         <FormField
           control={form.control}
           name="email"
@@ -87,6 +93,15 @@ export function LoginForm() {
         }
         ?
       </h2>
+      <Button
+        onClick={handleGoogleLogin}
+        type="submit"
+        variant="submit"
+        size="submit"
+        className="w-[320px] bg-white h-[40px] text-black mb-[15px]"
+      >
+        Ingresar con google
+      </Button>
     </Form>
   );
 }
