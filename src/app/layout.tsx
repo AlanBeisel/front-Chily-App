@@ -27,8 +27,8 @@ export default function RootLayout({
         className={`${mochily.className} ${poppins.className} w-full flex justify-center`}>
           <div className="w-10/12 md:w-8/12 lg:w-7/12">
           <Navbar/>
-          <Footer/>
             {children}
+          <Footer/>
           </div>
       </body>
     </html>
