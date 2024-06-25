@@ -2,9 +2,9 @@ import { LoginForm } from '@/app/components/login/login';
 
 export default function LoginPage() {
   return (
-    <div className="flex flex-col w-full h-full bg-red-400 items-center justify-center p-4 text-white font-semibold text-[48px] pt-[98px]">
-      <h1 className="flex flex-row">Donde Chily</h1>
-      <h2 className="text-2xl font-bold mb-6 text-center">Iniciar Sesión</h2>
+    <div className="flex flex-col min-h-screen w-full h-full bg-red-500 items-center justify-start text-white font-semibold pt-[64px]">
+      <h1 className="text-[40px]">Donde chily</h1>
+      <h2 className="text-[24px] mt-[15px] mb-[52px]">Iniciar Sesión</h2>
       <LoginForm />
     </div>
   );
