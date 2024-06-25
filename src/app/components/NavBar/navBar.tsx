@@ -19,7 +19,7 @@ const pageNames: { [key: string]: string } = {
 
 export const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -50,31 +50,31 @@ export const Navbar: React.FC = () => {
     router.push('/');
   };
 
-  const handleCartClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!isAuthenticated) {
-      e.preventDefault();
+  // const handleCartClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  //   if (!isAuthenticated) {
+  //     e.preventDefault();
 
-      // toast.warn('Debes iniciar sesión para acceder al carrito.', {
-      //     position: "top-center",
-      //     autoClose: 3000,
-      //     hideProgressBar: true,
-      //     closeOnClick: true,
-      //     pauseOnHover: true,
-      //     draggable: true,
-      //     progress: undefined,
-      // });
-    }
-  };
+  //     toast.warn('Debes iniciar sesión para acceder al carrito.', {
+  //         position: "top-center",
+  //         autoClose: 3000,
+  //         hideProgressBar: true,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //     });
+  //   }
+  // };
 
   return (
-    <nav className="bg-red-400 text-white p-4 sm:p-6 rounded-xl m-4">
+    <nav className="bg-red-500 text-white p-4 sm:p-6 rounded-xl m-4">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center">
           <img
-            src="https://scontent.fros2-2.fna.fbcdn.net/v/t39.30808-6/294605266_729767591661554_8943081080553740766_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeEVsd0dE5OTtBR8r2flSEeDV9_OOF-Ig9FX3844X4iD0UCeM0I6IR_iUgEjVa3NBviwAD54R6K_E-wx19-lNgJc&_nc_ohc=bpg8Kf7YInAQ7kNvgHxk-s6&_nc_ht=scontent.fros2-2.fna&oh=00_AYCrlMBn2yCB3rWVKWKJeV2C2fjzHyZh5WIqfkS8oVagGg&oe=66791FC6"
+            src="/LogoLay.png"
             alt="Chily"
             id="logo"
-            className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 mr-4 rounded-xl"
+            className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-xl"
           />
           <a href="/home" className="text-4xl font-bold">
             {currentPage}
@@ -123,7 +123,7 @@ export const Navbar: React.FC = () => {
           <Link
             href="/cart"
             className="hover:text-gray-300"
-            onClick={handleCartClick}
+            // onClick={handleCartClick}
           >
             <AiOutlineShoppingCart className="text-2xl" />
           </Link>
@@ -135,7 +135,7 @@ export const Navbar: React.FC = () => {
           </button>
 
           {menuOpen && (
-            <div className="fixed top-32 left-0 right-0 bg-red-400 text-white p-4 z-10 w-[calc(100%-2rem)] mx-4 rounded-xl">
+            <div className="fixed top-32 left-16 right-0 bg-red-500 text-white p-4 z-10 w-9/12 mx-4 rounded-xl border-2">
               <Link href="/home" className="block p-2 hover:text-gray-300">
                 Home
               </Link>
@@ -180,7 +180,7 @@ export const Navbar: React.FC = () => {
               <Link
                 href="/cart"
                 className="block p-2 hover:text-gray-300"
-                onClick={handleCartClick}
+                // onClick={handleCartClick}
               >
                 <AiOutlineShoppingCart className="text-2xl" />
               </Link>

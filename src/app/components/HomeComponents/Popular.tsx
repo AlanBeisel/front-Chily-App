@@ -12,6 +12,7 @@ const initialProducts: Product[] = [
     description: 'Deliciosa pizza con tomate, mozzarella y albahaca.',
     price: 8.99,
     img: 'https://img.freepik.com/fotos-premium/rebanada-pizza-pepperoni-italiana-tradicional-salsa-tomate-rucula_285885-2420.jpg?w=996',
+    available: true,
     isPopular: true,
     category: 'Pizza',
   },
@@ -21,6 +22,7 @@ const initialProducts: Product[] = [
     description: 'Hamburguesa con queso, lechuga, tomate y cebolla.',
     price: 5.99,
     img: 'https://img.freepik.com/foto-gratis/deliciosa-hamburguesa-aislado-sobre-fondo-blanco_125540-3368.jpg?t=st=1719240684~exp=1719244284~hmac=bb8e26b7921c771b0d27933bb48223f0bc6904d6d5315ebdf4e8dab44705252c&w=996',
+    available: true,
     isPopular: true,
     category: 'Burger',
   },
@@ -30,6 +32,7 @@ const initialProducts: Product[] = [
     description: 'Burrito relleno de pollo, arroz, frijoles y salsa.',
     price: 7.99,
     img: 'https://img.freepik.com/foto-gratis/vista-frontal-delicioso-sandwich-carne-hecho-carne-parrilla-asador-rodajas-condimentos-escritorio-azul-oscuro_140725-61597.jpg?t=st=1719240703~exp=1719244303~hmac=9fadf8ca925883cbdef945ee536a3f437daad4a098e3ba234558c509706de470&w=996',
+    available: true,
     isPopular: true,
     category: 'Burritos',
   },
@@ -39,6 +42,7 @@ const initialProducts: Product[] = [
     description: 'Crujientes papas fritas con sal.',
     price: 2.99,
     img: 'https://img.freepik.com/foto-gratis/vista-lateral-papas-fritas-condimento_141793-4899.jpg?t=st=1719240751~exp=1719244351~hmac=114449e0989345908a0bc36901cf30b94df02fdff6a9e72c2e4b6b1088d6b0b6&w=996',
+    available: true,
     isPopular: true,
     category: 'Snacks',
   },
@@ -64,7 +68,7 @@ export const Popular = () => {
 
  const handleAddToCart = (product: Product) => {
    // Lógica para agregar el producto al carrito
-   console.log(`Producto agregado al carrito: ${product.name}`);
+  console.log(`Producto agregado al carrito: ${product.name}`);
  };
 
   return (
