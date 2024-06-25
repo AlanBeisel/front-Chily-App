@@ -1,16 +1,30 @@
 'use client';
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-
-const categories = [
-  { name: 'Pizza', icon: '/pizza.png', id: 'pizza' },
-  { name: 'Burger', icon: '/burger.png', id: 'burger' },
-  { name: 'Burritos', icon: '/burrito.png', id: 'burritos' },
-  { name: 'Papas fritas', icon: '/papas.png', id: 'papas-fritas' },
-];
+import { getAllCategories } from '@/helpers/peticiones'; 
+import { Category } from '@/types'; 
 
 export const CategoryFilter = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const fetchedCategories = await getAllCategories();
+        console.log(
+          'Categorías obtenidas en el componente:',
+          fetchedCategories,
+        );
+        setCategories(fetchedCategories);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        // Manejo de errores: puedes mostrar un mensaje al usuario o registrar el error
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   const scrollToCategory = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -19,10 +33,10 @@ export const CategoryFilter = () => {
   };
 
   return (
-    <div className="flex justify-between mb-4 overflow-x-auto">
+    <div className="flex justify-around mb-4 overflow-x-auto">
       {categories.map((category) => (
         <button
-          key={category.name}
+          key={category.id} 
           className="flex flex-col items-center mx-2 focus:outline-none group"
           onClick={() => scrollToCategory(category.id)}
         >

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Poppins, Mochiy_Pop_One } from 'next/font/google';
 import './globals.css';
 import Footer from './components/footer/footer';
+import { Navbar } from './components/NavBar/navBar';
 
 const mochily = Mochiy_Pop_One({ weight: '400', subsets: ['latin'] });
 const poppins = Poppins({
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
   description: 'Donde chily',
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,12 +24,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="flex flex-col justify-center items-center">
       <body
-        className={`${mochily.className} ${poppins.className} flex flex-col justify-center items-center w-full h-full`}
-      >
-        {children}
-        <div className="w-full ">
-          <Footer />
-        </div>
+        className={`${mochily.className} ${poppins.className} w-full flex justify-center`}>
+          <div className="w-10/12 md:w-8/12 lg:w-7/12">
+          <Navbar/>
+          <Footer/>
+            {children}
+          </div>
       </body>
     </html>
   );
