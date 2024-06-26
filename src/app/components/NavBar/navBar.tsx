@@ -7,6 +7,7 @@ import {
   AiOutlineClose,
 } from 'react-icons/ai';
 import { useRouter, usePathname } from 'next/navigation';
+import Image from 'next/image';
 
 const pageNames: { [key: string]: string } = {
   '/home': 'Home',
@@ -70,7 +71,7 @@ export const Navbar: React.FC = () => {
     <nav className="bg-red-500 text-white p-4 sm:p-6 rounded-xl m-4">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center">
-          <img
+          <Image
             src="/LogoLay.png"
             alt="Chily"
             id="logo"
