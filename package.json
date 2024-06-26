@@ -19,6 +19,7 @@
     "@react-oauth/google": "^0.12.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cookies-next": "^4.2.1",
     "lucide-react": "^0.395.0",
     "next": "^14.2.4",
     "react": "^18.3.1",
