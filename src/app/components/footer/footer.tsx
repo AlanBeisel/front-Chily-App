@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="flex flex-col  lg:flex-row justify-between">
         <div>
           <a
-            href="/about-us"
+            href="/waboutUs"
             className="mr-4 lg:ml-4 underline decoration-white hover:decoration-yellow-400"
           >
             Sobre Nosotros
