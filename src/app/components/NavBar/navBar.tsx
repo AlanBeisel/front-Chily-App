@@ -76,14 +76,16 @@ export const Navbar: React.FC = () => {
             alt="Chily"
             id="logo"
             className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-xl"
+            width={500}
+            height={500}
           />
-          <a href="/home" className="text-4xl font-bold">
+          <a href="/" className="text-4xl font-bold">
             {currentPage}
           </a>
         </div>
 
         <div className="hidden xl:flex items-center space-x-4">
-          <Link href="/home" className="hover:text-gray-300">
+          <Link href="/" className="hover:text-gray-300">
             Home
           </Link>
 
@@ -137,7 +139,7 @@ export const Navbar: React.FC = () => {
 
           {menuOpen && (
             <div className="fixed top-32 left-16 right-0 bg-red-500 text-white p-4 z-10 w-9/12 mx-4 rounded-xl border-2">
-              <Link href="/home" className="block p-2 hover:text-gray-300">
+              <Link href="/" className="block p-2 hover:text-gray-300">
                 Home
               </Link>
 
