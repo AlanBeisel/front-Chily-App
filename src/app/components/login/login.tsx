@@ -8,10 +8,10 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/app/components/ui/form';
 import { Input } from '@/app/components/ui/input';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
@@ -47,28 +47,22 @@ export function LoginForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
-
   const router = useRouter();
 
-  function onRegister() {
-    router.push('/register');
+  function handleGoogleLogin() {
+    router.push('http://back.com/auth/google/login');
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-[310px]">
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-black">Correo electrónico</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="example@gmail.com"
-                  {...field}
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
+                <Input placeholder="correo electronico" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -79,33 +73,35 @@ export function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-black">Contraseña</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="*********"
-                  {...field}
-                  type="password"
-                  className="w-full p-2 border border-gray-300 rounded text-black"
-                />
+                <Input placeholder="contraseña" {...field} type="password" />
               </FormControl>
               <FormMessage className="text-white" />
             </FormItem>
           )}
         />
         <Button type="submit" variant="submit" size="submit">
-          Enviar
+          Iniciar sesión
         </Button>
       </form>
-      <div className="mt-4 text-center">
-        <p className="text-black">¿Aún no estás registrado?</p>
-        <Button
-          onClick={onRegister}
-          type="button"
-          className="ml-2 bg-white hover:bg-gray-200 text-red-600 py-2 rounded"
-        >
-          Registrarme
-        </Button>
-      </div>
+      <h2 className="text-sm font-regular mt-[15px]">
+        ¿Aún no estás{' '}
+        {
+          <Link href="/register" className="underline font-semibold">
+            registrado
+          </Link>
+        }
+        ?
+      </h2>
+      <Button
+        onClick={handleGoogleLogin}
+        type="submit"
+        variant="submit"
+        size="submit"
+        className="w-[320px] bg-white h-[40px] text-black mb-[15px]"
+      >
+        Ingresar con google
+      </Button>
     </Form>
   );
 }
