@@ -7,6 +7,7 @@ import {
   AiOutlineClose,
 } from 'react-icons/ai';
 import { useRouter, usePathname } from 'next/navigation';
+import Image from 'next/image';
 
 const pageNames: { [key: string]: string } = {
   '/home': 'Home',
@@ -70,19 +71,21 @@ export const Navbar: React.FC = () => {
     <nav className="bg-red-500 text-white p-4 sm:p-6 rounded-xl m-4">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center">
-          <img
+          <Image
             src="/LogoLay.png"
             alt="Chily"
             id="logo"
             className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-xl"
+            width={500}
+            height={500}
           />
-          <a href="/home" className="text-4xl font-bold">
+          <a href="/" className="text-4xl font-bold">
             {currentPage}
           </a>
         </div>
 
         <div className="hidden xl:flex items-center space-x-4">
-          <Link href="/home" className="hover:text-gray-300">
+          <Link href="/" className="hover:text-gray-300">
             Home
           </Link>
 
@@ -136,7 +139,7 @@ export const Navbar: React.FC = () => {
 
           {menuOpen && (
             <div className="fixed top-32 left-16 right-0 bg-red-500 text-white p-4 z-10 w-9/12 mx-4 rounded-xl border-2">
-              <Link href="/home" className="block p-2 hover:text-gray-300">
+              <Link href="/" className="block p-2 hover:text-gray-300">
                 Home
               </Link>
 

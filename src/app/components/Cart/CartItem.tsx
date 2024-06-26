@@ -1,5 +1,6 @@
 import React from 'react';
 import { CartItemProps } from '@/types';
+import Image from 'next/image';
 
 const CartItem: React.FC<CartItemProps> = ({
   id,
@@ -13,7 +14,7 @@ const CartItem: React.FC<CartItemProps> = ({
 
   return (
     <li className="flex items-center justify-between py-2">
-      <img src={img} alt={name} className="w-16 h-16 rounded" />
+      <Image src={img} alt={name} className="w-16 h-16 rounded" />
       <div className="flex flex-col">
         <span className="font-semibold">{name}</span>
         <span>${price.toFixed(2)}</span>
