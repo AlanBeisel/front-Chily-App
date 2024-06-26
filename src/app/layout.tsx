@@ -20,7 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="flex flex-col justify-center items-center">
+    <html
+      lang="en"
+      className="flex flex-col w-full justify-center items-center"
+    >
       <body
         className={`${mochily.className} ${poppins.className} flex flex-col justify-center items-center w-full h-full`}
       >
