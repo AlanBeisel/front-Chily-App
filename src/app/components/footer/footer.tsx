@@ -28,7 +28,7 @@ const Footer = () => {
         <div className="">
           <h1 className="">Todos los derechos reservados.</h1>
         </div>
-        <div className="">&copy; Donde chily</div>
+        <div className="lg:mr-4">&copy; Donde chily</div>
       </div>
     </footer>
   );

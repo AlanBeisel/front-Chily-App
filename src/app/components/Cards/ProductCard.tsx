@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Product } from '@/types';
 import { FaPlus } from 'react-icons/fa';
 
+
 interface ProductCardProps {
   product: Product;
   onAddToCart: (product: Product) => void;

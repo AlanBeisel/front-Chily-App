@@ -6,6 +6,7 @@ import ProductCard from '../Cards/ProductCard';
 import Pagination from './Pagination';
 import { Product } from '@/types';
 
+
 interface CategoryProductsProps {
   categoryId: string;
   name: string;

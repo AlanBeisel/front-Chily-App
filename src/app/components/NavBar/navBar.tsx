@@ -47,6 +47,7 @@ export const Navbar: React.FC = () => {
     router.push('/');
   };
 
+
   const handleCartClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isAuthenticated) {
       e.preventDefault();
@@ -62,6 +63,7 @@ export const Navbar: React.FC = () => {
       });
     }
   };
+
 
   return (
     <nav className="bg-red-500 text-white p-4 sm:p-6 rounded-xl m-4">
