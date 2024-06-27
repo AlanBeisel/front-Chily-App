@@ -11,6 +11,7 @@ import Image from 'next/image';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/app/contexts/AuthContext'; 
 
+
 const pageNames: { [key: string]: string } = {
   '/home': 'Home',
   '/menu': 'Menu',
@@ -22,6 +23,7 @@ const pageNames: { [key: string]: string } = {
 
 export const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -47,6 +49,7 @@ export const Navbar: React.FC = () => {
     router.push('/');
   };
 
+
   const handleCartClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isAuthenticated) {
       e.preventDefault();
@@ -62,6 +65,7 @@ export const Navbar: React.FC = () => {
       });
     }
   };
+
 
   return (
     <nav className="bg-red-500 text-white p-4 sm:p-6 rounded-xl m-4">
@@ -137,6 +141,7 @@ export const Navbar: React.FC = () => {
               </Link>
             </>
           )}
+
         </div>
 
         <div className="xl:hidden flex relative" ref={menuRef}>

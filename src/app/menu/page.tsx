@@ -1,3 +1,4 @@
+
 'use client';
 import React, { useEffect, useState } from 'react';
 import SearchBar from '../components/SearchBar/searchBar';
@@ -46,7 +47,6 @@ useEffect(() => {
 
   const handleAddToCart = (product: Product) => {
     console.log('Añadir al carrito:', product);
-    // Implementa la lógica para agregar al carrito aquí
   };
 
   const handleFilterChange = (filters: string[]) => {
@@ -79,7 +79,9 @@ useEffect(() => {
             hasMore={hasMore}
           />
         </div>
+
       </div>
     </div>
+          </div>
   );
-}
+};

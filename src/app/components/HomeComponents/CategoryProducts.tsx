@@ -1,10 +1,12 @@
 "use client"
+
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getProductsByCategoryId } from '@/helpers/peticiones';
 import ProductCard from '../Cards/ProductCard';
 import Pagination from './Pagination';
 import { Product } from '@/types';
+
 
 interface CategoryProductsProps {
   categoryId: string;

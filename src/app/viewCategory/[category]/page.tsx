@@ -26,6 +26,7 @@ const CategoryPage = ({ params }: { params: { category: string } }) => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
+
         console.log(
           `Fetching products for category ${categoryId}, page ${page}`,
         );
@@ -34,6 +35,7 @@ const CategoryPage = ({ params }: { params: { category: string } }) => {
           page,
           limit,
         );
+
         // Reemplazar los productos existentes con los nuevos productos si es la primera página,
         // de lo contrario, establecer los productos nuevos.
         setProducts(page === 1 ? fetchedProducts : [...fetchedProducts]);
@@ -84,6 +86,7 @@ const CategoryPage = ({ params }: { params: { category: string } }) => {
           totalPages={Math.ceil(products.length / limit)}
           onPageChange={handlePageChange}
           hasMore={hasMore}
+
         />
 
         {loading && <p className="text-center mt-4">Cargando...</p>}
