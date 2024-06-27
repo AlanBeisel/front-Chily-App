@@ -9,9 +9,12 @@ import {
 } from 'react';
 import { setCookie, deleteCookie, getCookie } from 'cookies-next';
 
+type Role = 'user' | 'admin' | 'superAdmin';
+
 type User = {
   username: string;
   email: string;
+  role: Role;
 };
 
 type AuthContextType = {
@@ -19,6 +22,9 @@ type AuthContextType = {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  isUser: () => boolean;
+  isAdmin: () => boolean;
+  isSuperAdmin: () => boolean;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -26,6 +32,9 @@ const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   login: async (_email: string, _password: string) => {},
   logout: () => {},
+  isUser: () => false,
+  isAdmin: () => false,
+  isSuperAdmin: () => false,
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -36,21 +45,42 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const accessToken = getCookie('accessToken');
     if (accessToken) {
-      setUser({ username: 'example_user', email: 'example@example.com' });
+      // Mockear un usuario en el efecto useEffect
+      setUser({
+        username: 'mockUser',
+        email: 'mockUser@example.com',
+        role: 'admin',
+      });
+      setIsAuthenticated(true);
+    } else {
+      // Si no hay token, podemos establecer uno para simular un usuario logueado
+      setCookie('accessToken', 'mockAccessToken');
+      setUser({
+        username: 'mockUser',
+        email: 'mockUser@example.com',
+        role: 'admin',
+      });
+      setIsAuthenticated(true);
     }
   }, []);
 
-  //TODO Modificar flujo mockeado
+  // Mockear un usuario en la función login
   const login = async (email: string, _password: string) => {
     try {
       const accessToken = 'mockAccessToken';
       setCookie('accessToken', accessToken);
 
-      setUser({ username: 'mockUsername', email });
+      // Simulamos un delay para imitar una llamada a API
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      setUser({ username: 'mockUsername', email, role: 'admin' });
+      setIsAuthenticated(true);
     } catch (error) {
       console.error('Error al iniciar sesión:', error);
     }
@@ -59,12 +89,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     deleteCookie('accessToken');
     setUser(null);
+    setIsAuthenticated(false); 
   };
 
-  const isAuthenticated = !!user;
+  const isUser = () => user?.role === 'user';
+  const isAdmin = () => user?.role === 'admin';
+  const isSuperAdmin = () => user?.role === 'superAdmin';
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated,
+        login,
+        logout,
+        isUser,
+        isAdmin,
+        isSuperAdmin,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

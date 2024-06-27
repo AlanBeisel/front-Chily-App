@@ -4,6 +4,7 @@ import './globals.css';
 import Footer from './components/footer/footer';
 import { Navbar } from './components/NavBar/navBar';
 import { AuthProvider } from './contexts/AuthContext';
+import { ToastContainer } from 'react-toastify';
 
 const mochily = Mochiy_Pop_One({ weight: '400', subsets: ['latin'] });
 const poppins = Poppins({
@@ -27,15 +28,16 @@ export default function RootLayout({
       className="flex flex-col w-full justify-center items-center"
     >
       <body
-        className={`${mochily.className} ${poppins.className} w-full flex justify-center`}
+        className={`${mochily.className} ${poppins.className} w-full flex justify-center `}
       >
+          <div className="w-10/12 md:w-8/12 lg:w-7/12">
         <AuthProvider>
-          {/* <div className="w-10/12 md:w-8/12 lg:w-7/12"> ESTO HAGAMOSLO EN CADA PAGE, Deberiamos usar un contenedor de max width en cada page */}
+          <ToastContainer/>
           <Navbar />
           {children}
           <Footer />
-          {/* </div> */}
         </AuthProvider>
+          </div>
       </body>
     </html>
   );
