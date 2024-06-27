@@ -57,7 +57,6 @@ export async function getProductsByCategoryId(
   page: number,
   limit: number,
   appliedFilters?: string[],
-
 ): Promise<Product[]> {
   try {
     const queryParams = new URLSearchParams({
@@ -69,8 +68,6 @@ export async function getProductsByCategoryId(
       const filtersQueryParam = appliedFilters.join(',');
       queryParams.append('filter', filtersQueryParam);
     }
-
-
     const url = `${API_URL}/category/${id}?${queryParams}`;
     const response = await fetch(url);
 
@@ -92,7 +89,6 @@ export async function getProductsByCategoryId(
     throw error;
   }
 }
-
 export async function getAllCategories(): Promise<Category[]> {
   try {
     const res = await fetch('https://chilyapi.onrender.com/category', {

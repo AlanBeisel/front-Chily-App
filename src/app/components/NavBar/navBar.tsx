@@ -11,7 +11,6 @@ import Image from 'next/image';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/app/contexts/AuthContext'; 
 
-
 const pageNames: { [key: string]: string } = {
   '/home': 'Home',
   '/menu': 'Menu',
@@ -23,7 +22,6 @@ const pageNames: { [key: string]: string } = {
 
 export const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -141,7 +139,6 @@ export const Navbar: React.FC = () => {
               </Link>
             </>
           )}
-
         </div>
 
         <div className="xl:hidden flex relative" ref={menuRef}>

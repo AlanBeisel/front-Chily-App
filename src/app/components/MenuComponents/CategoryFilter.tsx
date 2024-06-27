@@ -11,7 +11,6 @@ export const CategoryFilter = () => {
   const router = useRouter();
   const sliderRef = useRef<HTMLDivElement>(null);
 
-
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -19,7 +18,6 @@ export const CategoryFilter = () => {
         setCategories(fetchedCategories);
       } catch (error) {
         console.error('Error fetching categories:', error);
-
       }
     };
 
@@ -32,8 +30,6 @@ export const CategoryFilter = () => {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
-
-
   const handleViewAllProducts = () => {
     router.push('/menu');
   };

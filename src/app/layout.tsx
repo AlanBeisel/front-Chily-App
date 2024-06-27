@@ -6,7 +6,6 @@ import { Navbar } from './components/NavBar/navBar';
 import { AuthProvider } from './contexts/AuthContext';
 import { ToastContainer } from 'react-toastify';
 
-
 const mochily = Mochiy_Pop_One({ weight: '400', subsets: ['latin'] });
 const poppins = Poppins({
   weight: ['400', '500', '600', '700'],

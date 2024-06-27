@@ -1,4 +1,3 @@
-
 'use client';
 import React, { useEffect, useState } from 'react';
 import SearchBar from '../components/SearchBar/searchBar';
@@ -47,6 +46,8 @@ useEffect(() => {
 
   const handleAddToCart = (product: Product) => {
     console.log('Añadir al carrito:', product);
+    // Implementa la lógica para agregar al carrito aquí
+
   };
 
   const handleFilterChange = (filters: string[]) => {
@@ -56,7 +57,7 @@ useEffect(() => {
   };
 
   return (
-      <div className="p-6">
+    <div className="p-6">
       <SearchBar />
       <div className="flex w-full h-full">
         <div className="w-1/4 p-4 border-r border-gray-200">
