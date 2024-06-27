@@ -10,7 +10,6 @@ interface CardProps {
 }
 
 const OrderCard: React.FC<CardProps> = ({
-  image,
   name,
   price,
   orderId,

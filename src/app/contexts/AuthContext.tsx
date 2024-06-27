@@ -7,7 +7,7 @@ import {
   useState,
   ReactNode,
 } from 'react';
-import { setCookie, deleteCookie, getCookie } from 'cookies-next';
+import { /*setCookie*/ deleteCookie, getCookie } from 'cookies-next';
 
 type User = {
   username: string;
@@ -18,14 +18,14 @@ type User = {
 type AuthContextType = {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string, role: string) => Promise<void>;
+  login: (email: string, password: string, role: string) => void;
   logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   isAuthenticated: false,
-  login: async (_email: string, _password: string, _role: string) => {},
+  login: (_email: string, _password: string, _role: string) => {},
   logout: () => {},
 });
 
@@ -39,8 +39,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const accessToken = getCookie('accessToken');
+    const accessToken = getCookie('access_token');
     if (accessToken) {
+      // Aquí podrías hacer una llamada a la API para obtener los datos del usuario con el access_token
       setUser({
         username: 'example_user',
         email: 'example@example.com',
@@ -49,20 +50,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
 
-  //TODO Modificar flujo mockeado
-  const login = async (email: string, _password: string, _role: string) => {
-    try {
-      const accessToken = 'mockAccessToken';
-      setCookie('accessToken', accessToken);
-
-      setUser({ username: 'mockUsername', email, role: 'user' });
-    } catch (error) {
-      console.error('Error al iniciar sesión:', error);
-    }
+  const login = (email: string, _password: string, role: string) => {
+    setUser({ username: 'mockUsername', email, role });
   };
 
   const logout = () => {
-    deleteCookie('accessToken');
+    deleteCookie('access_token');
     setUser(null);
   };
 

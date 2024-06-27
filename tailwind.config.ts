@@ -10,6 +10,10 @@ module.exports = {
     './src/**/*.{ts,tsx}',
   ],
   theme: {
+    fontFamily: {
+      poppins: 'var(--font-poppins)',
+      mochily: 'var(--font-mochily)',
+    },
     container: {
       center: true,
       padding: '2rem',

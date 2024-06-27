@@ -5,10 +5,15 @@ import Footer from './components/footer/footer';
 import { Navbar } from './components/NavBar/navBar';
 import { AuthProvider } from './contexts/AuthContext';
 
-const mochily = Mochiy_Pop_One({ weight: '400', subsets: ['latin'] });
+const mochily = Mochiy_Pop_One({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-mochily',
+});
 const poppins = Poppins({
   weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
+  variable: '--font-poppins',
 });
 
 export const metadata: Metadata = {
@@ -24,11 +29,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className="flex flex-col w-full justify-center items-center"
+      className={`flex flex-col w-full justify-center items-center ${mochily.variable} ${poppins.variable}`}
     >
-      <body
-        className={`${mochily.className} ${poppins.className} w-full flex justify-center`}
-      >
+      <body className={`w-full flex justify-center font-poppins`}>
         <div className="w-full h-full flex flex-col p-4">
           <AuthProvider>
             <Navbar />

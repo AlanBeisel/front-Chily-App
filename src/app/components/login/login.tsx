@@ -47,10 +47,11 @@ export function LoginForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
+
   const router = useRouter();
 
   function handleGoogleLogin() {
-    router.push('http://back.com/auth/google/login');
+    router.push('https://chilyapp.onrender.com/auth/google/login');
   }
 
   return (
@@ -95,7 +96,7 @@ export function LoginForm() {
       </h2>
       <Button
         onClick={handleGoogleLogin}
-        type="submit"
+        type="button"
         variant="submit"
         size="submit"
         className="w-[320px] bg-white h-[40px] text-black mb-[15px]"
