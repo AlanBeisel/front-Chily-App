@@ -12,19 +12,20 @@ import { setCookie, deleteCookie, getCookie } from 'cookies-next';
 type User = {
   username: string;
   email: string;
+  role: string;
 };
 
 type AuthContextType = {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, role: string) => Promise<void>;
   logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   isAuthenticated: false,
-  login: async (_email: string, _password: string) => {},
+  login: async (_email: string, _password: string, _role: string) => {},
   logout: () => {},
 });
 
@@ -40,17 +41,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const accessToken = getCookie('accessToken');
     if (accessToken) {
-      setUser({ username: 'example_user', email: 'example@example.com' });
+      setUser({
+        username: 'example_user',
+        email: 'example@example.com',
+        role: 'user',
+      });
     }
   }, []);
 
   //TODO Modificar flujo mockeado
-  const login = async (email: string, _password: string) => {
+  const login = async (email: string, _password: string, _role: string) => {
     try {
       const accessToken = 'mockAccessToken';
       setCookie('accessToken', accessToken);
 
-      setUser({ username: 'mockUsername', email });
+      setUser({ username: 'mockUsername', email, role: 'user' });
     } catch (error) {
       console.error('Error al iniciar sesión:', error);
     }

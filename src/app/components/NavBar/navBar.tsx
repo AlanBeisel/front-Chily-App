@@ -68,7 +68,7 @@ export const Navbar: React.FC = () => {
   // };
 
   return (
-    <nav className="bg-red-500 text-white p-4 sm:p-6 rounded-xl m-4">
+    <nav className="bg-red-500 text-white p-4 sm:p-6 rounded-xl ">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center">
           <Image

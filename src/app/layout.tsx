@@ -29,13 +29,13 @@ export default function RootLayout({
       <body
         className={`${mochily.className} ${poppins.className} w-full flex justify-center`}
       >
-        <AuthProvider>
-          {/* <div className="w-10/12 md:w-8/12 lg:w-7/12"> ESTO HAGAMOSLO EN CADA PAGE, Deberiamos usar un contenedor de max width en cada page */}
-          <Navbar />
-          {children}
+        <div className="w-full h-full flex flex-col p-4">
+          <AuthProvider>
+            <Navbar />
+            {children}
+          </AuthProvider>
           <Footer />
-          {/* </div> */}
-        </AuthProvider>
+        </div>
       </body>
     </html>
   );

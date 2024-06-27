@@ -31,7 +31,7 @@ const ProfileAdmin: React.FC = () => {
   };
 
   const handleLogout = () => {
-    // Lógica para cerrar sesión
+    // Logica para cerrar sesión
     console.log('Cerrar sesión');
   };
 
@@ -91,6 +91,7 @@ const ProfileAdmin: React.FC = () => {
             onChange={handleChange}
           />
         </div>
+        <Link href="/orders"></Link> <h1 className="text-black">orders</h1>
         <div className="form-group">
           <Button onClick={handleLogout}>Cerrar Sesión</Button>
         </div>
