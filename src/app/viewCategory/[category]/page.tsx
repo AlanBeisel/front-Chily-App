@@ -14,26 +14,29 @@ import ProductCard from '@/app/components/Cards/ProductCard';
 // };
 
 const CategoryPage = ({ params }: { params: { category: string } }) => {
-  const categoryId = params.category; 
   // const categoryName = categoryMapping[categoryId] || 'Categoría Desconocida';
+  const categoryId = params.category;
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const limit = 10; 
+  const limit = 10;
 
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
+        console.log(
+          `Fetching products for category ${categoryId}, page ${page}`,
+        );
         const fetchedProducts = await getProductsByCategoryId(
           categoryId,
           page,
           limit,
         );
-        setProducts((prev) =>
-          page === 1 ? fetchedProducts : [...prev, ...fetchedProducts],
-        );
+        // Reemplazar los productos existentes con los nuevos productos si es la primera página,
+        // de lo contrario, establecer los productos nuevos.
+        setProducts(page === 1 ? fetchedProducts : [...fetchedProducts]);
         setHasMore(fetchedProducts.length === limit);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -80,6 +83,7 @@ const CategoryPage = ({ params }: { params: { category: string } }) => {
           currentPage={page}
           totalPages={Math.ceil(products.length / limit)}
           onPageChange={handlePageChange}
+          hasMore={hasMore}
         />
 
         {loading && <p className="text-center mt-4">Cargando...</p>}

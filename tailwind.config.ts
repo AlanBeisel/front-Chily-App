@@ -89,5 +89,9 @@ module.exports = {
       },
     },
   },
-  plugins: [twanim],
+  plugins: [
+    twanim,
+    require('tailwind-scrollbar-hide')
+  ],
 };
+

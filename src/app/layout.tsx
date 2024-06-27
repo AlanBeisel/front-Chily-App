@@ -4,6 +4,7 @@ import './globals.css';
 import Footer from './components/footer/footer';
 import { Navbar } from './components/NavBar/navBar';
 import { AuthProvider } from './contexts/AuthContext';
+import { ToastContainer } from 'react-toastify';
 
 const mochily = Mochiy_Pop_One({
   weight: '400',
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
   description: 'Donde chily',
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,14 +33,17 @@ export default function RootLayout({
       lang="en"
       className={`flex flex-col w-full justify-center items-center ${mochily.variable} ${poppins.variable}`}
     >
-      <body className={`w-full flex justify-center font-poppins`}>
-        <div className="w-full h-full flex flex-col p-4">
-          <AuthProvider>
-            <Navbar />
-            {children}
-          </AuthProvider>
+      <body
+        className={`w-full flex justify-center `}
+      >
+          <div className="w-10/12 md:w-8/12 lg:w-7/12">
+        <AuthProvider>
+          <ToastContainer/>
+          <Navbar />
+          {children}
           <Footer />
-        </div>
+        </AuthProvider>
+          </div>
       </body>
     </html>
   );

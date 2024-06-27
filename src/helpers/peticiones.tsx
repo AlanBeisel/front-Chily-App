@@ -10,13 +10,11 @@ export async function getProducts(
   appliedFilters?: string[],
 ): Promise<any[]> {
   try {
-    let url = `${API_URL}/products?page=${page}&limit=${limit}`;
+    let url = `${API_URL}/products/filter?page=${page}&limit=${limit}`;
 
     if (appliedFilters && appliedFilters.length > 0) {
-      const filtersQueryParam = appliedFilters
-        .map((filter) => `filter=${filter}`)
-        .join('&');
-      url = `${url}&${filtersQueryParam}`;
+      const filtersQueryParam = appliedFilters.join(',');
+      url = `${url}&filter=${filtersQueryParam}`;
     }
 
     const response = await fetch(url, {
@@ -58,6 +56,7 @@ export async function getProductsByCategoryId(
   id: string,
   page: number,
   limit: number,
+  appliedFilters?: string[],
 ): Promise<Product[]> {
   try {
     const queryParams = new URLSearchParams({
@@ -65,6 +64,10 @@ export async function getProductsByCategoryId(
       limit: limit.toString(),
     });
 
+    if (appliedFilters && appliedFilters.length > 0) {
+      const filtersQueryParam = appliedFilters.join(',');
+      queryParams.append('filter', filtersQueryParam);
+    }
     const url = `${API_URL}/category/${id}?${queryParams}`;
     const response = await fetch(url);
 
@@ -79,14 +82,13 @@ export async function getProductsByCategoryId(
     }
 
     const products: Product[] = categoryData.products;
-    console.log("productos del helper" , products)
+    console.log('Productos obtenidos:', products);
     return products;
   } catch (error) {
     console.error(`Error en getProductsByCategoryId para id ${id}:`, error);
     throw error;
   }
 }
-
 export async function getAllCategories(): Promise<Category[]> {
   try {
     const res = await fetch('https://chilyapi.onrender.com/category', {

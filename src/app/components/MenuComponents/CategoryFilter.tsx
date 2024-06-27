@@ -1,13 +1,15 @@
-'use client';
-import React, { useEffect, useState } from 'react';
+"use client"
+import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { getAllCategories } from '@/helpers/peticiones';
 import { Category } from '@/types';
+import { getAllCategories } from '@/helpers/peticiones';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 export const CategoryFilter = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const router = useRouter()
+  const router = useRouter();
+  const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -16,7 +18,6 @@ export const CategoryFilter = () => {
         setCategories(fetchedCategories);
       } catch (error) {
         console.error('Error fetching categories:', error);
-        
       }
     };
 
@@ -29,51 +30,86 @@ export const CategoryFilter = () => {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
+  const handleViewAllProducts = () => {
+    router.push('/menu');
+  };
 
-   const handleViewAllProducts = () => {
-     router.push('/menu');
-   };
+ const scrollLeft = () => {
+   if (sliderRef.current) {
+     sliderRef.current.scrollLeft -= 200; 
+   }
+ };
+
+ const scrollRight = () => {
+   if (sliderRef.current) {
+     sliderRef.current.scrollLeft += 200;
+   }
+ };
+
 
   return (
-    <div className="flex justify-center mb-4 overflow-x-auto">
-      <div className="flex space-x-12 p-2">
+    <div className="w-full mx-auto px-4">
+      <div className="relative w-full py-4">
         <button
-          className="flex flex-col items-center focus:outline-none group"
-          onClick={handleViewAllProducts}
+          className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-2 rounded-full z-10"
+          onClick={scrollLeft}
         >
-          <div className="w-16 h-16 relative mb-1 rounded-full overflow-hidden transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg bg-gray-200">
-            <Image
-              src="/Carta.png"
-              alt="Ver Todos"
-              layout="fill"
-              objectFit="contain"
-              className="transition-opacity duration-300 group-hover:opacity-80"
-            />
-          </div>
-          <span className="text-xs text-center transition-colors duration-300 group-hover:text-red-500">
-            Ver Todos
-          </span>
+          <IoIosArrowBack className="text-gray-600 text-lg" />
         </button>
-        {categories.map((category) => (
-          <button
-            key={category.id}
-            className="flex flex-col items-center focus:outline-none group"
-            onClick={() => scrollToCategory(category.id)}
-          >
-            <div className="w-16 h-16 relative mb-1 rounded-full overflow-hidden transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg">
-              <Image
-                src={category.icon}
-                alt={category.name}
-                layout="fill"
-                objectFit="cover"
-                className="transition-opacity duration-300 group-hover:opacity-80"
-              />
-            </div>
-            <span className="text-xs text-center transition-colors duration-300 group-hover:text-red-500">
-              {category.name}
-            </span>
-          </button>
-        ))}
+        <button
+          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-2 rounded-full z-10"
+          onClick={scrollRight}
+        >
+          <IoIosArrowForward className="text-gray-600 text-lg" />
+        </button>
+        <div
+          className="overflow-x-auto rounded-3xl"
+          ref={sliderRef}
+          style={{
+            overflowX: 'scroll',
+            scrollbarWidth: 'none',
+            WebkitOverflowScrolling: 'touch',
+          }}
+        >
+          <div className="flex space-x-2 sm:space-x-3 md:space-x-4 p-2 sm:p-3 md:p-4">
+            <button
+              className="flex flex-col items-center focus:outline-none group flex-shrink-0"
+              onClick={handleViewAllProducts}
+            >
+              <div className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 relative mb-2 rounded-full overflow-hidden transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg">
+                <Image
+                  src="/Carta.png"
+                  alt="Ver Todos"
+                  layout="fill"
+                  objectFit="contain"
+                />
+              </div>
+              <span className="text-xs sm:text-sm md:text-base text-center text-gray-600 truncate w-full">
+                Ver todos
+              </span>
+            </button>
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                className="flex flex-col items-center focus:outline-none group flex-shrink-0"
+                onClick={() => scrollToCategory(category.id)}
+              >
+                <div className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 relative mb-2 rounded-full overflow-hidden transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg">
+                  <Image
+                    src={category.icon}
+                    alt={category.name}
+                    layout="fill"
+                    objectFit="cover"
+                    className="transition-opacity duration-300 group-hover:opacity-80"
+                  />
+                </div>
+                <span className="text-xs sm:text-sm md:text-base text-center text-gray-600 truncate w-full">
+                  {category.name}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

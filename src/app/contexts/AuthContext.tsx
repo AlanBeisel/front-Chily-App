@@ -9,24 +9,32 @@ import {
 } from 'react';
 import { /*setCookie*/ deleteCookie, getCookie } from 'cookies-next';
 
+type Role = 'user' | 'admin' | 'superAdmin';
+
 type User = {
   username: string;
   email: string;
-  role: string;
+  role: Role;
 };
 
 type AuthContextType = {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string, role: string) => void;
+  login: (email: string, password: string, role: Role) => void;
   logout: () => void;
+  isUser: () => boolean;
+  isAdmin: () => boolean;
+  isSuperAdmin: () => boolean;
 };
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   isAuthenticated: false,
-  login: (_email: string, _password: string, _role: string) => {},
+  login: (_email: string, _password: string, _role: Role) => {},
   logout: () => {},
+  isUser: () => false,
+  isAdmin: () => false,
+  isSuperAdmin: () => false,
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -37,11 +45,12 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const accessToken = getCookie('access_token');
     if (accessToken) {
-      // Aquí podrías hacer una llamada a la API para obtener los datos del usuario con el access_token
+      // TODO leer los datos desde el token, por ahora lo mockeamos.
       setUser({
         username: 'example_user',
         email: 'example@example.com',
@@ -50,19 +59,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
 
-  const login = (email: string, _password: string, role: string) => {
+  const login = (email: string, _password: string, role: Role) => {
     setUser({ username: 'mockUsername', email, role });
   };
 
   const logout = () => {
     deleteCookie('access_token');
     setUser(null);
+    setIsAuthenticated(false); 
   };
 
-  const isAuthenticated = !!user;
+  const isUser = () => user?.role === 'user';
+  const isAdmin = () => user?.role === 'admin';
+  const isSuperAdmin = () => user?.role === 'superAdmin';
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated,
+        login,
+        logout,
+        isUser,
+        isAdmin,
+        isSuperAdmin,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

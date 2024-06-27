@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <>
       <div className="w-full flex justify-center">
-        <main className="flex-grow p-4">
+        <main className="w-full flex-grow p-4">
           <SearchBar />
           <CategoryFilter />
           <Promotions />
