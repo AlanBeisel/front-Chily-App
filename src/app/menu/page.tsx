@@ -56,7 +56,7 @@ useEffect(() => {
   };
 
   return (
-    <div className="p-6">
+      <div className="p-6">
       <SearchBar />
       <div className="flex w-full h-full">
         <div className="w-1/4 p-4 border-r border-gray-200">
@@ -79,8 +79,7 @@ useEffect(() => {
             hasMore={hasMore}
           />
         </div>
-
       </div>
     </div>
-  );
+);
 };
