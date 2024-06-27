@@ -47,6 +47,7 @@ useEffect(() => {
   const handleAddToCart = (product: Product) => {
     console.log('Añadir al carrito:', product);
     // Implementa la lógica para agregar al carrito aquí
+
   };
 
   const handleFilterChange = (filters: string[]) => {
@@ -81,5 +82,5 @@ useEffect(() => {
         </div>
       </div>
     </div>
-  );
-}
+);
+};

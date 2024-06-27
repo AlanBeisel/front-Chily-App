@@ -68,7 +68,6 @@ export async function getProductsByCategoryId(
       const filtersQueryParam = appliedFilters.join(',');
       queryParams.append('filter', filtersQueryParam);
     }
-
     const url = `${API_URL}/category/${id}?${queryParams}`;
     const response = await fetch(url);
 
@@ -107,6 +106,3 @@ export async function getAllCategories(): Promise<Category[]> {
     throw error;
   }
 }
-
-
-

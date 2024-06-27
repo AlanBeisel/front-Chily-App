@@ -30,7 +30,6 @@ export const CategoryFilter = () => {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
-
   const handleViewAllProducts = () => {
     router.push('/menu');
   };
