@@ -8,6 +8,9 @@ import {
 } from 'react-icons/ai';
 import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
+import { toast } from 'react-toastify';
+import { useAuth } from '@/app/contexts/AuthContext'; 
+
 
 const pageNames: { [key: string]: string } = {
   '/home': 'Home',
@@ -20,16 +23,12 @@ const pageNames: { [key: string]: string } = {
 
 export const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
   const currentPage = pageNames[pathname] || 'Chily';
-
-  useEffect(() => {
-    const userSession = localStorage.getItem('userSession');
-    setIsAuthenticated(!!userSession);
-  }, []);
+  const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -46,26 +45,27 @@ export const Navbar: React.FC = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('userSession');
-    setIsAuthenticated(false);
+    logout();
     router.push('/');
   };
 
-  // const handleCartClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-  //   if (!isAuthenticated) {
-  //     e.preventDefault();
 
-  //     toast.warn('Debes iniciar sesión para acceder al carrito.', {
-  //         position: "top-center",
-  //         autoClose: 3000,
-  //         hideProgressBar: true,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //     });
-  //   }
-  // };
+  const handleCartClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+
+      toast.warn('Debes iniciar sesión para acceder al carrito.', {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
 
   return (
     <nav className="bg-red-500 text-white p-4 sm:p-6 rounded-xl m-4">
@@ -90,46 +90,58 @@ export const Navbar: React.FC = () => {
           </Link>
 
           {isAuthenticated ? (
-            <Link href="/profile" className="hover:text-gray-300">
-              Mi perfil
-            </Link>
+            <>
+              <Link href="/profile" className="hover:text-gray-300">
+                Mi perfil
+              </Link>
+
+              {user?.role === 'admin' || user?.role === 'superAdmin'  && (
+                <Link href="/admin-panel" className="hover:text-gray-300">
+                  Panel Ordenes
+                </Link>
+              )}
+              {user?.role === 'superAdmin' && (
+                
+                <Link href="/menu-panel" className="hover:text-gray-300">
+                  Menu Products
+                </Link>
+              )}
+              <button onClick={handleLogout} className="hover:text-gray-300">
+                Cerrar sesión
+              </button>
+              <Link
+                href="/cart"
+                className="hover:text-gray-300"
+                onClick={handleCartClick}
+              >
+                <AiOutlineShoppingCart className="text-2xl" />
+              </Link>
+            </>
           ) : (
-            <Link
-              href="#"
-              className="hover:text-gray-300"
-              onClick={(e) => {
-                e.preventDefault();
-                router.push('/login');
-              }}
-            >
-              Iniciar sesión
-            </Link>
+            <>
+              <Link
+                href="#"
+                className="hover:text-gray-300"
+                onClick={(e) => {
+                  e.preventDefault();
+                  router.push('/login');
+                }}
+              >
+                Iniciar sesión
+              </Link>
+              <Link
+                href="#"
+                className="hover:text-gray-300"
+                onClick={(e) => {
+                  e.preventDefault();
+                  router.push('/register');
+                }}
+              >
+                Registrarme
+              </Link>
+            </>
           )}
 
-          {isAuthenticated ? (
-            <button onClick={handleLogout} className="hover:text-gray-300">
-              Cerrar sesión
-            </button>
-          ) : (
-            <Link
-              href="#"
-              className="hover:text-gray-300"
-              onClick={(e) => {
-                e.preventDefault();
-                router.push('/register');
-              }}
-            >
-              Registrarme
-            </Link>
-          )}
-
-          <Link
-            href="/cart"
-            className="hover:text-gray-300"
-            // onClick={handleCartClick}
-          >
-            <AiOutlineShoppingCart className="text-2xl" />
-          </Link>
         </div>
 
         <div className="xl:hidden flex relative" ref={menuRef}>
@@ -144,49 +156,68 @@ export const Navbar: React.FC = () => {
               </Link>
 
               {isAuthenticated ? (
-                <Link href="/profile" className="block p-2 hover:text-gray-300">
-                  Mi perfil
-                </Link>
-              ) : (
-                <Link
-                  href="#"
-                  className="block p-2 hover:text-gray-300"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    router.push('/login');
-                  }}
-                >
-                  Iniciar sesión
-                </Link>
-              )}
+                <>
+                  <Link
+                    href="/profile"
+                    className="block p-2 hover:text-gray-300"
+                  >
+                    Mi perfil
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="block p-2 hover:text-gray-300"
+                  >
+                    Cerrar sesión
+                  </button>
 
-              {isAuthenticated ? (
-                <button
-                  onClick={handleLogout}
-                  className="block p-2 hover:text-gray-300"
-                >
-                  Cerrar sesión
-                </button>
+                  {user?.role === 'admin' && (
+                    <Link
+                      href="/admin-panel"
+                      className="block p-2 hover:text-gray-300"
+                    >
+                      Panel Administrador
+                    </Link>
+                  )}
+                  {user?.role === 'superAdmin' && (
+                    <Link
+                      href="/menu-panel"
+                      className="block p-2 hover:text-gray-300"
+                    >
+                      Panel Menu
+                    </Link>
+                  )}
+                  <Link
+                    href="/cart"
+                    className="block p-2 hover:text-gray-300"
+                    onClick={handleCartClick}
+                  >
+                    <AiOutlineShoppingCart className="text-2xl" />
+                  </Link>
+                </>
               ) : (
-                <Link
-                  href="#"
-                  className="block p-2 hover:text-gray-300"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    router.push('/register');
-                  }}
-                >
-                  Registrarme
-                </Link>
+                <>
+                  <Link
+                    href="#"
+                    className="block p-2 hover:text-gray-300"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      router.push('/login');
+                    }}
+                  >
+                    Iniciar sesión
+                  </Link>
+                  <Link
+                    href="#"
+                    className="block p-2 hover:text-gray-300"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      router.push('/register');
+                    }}
+                  >
+                    Registrarme
+                  </Link>
+                </>
               )}
-
-              <Link
-                href="/cart"
-                className="block p-2 hover:text-gray-300"
-                // onClick={handleCartClick}
-              >
-                <AiOutlineShoppingCart className="text-2xl" />
-              </Link>
             </div>
           )}
         </div>

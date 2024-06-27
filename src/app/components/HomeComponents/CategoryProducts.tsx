@@ -1,4 +1,5 @@
-'use client';
+"use client"
+
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getProductsByCategoryId } from '@/helpers/peticiones';
@@ -24,40 +25,43 @@ const CategoryProducts: React.FC<CategoryProductsProps> = ({
   const [hasMore, setHasMore] = useState(true);
   const router = useRouter();
 
-useEffect(() => {
-  const fetchProducts = async () => {
-    setIsLoading(true);
-    try {
-      console.log(`Fetching products for category ${name} (${categoryId})`);
-      const fetchedProducts = await getProductsByCategoryId(
-        categoryId,
-        page,
-        limit,
-      );
-      setProducts(fetchedProducts);
-      setHasMore(fetchedProducts.length === limit);
-    } catch (error) {
-      console.error(
-        `Error fetching products for category ${categoryId}:`,
-        error,
-      );
-    } finally {
-      setIsLoading(false);
+ useEffect(() => {
+   const fetchProducts = async () => {
+     setIsLoading(true);
+     try {
+       console.log(`Fetching products for category ${name} (${categoryId})`);
+       const fetchedProducts = await getProductsByCategoryId(
+         categoryId,
+         page,
+         limit,
+       );
+       // Reemplazar los productos existentes con los nuevos productos
+       setProducts(fetchedProducts);
+       setHasMore(fetchedProducts.length === limit);
+     } catch (error) {
+       console.error(
+         `Error fetching products for category ${categoryId}:`,
+         error,
+       );
+     } finally {
+       setIsLoading(false);
+     }
+   };
+
+   fetchProducts();
+ }, [categoryId, page, limit, name]);
+
+  const handlePageChange = async (pageNumber: number) => {
+    if (pageNumber > page && products.length < pageNumber * limit) {
+      setPage(pageNumber);
+    } else {
+      setPage(pageNumber);
     }
   };
 
-  fetchProducts();
- }, [categoryId, page, limit, name]);
-  console.log('Products:', products);
-
-  const handlePageChange = (pageNumber: number) => {
-    setPage(pageNumber);
-  };
-
   const handleAddToCart = (product: Product) => {
-    // Implementa la lógica para agregar al carrito aquí
     console.log('Agregado al carrito:', product);
-    // Llamar a una función que actualice el estado del carrito
+    // Implementar lógica para agregar al carrito aquí
     // updateCart(product);
   };
 
@@ -66,7 +70,10 @@ useEffect(() => {
   };
 
   return (
-    <div id={categoryId} className="category-container bg-white rounded-lg shadow-md p-4 mb-8">
+    <div
+      id={categoryId}
+      className="category-container bg-white rounded-lg shadow-md p-4 mb-8"
+    >
       <h2 className="text-2xl font-bold mb-4">{name}</h2>
 
       <div className="product-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -83,6 +90,7 @@ useEffect(() => {
         currentPage={page}
         totalPages={Math.ceil(products.length / limit)}
         onPageChange={handlePageChange}
+        hasMore={hasMore}
       />
 
       {isLoading && <p className="text-center mt-4">Cargando...</p>}
