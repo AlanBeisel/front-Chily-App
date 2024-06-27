@@ -4,19 +4,57 @@ import Rating from './Raiting';
 import PriceTag from './PriceTag';
 import AddItem from './AddItem';
 import CartButtons from './CartButtons';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+import { getProductById } from '@/helpers/peticiones';
+import { Product } from '@/types';
+import { useAuth } from '@/app/contexts/AuthContext';
 
 
-export default function ProductIDCard () {
-const [quantity, setQuantity]= useState(2);
+export default function ProductIDCard ({params} : {params:{productId:string}}) {
+
+const [quantity, setQuantity]= useState(1);
+const [product, setProduct] = useState<Product | null> (null);
+const {isAuthenticated} = useAuth();
+
+useEffect(() => {
+  const fetchData = async () => {
+  try{
+    const productData = await getProductById(params.productId);
+    setProduct(productData);
+  }catch (error) {
+    console.error('Error fetching product data', error);
+  }
+};
+
+fetchData();
+
+}, [params.productId]);
 
 const handleIncrease = () => {
-    setQuantity (quantity + 1);
+    setQuantity (Math.max(quantity +1, 1));
 };
 
 const handleDecrease = () => {
-    if (quantity>1) setQuantity(quantity -1);
+   setQuantity(Math.max(quantity -1, 1));
 };
+
+const addToCart = () => {
+  if (!isAuthenticated) {
+    alert('Debes iniciar sesión para agregar productos al carrito');
+  //  router.push('/login');
+    return;
+  }
+
+const existCart = JSON.parse(localStorage.getItem('cart') || '[]') as Product [];
+const updateCart = existCart.some((item) => item.id === product?.id)
+? existCart.map((item) => (item.id === product?.id ? {...item, quantity: quantity} : item))
+: [...existCart, {...product, quantity}];
+
+localStorage.setItem('cart', JSON.stringify(updateCart));
+alert ('Producto añadido al carrito');
+
+};
+
 
 return (
     <div className="max-w-sm bg-white rounded-lg shadow-md p-5">
@@ -45,6 +83,7 @@ return (
            quantity={quantity}
            onIncrease={handleIncrease}
            onDecrease={handleDecrease}
+           addToCart = {addToCart}
           />
     </div>
 );
