@@ -82,6 +82,5 @@ useEffect(() => {
 
       </div>
     </div>
-          </div>
   );
 };
