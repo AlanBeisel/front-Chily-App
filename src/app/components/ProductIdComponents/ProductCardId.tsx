@@ -51,12 +51,12 @@ const addToCart = () => {
     return;
   }
 
-const existCart = JSON.parse(localStorage.getItem('cart') || '[]') as Product [];
+const existCart = JSON.parse(localStorage.getItem('cartItem') || '[]') as Product [];
 const updateCart = existCart.some((item) => item.id === product?.id)
 ? existCart.map((item) => (item.id === product?.id ? {...item, quantity: quantity} : item))
 : [...existCart, {...product, quantity}];
 
-localStorage.setItem('cart', JSON.stringify(updateCart));
+localStorage.setItem('cartItem', JSON.stringify(updateCart));
 alert ('Producto añadido al carrito');
 
 };
