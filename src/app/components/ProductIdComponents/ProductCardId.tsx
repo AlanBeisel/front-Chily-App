@@ -5,9 +5,12 @@ import PriceTag from './PriceTag';
 import AddItem from './AddItem';
 import CartButtons from './CartButtons';
 import {useState, useEffect} from 'react';
+import { toast } from 'react-toastify';
 import { getProductById } from '@/helpers/peticiones';
 import { Product } from '@/types';
 import { useAuth } from '@/app/contexts/AuthContext';
+
+
 
 
 interface ProductIDCardProps{
@@ -18,7 +21,7 @@ interface ProductIDCardProps{
 
 
 const ProductIDCard: React.FC<ProductIDCardProps> = ({params}) => {  
-const [quantity, setQuantity]= useState(1);
+const [quantity, setQuantity]= useState<number>(1);
 const [product, setProduct] = useState<Product | null> (null);
 const {isAuthenticated} = useAuth();
 
@@ -28,8 +31,15 @@ useEffect(() => {
     const productData = await getProductById(params.productId);
     console.log('Product Data', productData)
     setProduct(productData);
+
+    const storedCart = localStorage.getItem('cartItems');
+    const cartItems = storedCart ? JSON.parse(storedCart) : [];
+    const existingItem = cartItems.find((item: any) => item.id === productData.id);
+    if(existingItem) {
+      setQuantity(existingItem.quantity);
+    }
   } catch (error) {
-    console.error('Error fetching product data', error);
+    toast.error('Error al cargar los datos del producto.');
   }
 };
 
@@ -47,22 +57,44 @@ const handleDecrease = () => {
 
 const addToCart = () => {
   if (!isAuthenticated) {
-    alert('Debes iniciar sesión para agregar productos al carrito');
+    toast.warn('Debes iniciar sesión para agregar productos al carrito.', {
+      position: 'top-center',
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     return;
   }
+  
+  const storedCart =localStorage.getItem('cartItems');
+  const existCart = storedCart ? JSON.parse(storedCart) : [];
 
-const existCart = JSON.parse(localStorage.getItem('cartItem') || '[]') as Product [];
-const updateCart = existCart.some((item) => item.id === product?.id)
-? existCart.map((item) => (item.id === product?.id ? {...item, quantity: quantity} : item))
+const updateCart = existCart.some((item: Product) => item.id === product?.id)
+? existCart.map((item: Product) => 
+  item.id === product?.id ? {...item, quantity: quantity} : item
+)
 : [...existCart, {...product, quantity}];
 
-localStorage.setItem('cartItem', JSON.stringify(updateCart));
-alert ('Producto añadido al carrito');
+
+
+localStorage.setItem('cartItems', JSON.stringify(updateCart));
+toast.success('Producto añadido al carrito.', {
+  position: 'top-center',
+  autoClose: 3000,
+  hideProgressBar: true,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+});
 
 };
 
+
 if (!product) {
-  return<div> Cargando...</div>
+  return<div className="text-center py-10"> Cargando...</div>;
 }
 
 
@@ -97,6 +129,6 @@ return (
           />
     </div>
 );
-}
+};
 
 export default ProductIDCard;
