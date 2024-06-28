@@ -1,46 +1,33 @@
-import React from 'react';
+'use client'
+import React, {useState, useEffect} from 'react';
 import OrderList from '../components/OrderComponents/OrderList';
-import { IOrderProps} from '../components/OrderComponents/OrderItem';
+import { Order } from '@/types';
+import { useAuth } from '../contexts/AuthContext';
+import { getOrders } from '@/helpers/peticionOrder';
 
-const orders: IOrderProps[] = [
-  {
-    orderId: 'order1',
-    date: '2024-06-25',
-    products: [
-      { name: 'Beef Burger', quantity: 2 },
-      { name: 'pizza Tikki', quantity: 1 },
-    ],
-    totalPrice: 100,
-    status: 'pending',
-  },
-  {
-    orderId: 'order2',
-    date: '2024-05-20',
-    products: [
-      { name: 'Beef Burger', quantity: 3 },
-      { name: 'pizza Tikki', quantity: 2 },
-    ],
-    totalPrice: 150,
-    status: 'completed',
-  },
-];
-
-
-
-
-/*export async function getServerSideProps() {
-  const res = await fetch ('https://chilyapi.onrender.com/pedidos');
-  const orders = await res.json();
-  return {
-    props: {
-      orders,
-    },
-  };
-}*/
 
 
 const Orders: React.FC = () => {
-/*<{orders: IOrderProps[]}> = ({orders}) => {*/
+
+ const {user} = useAuth();
+  const [orders, setOrders] = useState<Order[]>([]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      if (user) {
+        try {
+          const ordersData = await getOrders(.userId); //agregar a context de auth
+          setOrders(ordersData);
+        } catch (error) {
+          console.error ('Error al obtener órdenes del usuario:', error);
+        }
+      }
+    };
+
+    fetchOrders();
+  }, [user]);
+
+
   return (
     <div>
       <header className="text-center mb-4">

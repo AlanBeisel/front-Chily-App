@@ -1,8 +1,9 @@
 import React from 'react';
-import OrderDetails, { IOrderProps } from './OrderItem';
+import OrderDetails from './OrderItem';
+import { Order } from '@/types';
 
 interface OrderListProps {
-  orders:IOrderProps[];
+  orders:Order[];
 }
 
 const OrderList: React.FC <OrderListProps>= ({orders}) => {
@@ -10,12 +11,8 @@ const OrderList: React.FC <OrderListProps>= ({orders}) => {
     <div className="mt-4">
       {orders.map((order) => (
         <OrderDetails
-        key = {order.orderId}
-        orderId = {order.orderId}
-        date = {order.date}
-        products = {order.products}
-        status = {order.status}
-        totalPrice = {order.totalPrice}
+        key = {order.id}
+        order = {order}
       />
       ))}
     </div>
