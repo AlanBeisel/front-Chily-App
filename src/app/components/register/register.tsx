@@ -14,14 +14,10 @@ import { Input } from '@/app/components/ui/input';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-const formSchema = z
-  .object({
+const formSchema = z.object({
     name: z
       .string()
       .min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
-    address: z
-      .string()
-      .min(5, { message: 'La dirección debe tener al menos 5 caracteres.' }),
     email: z
       .string()
       .email({ message: 'Debe ser un correo electrónico válido.' }),
@@ -43,6 +39,13 @@ const formSchema = z
         message: 'La contraseña debe contener al menos un carácter especial.',
       }),
     confirmPassword: z.string(),
+    nin: z
+      .string()
+      .min(6, { message: 'El NIN debe tener al menos 6 caracteres.' })
+      .regex(/^\d+$/, { message: 'El NIN debe contener solo números.' }),
+    phone: z
+      .string()
+      .min(10, { message: 'El teléfono debe tener al menos 10 caracteres.' })
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Las contraseñas deben coincidir.',
@@ -54,21 +57,55 @@ export function RegisterForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
-      address: '',
       email: '',
       password: '',
       confirmPassword: '',
+      nin: '',
+      phone: '',
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
-
   const router = useRouter();
 
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log('precionado');
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
+        {
+          method: 'POST',
+          headers: {
+            accept: '*/*',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: values.name,
+            NIN: values.nin,
+            email: values.email,
+            password: values.password,
+            confirmPassword: values.confirmPassword,
+            phone: values.phone,
+          }),
+        },
+      );
+      if (response.status === 201) {
+        alert('Te has registrado correctamente, por favor inicia sesión');
+        router.push('/login');
+      } else {
+        alert(
+          'Hubo un problema durante el registro, por favor intenta de nuevo',
+        );
+      }
+    } catch (error) {
+      console.error('Error durante el registro:', error);
+      alert(
+        'Ocurrió un error durante el registro, por favor intenta de nuevo más tarde',
+      );
+    }
+  }
+
   function handleGoogleLogin() {
-    router.push('http://back.com/auth/google/login');
+    router.push(`${process.env.NEXT_PUBLIC_API_URL}/auth/google/login`);
   }
 
   return (
@@ -81,18 +118,6 @@ export function RegisterForm() {
             <FormItem>
               <FormControl>
                 <Input placeholder="Nombre completo" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input placeholder="Direccion" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -133,6 +158,30 @@ export function RegisterForm() {
                   {...field}
                   type="password"
                 />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="nin"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input placeholder="NIN" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input placeholder="Teléfono" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

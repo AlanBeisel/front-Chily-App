@@ -24,31 +24,31 @@ const CategoryProducts: React.FC<CategoryProductsProps> = ({
   const [hasMore, setHasMore] = useState(true);
   const router = useRouter();
 
- useEffect(() => {
-   const fetchProducts = async () => {
-     setIsLoading(true);
-     try {
-       console.log(`Fetching products for category ${name} (${categoryId})`);
-       const fetchedProducts = await getProductsByCategoryId(
-         categoryId,
-         page,
-         limit,
-       );
+useEffect(() => {
+  const fetchProducts = async () => {
+    setIsLoading(true);
+    try {
+      console.log(`Fetching products for category ${name} (${categoryId})`);
+      const fetchedProducts = await getProductsByCategoryId(
+        categoryId,
+        page,
+        limit,
+      );
        // Reemplazar los productos existentes con los nuevos productos
-       setProducts(fetchedProducts);
-       setHasMore(fetchedProducts.length === limit);
-     } catch (error) {
-       console.error(
-         `Error fetching products for category ${categoryId}:`,
-         error,
-       );
-     } finally {
-       setIsLoading(false);
-     }
-   };
+      setProducts(fetchedProducts);
+      setHasMore(fetchedProducts.length === limit);
+    } catch (error) {
+      console.error(
+        `Error fetching products for category ${categoryId}:`,
+      error,
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-   fetchProducts();
- }, [categoryId, page, limit, name]);
+  fetchProducts();
+}, [categoryId, page, limit, name]);
 
   const handlePageChange = async (pageNumber: number) => {
     if (pageNumber > page && products.length < pageNumber * limit) {

@@ -14,7 +14,13 @@ const CartItem: React.FC<CartItemProps> = ({
 
   return (
     <li className="flex items-center justify-between py-2">
-      <Image src={img} alt={name} className="w-16 h-16 rounded" />
+      <Image
+        src={img}
+        alt={name}
+        width={500}
+        height={500}
+        className="w-16 h-16 rounded"
+      />
       <div className="flex flex-col">
         <span className="font-semibold">{name}</span>
         <span>${price.toFixed(2)}</span>
