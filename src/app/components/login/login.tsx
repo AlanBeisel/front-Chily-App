@@ -13,6 +13,7 @@ import {
 import { Input } from '@/app/components/ui/input';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/app/contexts/AuthContext';
 
 const formSchema = z.object({
   email: z
@@ -36,6 +37,7 @@ const formSchema = z.object({
 });
 
 export function LoginForm() {
+  const { login } = useAuth();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,13 +46,44 @@ export function LoginForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
   const router = useRouter();
 
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/signin`,
+        {
+          method: 'POST',
+          headers: {
+            accept: '*/*',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: values.email,
+            password: values.password,
+          }),
+        },
+      );
+      if (response.status === 201) {
+        const data = await response.json();
+        login(data.user, data.access_token);
+        alert('Has iniciado sesión correctamente');
+        router.push("/")
+      } else {
+        alert(
+          'Hubo un problema durante el inicio de sesión, por favor intenta de nuevo',
+        );
+      }
+    } catch (error) {
+      console.error('Error durante el inicio de sesión:', error);
+      alert(
+        'Ocurrió un error durante el inicio de sesión, por favor intenta de nuevo más tarde',
+      );
+    }
+  }
+
   function handleGoogleLogin() {
-    router.push('http://back.com/auth/google/login');
+    router.push(`${process.env.NEXT_PUBLIC_API_URL}/auth/google/login`);
   }
 
   return (
