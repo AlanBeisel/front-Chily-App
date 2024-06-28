@@ -12,6 +12,7 @@ import {
 } from '@/app/components/ui/form';
 import { Input } from '@/app/components/ui/input';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   email: z
@@ -46,21 +47,22 @@ export function LoginForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
+  const router = useRouter();
+
+  function handleGoogleLogin() {
+    router.push('http://back.com/auth/google/login');
+  }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-[310px]">
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input
-                  placeholder="correo electronico"
-                  {...field}
-                  className="border w-[220px] border-gray-300 rounded-full text-black mb-[10px]"
-                />
+                <Input placeholder="correo electronico" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -72,23 +74,13 @@ export function LoginForm() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input
-                  placeholder="contraseña"
-                  {...field}
-                  type="password"
-                  className="rounded-full w-[220px] border border-gray-300 text-black mb-[38px]"
-                />
+                <Input placeholder="contraseña" {...field} type="password" />
               </FormControl>
               <FormMessage className="text-white" />
             </FormItem>
           )}
         />
-        <Button
-          className="rounded-[10px]"
-          type="submit"
-          variant="submit"
-          size="submit"
-        >
+        <Button type="submit" variant="submit" size="submit">
           Iniciar sesión
         </Button>
       </form>
@@ -101,6 +93,15 @@ export function LoginForm() {
         }
         ?
       </h2>
+      <Button
+        onClick={handleGoogleLogin}
+        type="submit"
+        variant="submit"
+        size="submit"
+        className="w-[320px] bg-white h-[40px] text-black mb-[15px]"
+      >
+        Ingresar con google
+      </Button>
     </Form>
   );
 }
