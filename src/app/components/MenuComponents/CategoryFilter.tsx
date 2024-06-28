@@ -85,7 +85,7 @@ export const CategoryFilter = () => {
                 />
               </div>
               <span className="text-xs sm:text-sm md:text-base text-center text-gray-600 truncate w-full">
-                Ver todos
+                MENU COMPLETO
               </span>
             </button>
             {categories.map((category) => (

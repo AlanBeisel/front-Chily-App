@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser({
         username: 'mockUser',
         email: 'mockUser@example.com',
-        role: 'admin',
+        role: 'user',
       });
       setIsAuthenticated(true);
     } else {
@@ -63,7 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser({
         username: 'mockUser',
         email: 'mockUser@example.com',
-        role: 'admin',
+        role: 'user',
       });
       setIsAuthenticated(true);
     }
