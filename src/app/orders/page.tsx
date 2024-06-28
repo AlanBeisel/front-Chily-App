@@ -9,14 +9,14 @@ import { getOrders } from '@/helpers/peticionOrder';
 
 const Orders: React.FC = () => {
 
- const {user} = useAuth();
-  const [orders, setOrders] = useState<Order[]>([]);
+const {user} = useAuth();
+const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
     const fetchOrders = async () => {
       if (user) {
         try {
-          const ordersData = await getOrders(.userId); //agregar a context de auth
+          const ordersData = await getOrders(user); //agregar a context de auth (user.userID)
           setOrders(ordersData);
         } catch (error) {
           console.error ('Error al obtener órdenes del usuario:', error);
@@ -25,7 +25,7 @@ const Orders: React.FC = () => {
     };
 
     fetchOrders();
-  }, [user]);
+  }, []); //[user]
 
 
   return (
