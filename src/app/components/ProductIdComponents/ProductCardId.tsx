@@ -84,9 +84,9 @@ return (
          <div className="mb-4">
             <h3 className="text-lg font-semibold mb-2">Add Ons</h3>
             <div className="flex space-x-4">
-            <AddItem src="/cheese.png" label= "cheese" price={9}/>
-            <AddItem src="/sauce.png" label= "sauce" price={9}/>
-            <AddItem src="/pepperoni.png" label= "pepperoni" price={9}/>
+            <AddItem src="/bebidas.png" label= "cheese" price={9}/>
+            <AddItem src="/papas.png" label= "sauce" price={9}/>
+            <AddItem src="/burger.png" label= "pepperoni" price={9}/>
             </div>
          </div>
          <CartButtons

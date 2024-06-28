@@ -1,6 +1,7 @@
-'use client'
+'use client';
 import {FC} from 'react';
 import ProductIDCard from "@/app/components/ProductIdComponents/ProductCardId";
+import BackButton from '@/app/components/ProductIdComponents/BackButton';
 
 interface ProductDetailsProps {
   params: {
@@ -13,8 +14,11 @@ const ProductDetail: FC<ProductDetailsProps> = ({params}) => {
 
     return(
 
-        <div className="flex items-center justify-center min-h-screen bg-white">
-            <ProductIDCard params={{productId}} />
+        <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+            <BackButton className= "self-start ml-4 mt-4" />
+            <div className="flex flex-col items-center justify-center">
+            <ProductIDCard params={{productId}}/>
+            </div>
         </div>
     );
 };
