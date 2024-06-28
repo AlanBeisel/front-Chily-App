@@ -13,16 +13,11 @@ import {
 import { Input } from '@/app/components/ui/input';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
 
-const formSchema = z
-  .object({
+const formSchema = z.object({
     name: z
       .string()
       .min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
-    address: z
-      .string()
-      .min(5, { message: 'La dirección debe tener al menos 5 caracteres.' }),
     email: z
       .string()
       .email({ message: 'Debe ser un correo electrónico válido.' }),
@@ -62,7 +57,6 @@ export function RegisterForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
-      address: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -124,18 +118,6 @@ export function RegisterForm() {
             <FormItem>
               <FormControl>
                 <Input placeholder="Nombre completo" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input placeholder="Direccion" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
