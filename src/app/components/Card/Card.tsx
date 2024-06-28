@@ -1,15 +1,15 @@
-import Image from "next/image";
+import React from "react";
 
 interface ProductCardProps {
     image: string,
     name: string,
     price: number,
 }
-const ProductCard: React.FC<ProductCardProps>=({image, name, price}) => {
+export const ProductCard: React.FC<ProductCardProps>=({image, name, price}) => {
   return (
     <div className="w-60 h-72 bg-white shadow-lg rounded-lg overflow-hidden">
       <div className="relative h-40">
-     <Image src={image} alt={name} className="w-full h-auto rounded-lg mb-2.5 object-cover"/>
+      <img src={image} alt={name} className="w-full h-auto rounded-lg mb-2.5 object-cover"/>
       </div>
       <div className="p-4">
         <h3 className="text-lg font-semibold text-center">{name}</h3>
@@ -23,5 +23,3 @@ const ProductCard: React.FC<ProductCardProps>=({image, name, price}) => {
     </div>
   );
 };
-
-export default ProductCard
