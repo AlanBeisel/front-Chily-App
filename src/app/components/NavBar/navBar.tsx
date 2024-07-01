@@ -9,7 +9,7 @@ import {
 import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
-import { useAuth } from '@/app/contexts/AuthContext'; 
+import { useAuth } from '@/app/contexts/AuthContext';
 
 const pageNames: { [key: string]: string } = {
   '/home': 'Home',
@@ -47,7 +47,6 @@ export const Navbar: React.FC = () => {
     router.push('/');
   };
 
-
   const handleCartClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isAuthenticated) {
       e.preventDefault();
@@ -64,10 +63,9 @@ export const Navbar: React.FC = () => {
     }
   };
 
-
   return (
-    <nav className="bg-red-500 text-white p-4 sm:p-6 rounded-xl m-4">
-      <div className="container mx-auto flex justify-between items-center">
+    <nav className="bg-red-500 text-white p-4 rounded-xl m-4">
+      <div className="container flex justify-between items-center">
         <div className="flex items-center">
           <Image
             src="/LogoLay.png"
@@ -93,13 +91,13 @@ export const Navbar: React.FC = () => {
                 Mi perfil
               </Link>
 
-              {user?.role === 'admin' || user?.role === 'superAdmin'  && (
-                <Link href="/admin-panel" className="hover:text-gray-300">
-                  Panel Ordenes
-                </Link>
-              )}
+              {user?.role === 'admin' ||
+                (user?.role === 'superAdmin' && (
+                  <Link href="/admin-panel" className="hover:text-gray-300">
+                    Panel Ordenes
+                  </Link>
+                ))}
               {user?.role === 'superAdmin' && (
-                
                 <Link href="/menu-panel" className="hover:text-gray-300">
                   Menu Products
                 </Link>

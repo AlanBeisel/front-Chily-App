@@ -17,7 +17,6 @@ export const metadata: Metadata = {
   description: 'Donde chily',
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,14 +30,14 @@ export default function RootLayout({
       <body
         className={`${mochily.className} ${poppins.className} w-full flex justify-center `}
       >
-          <div className="w-10/12 md:w-8/12 lg:w-7/12">
-        <AuthProvider>
-          <ToastContainer/>
-          <Navbar />
-          {children}
-          <Footer />
-        </AuthProvider>
-          </div>
+        <div className="w-10/12 md:w-8/12 lg:w-7/12">
+          <AuthProvider>
+            <ToastContainer />
+            <Navbar />
+            {children}
+            <Footer />
+          </AuthProvider>
+        </div>
       </body>
     </html>
   );
