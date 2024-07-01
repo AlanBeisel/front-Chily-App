@@ -1,37 +1,30 @@
-"use client"
-import React, { useEffect, useState } from 'react';
+'use client';
+import React, { useEffect } from 'react';
 import CategoryProducts from './CategoryProducts';
-import { getAllCategories } from '@/helpers/peticiones';
-import { Category } from '@/types'; 
+import { useCache } from '@/app/contexts/CacheContext';
 
 export const RenderCategory = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const { categories, fetchCategories } = useCache();
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const fetchedCategories = await getAllCategories();
-        setCategories(fetchedCategories);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
+    if (categories.length === 0) {
+      fetchCategories();
+    }
+  }, [categories, fetchCategories]);
 
-    fetchCategories();
-  }, []);
-
-   console.log('Categorías:', categories);
+  console.log('Categorías:', categories);
 
   return (
-      <div>
-        {categories.map((category) => (
+    <div>
+      {categories
+        .filter((category) => category.products && category.products.length > 0) // Filtra categorías sin productos
+        .map((category) => (
           <CategoryProducts
             key={category.id}
             categoryId={category.id}
             name={category.name}
           />
         ))}
-      </div>
+    </div>
   );
 };
-

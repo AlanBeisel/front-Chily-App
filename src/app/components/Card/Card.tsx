@@ -23,3 +23,4 @@ export const ProductCard: React.FC<ProductCardProps>=({image, name, price}) => {
     </div>
   );
 };
+ 

@@ -105,13 +105,6 @@ export const Navbar: React.FC = () => {
               <button onClick={handleLogout} className="hover:text-gray-300">
                 Cerrar sesión
               </button>
-              <Link
-                href="/cart"
-                className="hover:text-gray-300"
-                onClick={handleCartClick}
-              >
-                <AiOutlineShoppingCart className="text-2xl" />
-              </Link>
             </>
           ) : (
             <>
@@ -137,6 +130,13 @@ export const Navbar: React.FC = () => {
               </Link>
             </>
           )}
+          <Link
+            href="/cart"
+            className="hover:text-gray-300"
+            onClick={handleCartClick}
+          >
+            <AiOutlineShoppingCart className="text-2xl" />
+          </Link>
         </div>
 
         <div className="xl:hidden flex relative" ref={menuRef}>
@@ -181,13 +181,6 @@ export const Navbar: React.FC = () => {
                       Panel Menu
                     </Link>
                   )}
-                  <Link
-                    href="/cart"
-                    className="block p-2 hover:text-gray-300"
-                    onClick={handleCartClick}
-                  >
-                    <AiOutlineShoppingCart className="text-2xl" />
-                  </Link>
                 </>
               ) : (
                 <>
@@ -213,6 +206,13 @@ export const Navbar: React.FC = () => {
                   </Link>
                 </>
               )}
+              <Link
+                href="/cart"
+                className="block p-2 hover:text-gray-300"
+                onClick={handleCartClick}
+              >
+                <AiOutlineShoppingCart className="text-2xl" />
+              </Link>
             </div>
           )}
         </div>

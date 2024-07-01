@@ -19,7 +19,7 @@ const MenuNavigation = () => {
           <li className="mb-3">
             <Link href="/profile">
               <button className="w-full text-left text-red-500 hover:bg-red-100 p-5 rounded-md flex items-center">
-                <span className="inline-block w-20 h-20 mr-2 text-red-500 flex items-center justify-center">
+                <span className=" w-20 h-20 mr-2 text-red-500 flex items-center justify-center">
                   <HiOutlineUser/>
                 </span>
                 Mi Cuenta
@@ -29,7 +29,7 @@ const MenuNavigation = () => {
           <li className="mb-3">
             <Link href="/orders">
               <button className="w-full text-left text-red-500 hover:bg-red-100 p-5 rounded-md flex items-center">
-                <span className="inline-block w-20 h-20 mr-2 text-red-500 flex items-center justify-center">
+                <span className=" w-20 h-20 mr-2 text-red-500 flex items-center justify-center">
                   <HiOutlineClipboardCheck/>
                 </span>
                 Mis Pedidos
