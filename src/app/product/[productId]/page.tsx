@@ -14,9 +14,9 @@ const ProductDetail: FC<ProductDetailsProps> = ({params}) => {
 
     return(
 
-        <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+        <div className="flex flex-col items-center justify-start min-h-screen bg-white p-4">
             <BackButton className= "self-start ml-4 mt-4" />
-            <div className="flex flex-col items-center justify-center">
+            <div className="mt-4">
             <ProductIDCard params={{productId}}/>
             </div>
         </div>

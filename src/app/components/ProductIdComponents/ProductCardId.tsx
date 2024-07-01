@@ -1,8 +1,6 @@
 'use client'
 import Image from 'next/image';
-import Rating from './Raiting';
 import PriceTag from './PriceTag';
-import AddItem from './AddItem';
 import CartButtons from './CartButtons';
 import {useState, useEffect} from 'react';
 import { toast } from 'react-toastify';
@@ -20,7 +18,7 @@ interface ProductIDCardProps{
 }
 
 
-const ProductIDCard: React.FC<ProductIDCardProps> = ({params}) => {  
+const ProductIDCard: React.FC<ProductIDCardProps> = ({params}) => { 
 const [quantity, setQuantity]= useState<number>(1);
 const [product, setProduct] = useState<Product | null> (null);
 const {isAuthenticated} = useAuth();
@@ -69,7 +67,7 @@ const addToCart = () => {
     return;
   }
   
-  const storedCart =localStorage.getItem('cartItems');
+  const storedCart = localStorage.getItem('cartItems');
   const existCart = storedCart ? JSON.parse(storedCart) : [];
 
 const updateCart = existCart.some((item: Product) => item.id === product?.id)
@@ -108,19 +106,10 @@ return (
          className="w-full h-auto rounded-md mb-4"
          />
          <div className="flex justify-between items-center mb-4">
-          <Rating value={4.8}/>
           <PriceTag price={product.price} />
          </div>
          <h2 className="text-2xl font-bold mb-2">{product.name}</h2>
          <p className="text-gray-600 text-sm mb-4">{product.description}</p>
-         <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">Add Ons</h3>
-            <div className="flex space-x-4">
-            <AddItem src="/bebidas.png" label= "cheese" price={9}/>
-            <AddItem src="/papas.png" label= "sauce" price={9}/>
-            <AddItem src="/burger.png" label= "pepperoni" price={9}/>
-            </div>
-         </div>
          <CartButtons
            quantity={quantity}
            onIncrease={handleIncrease}
