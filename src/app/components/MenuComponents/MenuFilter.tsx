@@ -1,121 +1,103 @@
+import React, { useState } from 'react';
 
-import React from 'react';
-
-interface FiltersProps {
-  onFilterChange: (filters: string[]) => void; 
+interface MenuFiltersProps {
+  applyFilters: (
+    newFilters: Partial<{ min?: number; max?: number; price?: 'min' | 'max' }>,
+  ) => void;
+  selectedFilters: string[];
+  handleFilterChange: (filter: string) => void;
 }
 
-const MenuFilters: React.FC<FiltersProps> = ({ onFilterChange }) => {
-  const [filters, setFilters] = React.useState<string[]>([]);
+const MenuFilters: React.FC<MenuFiltersProps> = ({
+  applyFilters,
+  selectedFilters,
+  handleFilterChange,
+}) => {
+  const filterOptions = [
+    { value: '18', label: 'Vegetariana', category: 'Tipo de Comida' },
+    { value: '16', label: 'Carnes', category: 'Tipo de Comida' },
+    { value: '3', label: 'Entradas', category: 'Tipo de Comida' },
+    { value: '6', label: 'Quesadillas', category: 'Tipo de Comida' },
+    { value: '7', label: 'Tacos', category: 'Tipo de Comida' },
+    { value: '14', label: 'Burritos', category: 'Tipo de Comida' },
+    { value: '27', label: 'Papas', category: 'Tipo de Comida' },
+    { value: '28', label: 'Ensaladas', category: 'Tipo de Comida' },
+    { value: 'min', label: 'Menor precio', category: 'Precio' },
+    { value: 'max', label: 'Mayor precio', category: 'Precio' },
+    { value: '19', label: 'Con alcohol', category: 'Bebidas' },
+    { value: '20', label: 'Sin alcohol', category: 'Bebidas' },
+    { value: '25', label: 'Jugos', category: 'Bebidas' },
+    { value: '24', label: 'Vinos', category: 'Bebidas' },
+    { value: '22', label: 'Cervezas', category: 'Bebidas' },
+    { value: '21', label: 'Gaseosas', category: 'Bebidas' },
+  ];
 
-  // Función para manejar el cambio en los filtros
-  const handleFilterChange = (filter: string) => {
-    if (filters.includes(filter)) {
-      setFilters(filters.filter((f) => f !== filter));
-    } else {
-      setFilters([...filters, filter]);
-    }
+  const [minPrice, setMinPrice] = useState<number | undefined>(undefined);
+  const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined);
 
-    onFilterChange([...filters, filter]);
+  const handleMinPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    const newMinPrice = !isNaN(value) ? value : undefined;
+    setMinPrice(newMinPrice);
+    applyFilters({ min: newMinPrice, max: maxPrice, price: getPriceFilter() });
+  };
+
+  const handleMaxPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    const newMaxPrice = !isNaN(value) ? value : undefined;
+    setMaxPrice(newMaxPrice);
+    applyFilters({ min: minPrice, max: newMaxPrice, price: getPriceFilter() });
+  };
+
+  const getPriceFilter = () => {
+    return selectedFilters.includes('min')
+      ? 'min'
+      : selectedFilters.includes('max')
+        ? 'max'
+        : undefined;
   };
 
   return (
     <div className="border p-4 rounded-lg shadow-md mb-4">
       <h2 className="text-lg font-bold mb-2">Filtros</h2>
       <div className="space-y-2">
-        <p className="text-sm font-semibold">Tipo de Comida:</p>
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            value="vegetariana"
-            checked={filters.includes('vegetariana')}
-            onChange={() => handleFilterChange('vegetariana')}
-            className="mr-2"
-          />
-          Vegetariana
-        </label>
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            value="carnes"
-            checked={filters.includes('carnes')}
-            onChange={() => handleFilterChange('carnes')}
-            className="mr-2"
-          />
-          Carnes
-        </label>
-        <p className="text-sm font-semibold">Precio</p>
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            value="precio"
-            checked={filters.includes('menorprecio')}
-            onChange={() => handleFilterChange('menorprecio')}
-            className="mr-2"
-          />
-          Menor precio
-        </label>
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            value="mayorprecio"
-            checked={filters.includes('mayorprecio')}
-            onChange={() => handleFilterChange('mayorprecio')}
-            className="mr-2"
-          />
-          Mayor precio
-        </label>
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            value="ofertas"
-            checked={filters.includes('ofertas')}
-            onChange={() => handleFilterChange('ofertas')}
-            className="mr-2"
-          />
-          Ofertas
-        </label>
-        <p className="text-sm font-semibold">Bebidas</p>
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            value="conalcohol"
-            checked={filters.includes('conalcohol')}
-            onChange={() => handleFilterChange('conalcohol')}
-            className="mr-2"
-          />
-          Con alcohol
-        </label>
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            value="sinalcohol"
-            checked={filters.includes('sinalcohol')}
-            onChange={() => handleFilterChange('sinalcohol')}
-            className="mr-2"
-          />
-          Sin alcohol
-        </label>
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            value="cervezas"
-            checked={filters.includes('cervezas')}
-            onChange={() => handleFilterChange('cervezas')}
-            className="mr-2"
-          />
-          Cervezas
-        </label>
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            value="Gaseosas"
-            checked={filters.includes('Gaseosas')}
-            onChange={() => handleFilterChange('Gaseosas')}
-            className="mr-2"
-          />
-          Gaseosas
-        </label>
+        {['Tipo de Comida', 'Precio', 'Bebidas'].map((category) => (
+          <div key={category}>
+            <p className="text-sm font-semibold">{category}:</p>
+            {filterOptions
+              .filter((option) => option.category === category)
+              .map((option) => (
+                <label key={option.value} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    value={option.value}
+                    checked={selectedFilters.includes(option.value)}
+                    onChange={() => handleFilterChange(option.value)}
+                    className="mr-2"
+                  />
+                  {option.label}
+                </label>
+              ))}
+            {category === 'Precio' && (
+              <div className="">
+                <input
+                  type="number"
+                  placeholder="Min"
+                  value={minPrice ?? ''}
+                  onChange={handleMinPriceChange}
+                  className="border p-2 rounded mt-2"
+                />
+                <input
+                  type="number"
+                  placeholder="Max"
+                  value={maxPrice ?? ''}
+                  onChange={handleMaxPriceChange}
+                  className="border p-2 rounded mb-2"
+                />
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
