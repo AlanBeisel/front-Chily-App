@@ -1,30 +1,45 @@
 'use client';
-import React, { useEffect } from 'react';
-import CategoryProducts from './CategoryProducts';
+import React, { useEffect, useState } from 'react';
 import { useCache } from '@/app/contexts/CacheContext';
+import CategoryProducts from './CategoryProducts';
+
 
 export const RenderCategory = () => {
-  const { categories, fetchCategories } = useCache();
+  const { categories } = useCache();
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (categories.length === 0) {
-      fetchCategories();
-    }
-  }, [categories, fetchCategories]);
 
-  console.log('Categorías:', categories);
+useEffect(() => {
+  if (categories.length > 0) {
+    setIsLoading(false);
+  }
+}, [categories]);
 
   return (
     <div>
-      {categories
-        .filter((category) => category.products && category.products.length > 0) // Filtra categorías sin productos
-        .map((category) => (
-          <CategoryProducts
-            key={category.id}
-            categoryId={category.id}
-            name={category.name}
-          />
-        ))}
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <div>
+          {categories
+            .filter((category) => {
+              const categoryId = parseInt(category.id);
+              return (
+                categoryId >= 1 &&
+                categoryId <= 16 &&
+                category.products.length > 0
+              );
+            })
+            .map((category) => (
+              <CategoryProducts
+                key={category.id}
+                categoryId={category.id}
+                name={category.name}
+                products={category.products} // Pasamos los productos directamente
+              />
+            ))}
+        </div>
+      )}
     </div>
   );
 };
