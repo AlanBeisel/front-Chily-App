@@ -1,48 +1,36 @@
 'use client'
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import UserInfo  from '../components/ProfileComponents/UserInfo';
-//import {useAuth} from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
+import BackButton from '../components/ProductIdComponents/BackButton';
 
-//para harcodear
-
-type User = {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  password: string;
-} | null
 
 
 const UserDashboard: React.FC = () => {
 
-  //const {user} = useAuth();
+  const {user, isAuthenticated} = useAuth();
 
-  const [user, setUser] = useState<User>(null);
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-white w-full h-full">
+        <p className="text-red-500 text-xl">Usuario no autenticado. Por favor inicie sesión.</p>
+      </div>
+    );
+  }
 
-  useEffect(()=> {
-
-    const fetchedUser ={ 
-      name: 'Juan Perez',
-      email: 'juanperez@example.com',
-      phone: '1234567890',
-      address:'fake st 1234',
-      password: '********'
-    };
-
-    setUser(fetchedUser);
-
-  }, []);
 
 
 
   return(
-    <div className="min-h-screen flex justify-center items-center bg-white w-full h-full">
-      {user !== null? (
+    <div className="min-h-screen flex flex-col items-center bg-white w-full h-full">
+      <BackButton className= "self-start ml-4 mt-4" />
+      <div className="flex flex-col items-center mt-10 w-full">
+      {user ? (
         <UserInfo user={user} />
       ):(
         <div className="text-center mt-20"> Cargando...</div>
       )}
+      </div>
     </div>
   );
 };

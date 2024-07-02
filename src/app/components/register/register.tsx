@@ -14,7 +14,8 @@ import { Input } from '@/app/components/ui/input';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-const formSchema = z.object({
+const formSchema = z
+  .object({
     name: z
       .string()
       .min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
@@ -45,7 +46,7 @@ const formSchema = z.object({
       .regex(/^\d+$/, { message: 'El NIN debe contener solo números.' }),
     phone: z
       .string()
-      .min(10, { message: 'El teléfono debe tener al menos 10 caracteres.' })
+      .min(10, { message: 'El teléfono debe tener al menos 10 caracteres.' }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Las contraseñas deben coincidir.',
@@ -93,9 +94,8 @@ export function RegisterForm() {
         alert('Te has registrado correctamente, por favor inicia sesión');
         router.push('/login');
       } else {
-        alert(
-          'Hubo un problema durante el registro, por favor intenta de nuevo',
-        );
+        const res = await response.json();
+        alert(`Hubo un problema durante el registro, ${res?.message?.[0]}`);
       }
     } catch (error) {
       console.error('Error durante el registro:', error);

@@ -21,6 +21,7 @@ const BackButton: FC<BackButtonProps> = ({className}) => {
     className={`flex items-center justify-center p-2 bg-white rounded-full hover: bg-red-100 focus:outline-none ${className}`}
       >
       <HiArrowNarrowLeft className="text-red-500 text-xl" />
+      <span className="text-red-500 text-xl">Volver</span>
     </button>
   );
 };
