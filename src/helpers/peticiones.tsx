@@ -12,6 +12,7 @@ export async function getProducts(
     search?: string;
     min?: number;
     max?: number;
+    price?: 'min' | 'max';
     appliedFilters?: string[];
   } = {},
 ): Promise<any[]> {
@@ -21,7 +22,6 @@ export async function getProducts(
     url.searchParams.append('page', page.toString());
     url.searchParams.append('limit', limit.toString());
 
-    // Añadir opciones adicionales
     if (options.filter !== undefined) {
       url.searchParams.append('filter', options.filter.toString());
     }
@@ -35,8 +35,17 @@ export async function getProducts(
       url.searchParams.append('max', options.max.toString());
     }
 
-    // Añadir filtros aplicados si existen
-    if (options.appliedFilters && options.appliedFilters.length > 0) {
+    // Añadir price si existe
+    if (options.price) {
+      url.searchParams.append('price', options.price);
+    }
+
+    // Añadir filtros aplicados si existen y no hay price
+    if (
+      !options.price &&
+      options.appliedFilters &&
+      options.appliedFilters.length > 0
+    ) {
       url.searchParams.append('filter', options.appliedFilters.join(','));
     }
 
@@ -52,13 +61,13 @@ export async function getProducts(
     }
 
     const products: any[] = await response.json();
-    console.log('Productos obtenidos:', products);
     return products;
   } catch (error) {
     console.error('Error en getProducts:', error);
     throw error;
   }
 }
+
 
 export async function getProductById(id: string): Promise<Product> {
   try {
@@ -92,7 +101,6 @@ export async function getProductsByCategoryId(
     }
     const url = `${API_URL}/category/${id}?${queryParams}`;
     const response = await fetch(url);
-
     if (!response.ok) {
       throw new Error(`Error al obtener productos para la categoría ${id}`);
     }
@@ -104,13 +112,15 @@ export async function getProductsByCategoryId(
     }
 
     const products: Product[] = categoryData.products;
-    console.log('Productos obtenidos:', products);
+    
     return products;
   } catch (error) {
     console.error(`Error en getProductsByCategoryId para id ${id}:`, error);
     throw error;
   }
 }
+
+
 export async function getAllCategories(): Promise<Category[]> {
   try {
     const res = await fetch('https://chilyapi.onrender.com/category', {

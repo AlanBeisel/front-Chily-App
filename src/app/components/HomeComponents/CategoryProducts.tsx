@@ -1,67 +1,37 @@
-"use client"
-import React, { useState, useEffect } from 'react';
+'use client';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getProductsByCategoryId } from '@/helpers/peticiones';
 import ProductCard from '../Cards/ProductCard';
 import Pagination from './Pagination';
 import { Product } from '@/types';
 
-
 interface CategoryProductsProps {
   categoryId: string;
   name: string;
+  products: Product[];
   limit?: number;
 }
 
 const CategoryProducts: React.FC<CategoryProductsProps> = ({
   categoryId,
   name,
+  products,
   limit = 5,
 }) => {
-  const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
   const router = useRouter();
 
-useEffect(() => {
-  const fetchProducts = async () => {
-    setIsLoading(true);
-    try {
-      console.log(`Fetching products for category ${name} (${categoryId})`);
-      const fetchedProducts = await getProductsByCategoryId(
-        categoryId,
-        page,
-        limit,
-      );
-       // Reemplazar los productos existentes con los nuevos productos
-      setProducts(fetchedProducts);
-      setHasMore(fetchedProducts.length === limit);
-    } catch (error) {
-      console.error(
-        `Error fetching products for category ${categoryId}:`,
-      error,
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const totalPages = Math.ceil(products.length / limit);
+  const hasMore = page < totalPages;
 
-  fetchProducts();
-}, [categoryId, page, limit, name]);
+  const displayedProducts = products.slice((page - 1) * limit, page * limit);
 
-  const handlePageChange = async (pageNumber: number) => {
-    if (pageNumber > page && products.length < pageNumber * limit) {
-      setPage(pageNumber);
-    } else {
-      setPage(pageNumber);
-    }
+  const handlePageChange = (pageNumber: number) => {
+    setPage(pageNumber);
   };
 
   const handleAddToCart = (product: Product) => {
     console.log('Agregado al carrito:', product);
-    // Implementar lógica para agregar al carrito aquí
-    // updateCart(product);
   };
 
   const handleViewAll = () => {
@@ -76,7 +46,7 @@ useEffect(() => {
       <h2 className="text-2xl font-bold mb-4">{name}</h2>
 
       <div className="product-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        {products.map((product) => (
+        {displayedProducts.map((product) => (
           <ProductCard
             key={product.id}
             product={product}
@@ -87,14 +57,12 @@ useEffect(() => {
 
       <Pagination
         currentPage={page}
-        totalPages={Math.ceil(products.length / limit)}
+        totalPages={totalPages}
         onPageChange={handlePageChange}
         hasMore={hasMore}
       />
 
-      {isLoading && <p className="text-center mt-4">Cargando...</p>}
-
-      {!isLoading && !hasMore && (
+      {!hasMore && (
         <p className="text-center mt-4">No hay más productos para cargar.</p>
       )}
 

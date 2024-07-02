@@ -1,17 +1,28 @@
-"use client"
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Product, Category } from '@/types';
-import { getAllCategories } from '@/helpers/peticiones';
+'use client';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
+import {
+  getAllCategories,
+  getProducts,
+} from '@/helpers/peticiones';
+import { Category, Product } from '@/types';
+
+
 
 interface CacheProviderProps {
-  children: ReactNode; // Esto permite que cualquier nodo React (elemento, string, número, etc.) se pase como children
+  children: ReactNode;
 }
 
 interface CacheContextType {
   categories: Category[];
   products: Product[];
   fetchCategories: () => Promise<void>;
-  fetchProducts: (categoryId: string) => Promise<void>;
+  getAllProducts: () => Promise<void>;
 }
 
 const CacheContext = createContext<CacheContextType | undefined>(undefined);
@@ -26,33 +37,44 @@ export const useCache = () => {
 
 export const CacheProvider: React.FC<CacheProviderProps> = ({ children }) => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
+   const [products, setProducts] = useState<Product[]>([]);
 
-   const fetchCategories = async () => {
-     try {
-       const fetchedCategories = await getAllCategories();
-       setCategories(fetchedCategories);
-     } catch (error) {
-       console.error('Failed to fetch categories:', error);
-     }
-  };
 
-  useEffect(() => {
-    if (categories.length === 0) {
-      fetchCategories();
+ const getAllProducts = async () => {
+   console.log('Fetching all products...');
+   try {
+     const fetchedProducts = await getProducts(1, 1000);
+     setProducts(fetchedProducts);
+   } catch (error) {
+     console.error('Failed to fetch all products:', error);
+   }
+ };
+
+
+  const fetchCategories = async () => {
+    try {
+      const fetchedCategories = await getAllCategories();
+      setCategories(fetchedCategories);
+    } catch (error) {
+      console.error('Failed to fetch categories:', error);
     }
-   }, [categories]);
-
-  const fetchProducts = async (categoryId: string) => {
-    // Aquí realizarías el fetch y almacenarías los datos en el estado
-    const response = await fetch(`/api/products?categoryId=${categoryId}`);
-    const data = await response.json();
-    setProducts(data);
   };
+
+
+useEffect(() => {
+  fetchCategories();
+  getAllProducts(); 
+}, []);
+
 
   return (
     <CacheContext.Provider
-      value={{ categories, products, fetchCategories, fetchProducts }}
+      value={{
+        categories,
+        products,
+        fetchCategories,
+        getAllProducts
+      }}
     >
       {children}
     </CacheContext.Provider>

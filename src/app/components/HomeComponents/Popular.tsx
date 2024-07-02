@@ -12,7 +12,7 @@ export const Popular = () => {
  useEffect(() => {
    async function fetchPopularProducts() {
      try {
-       const products = await getProducts(1, 4);
+       const products = await getProducts(1, 1000);
        const popularProducts = products.filter((product) => product.isPopular);
        setPopularProducts(popularProducts);
      } catch (error) {
@@ -24,12 +24,11 @@ export const Popular = () => {
  }, []);
 
  const handleAddToCart = (product: Product) => {
-   // Lógica para agregar el producto al carrito
   console.log(`Producto agregado al carrito: ${product.name}`);
  };
 
   return (
-    <div className="mb-4">
+    <div className="category-container bg-gray-100 rounded-lg shadow-md p-4 mb-8">
       <h2 className="text-xl text-yellow-400 font-bold mb-2">Popular</h2>
       <div className="grid grid-cols-2 gap-4">
         {popularProducts.map((product) => (
