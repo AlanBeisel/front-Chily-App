@@ -1,4 +1,5 @@
 'use client';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -13,6 +14,7 @@ import {
 import { Input } from '@/app/components/ui/input';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 const formSchema = z
   .object({
@@ -64,9 +66,18 @@ export function RegisterForm() {
       nin: '',
       phone: '',
     },
+    mode: 'onChange',
   });
 
+  const { watch, trigger } = form;
   const router = useRouter();
+
+  useEffect(() => {
+    const subscription = watch(() => {
+      trigger();
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, trigger]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log('precionado');

@@ -11,9 +11,9 @@ import {
   FormMessage,
 } from '@/app/components/ui/form';
 import { Input } from '@/app/components/ui/input';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/contexts/AuthContext';
+import Link from 'next/link';
 
 const formSchema = z.object({
   email: z
@@ -68,7 +68,7 @@ export function LoginForm() {
         const data = await response.json();
         login(data.user, data.access_token);
         alert('Has iniciado sesión correctamente');
-        router.push("/")
+        router.push('/');
       } else {
         alert(
           'Hubo un problema durante el inicio de sesión, por favor intenta de nuevo',
@@ -83,6 +83,9 @@ export function LoginForm() {
   }
 
   function handleGoogleLogin() {
+    <Link href="/register" className="underline font-semibold">
+      registrado
+    </Link>;
     router.push(`${process.env.NEXT_PUBLIC_API_URL}/auth/google/login`);
   }
 
