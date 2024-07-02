@@ -1,28 +1,35 @@
 import React, { useState } from 'react';
 
 interface MenuFiltersProps {
-  applyFilters: (newFilters: Partial<{ min?: number; max?: number }>) => void;
+  applyFilters: (
+    newFilters: Partial<{ min?: number; max?: number; price?: 'min' | 'max' }>,
+  ) => void;
   selectedFilters: string[];
   handleFilterChange: (filter: string) => void;
-  hasChanges: boolean;
 }
 
 const MenuFilters: React.FC<MenuFiltersProps> = ({
   applyFilters,
   selectedFilters,
   handleFilterChange,
-  hasChanges,
 }) => {
   const filterOptions = [
-    { value: 'vegetariana', label: 'Vegetariana', category: 'Tipo de Comida' },
-    { value: 'carnes', label: 'Carnes', category: 'Tipo de Comida' },
-    { value: 'menorprecio', label: 'Menor precio', category: 'Precio' },
-    { value: 'mayorprecio', label: 'Mayor precio', category: 'Precio' },
-    { value: 'ofertas', label: 'Ofertas', category: 'Precio' },
-    { value: 'conalcohol', label: 'Con alcohol', category: 'Bebidas' },
-    { value: 'sinalcohol', label: 'Sin alcohol', category: 'Bebidas' },
-    { value: 'cervezas', label: 'Cervezas', category: 'Bebidas' },
-    { value: 'Gaseosas', label: 'Gaseosas', category: 'Bebidas' },
+    { value: '18', label: 'Vegetariana', category: 'Tipo de Comida' },
+    { value: '16', label: 'Carnes', category: 'Tipo de Comida' },
+    { value: '3', label: 'Entradas', category: 'Tipo de Comida' },
+    { value: '6', label: 'Quesadillas', category: 'Tipo de Comida' },
+    { value: '7', label: 'Tacos', category: 'Tipo de Comida' },
+    { value: '14', label: 'Burritos', category: 'Tipo de Comida' },
+    { value: '27', label: 'Papas', category: 'Tipo de Comida' },
+    { value: '28', label: 'Ensaladas', category: 'Tipo de Comida' },
+    { value: 'min', label: 'Menor precio', category: 'Precio' },
+    { value: 'max', label: 'Mayor precio', category: 'Precio' },
+    { value: '19', label: 'Con alcohol', category: 'Bebidas' },
+    { value: '20', label: 'Sin alcohol', category: 'Bebidas' },
+    { value: '25', label: 'Jugos', category: 'Bebidas' },
+    { value: '24', label: 'Vinos', category: 'Bebidas' },
+    { value: '22', label: 'Cervezas', category: 'Bebidas' },
+    { value: '21', label: 'Gaseosas', category: 'Bebidas' },
   ];
 
   const [minPrice, setMinPrice] = useState<number | undefined>(undefined);
@@ -30,24 +37,24 @@ const MenuFilters: React.FC<MenuFiltersProps> = ({
 
   const handleMinPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
-    if (!isNaN(value)) {
-      setMinPrice(value);
-    } else {
-      setMinPrice(undefined); 
-    }
+    const newMinPrice = !isNaN(value) ? value : undefined;
+    setMinPrice(newMinPrice);
+    applyFilters({ min: newMinPrice, max: maxPrice, price: getPriceFilter() });
   };
 
   const handleMaxPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
-    if (!isNaN(value)) {
-      setMaxPrice(value);
-    } else {
-      setMaxPrice(undefined); 
-    }
+    const newMaxPrice = !isNaN(value) ? value : undefined;
+    setMaxPrice(newMaxPrice);
+    applyFilters({ min: minPrice, max: newMaxPrice, price: getPriceFilter() });
   };
 
-  const handleApplyFilters = () => {
-    applyFilters({ min: minPrice, max: maxPrice });
+  const getPriceFilter = () => {
+    return selectedFilters.includes('min')
+      ? 'min'
+      : selectedFilters.includes('max')
+        ? 'max'
+        : undefined;
   };
 
   return (
@@ -92,14 +99,6 @@ const MenuFilters: React.FC<MenuFiltersProps> = ({
           </div>
         ))}
       </div>
-      {hasChanges && (
-        <button
-          onClick={handleApplyFilters}
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-        >
-          Aplicar filtros
-        </button>
-      )}
     </div>
   );
 };

@@ -88,6 +88,7 @@ export function RegisterForm() {
           }),
         },
       );
+      console.log(response);
       if (response.status === 201) {
         alert('Te has registrado correctamente, por favor inicia sesión');
         router.push('/login');

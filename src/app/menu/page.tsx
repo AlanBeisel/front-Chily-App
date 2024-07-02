@@ -17,6 +17,7 @@ interface Filters {
   min?: number;
   max?: number;
   appliedFilters: string[];
+  price?: 'min' | 'max';
 }
 
 export default function Menu() {
@@ -67,38 +68,74 @@ export default function Menu() {
     // Implementa la lógica para agregar al carrito aquí
   };
 
-  const handleApplyFilters = (newFilters: Partial<Filters>) => {
-    setFilters((prevFilters) => ({
+
+
+ const handleApplyFilters = (newFilters: Partial<Filters>) => {
+   setFilters((prevFilters) => ({
+     ...prevFilters,
+     ...newFilters,
+   }));
+   setCurrentPage(1);
+   if (window.innerWidth < 768) {
+     setIsFilterOpen(false);
+   }
+ };
+
+
+const handleSearch = (searchTerm: string) => {
+  if (searchTerm.trim() !== '') {
+    setFilters(prevFilters => ({
       ...prevFilters,
-      ...newFilters,
+      search: searchTerm.trim()
     }));
     setCurrentPage(1);
-    if (window.innerWidth < 768) {
-      setIsFilterOpen(false);
-    }
-  };
+  }
+};
 
-  const handleSearch = (searchTerm: string) => {
-    handleApplyFilters({ search: searchTerm });
-  };
+const removeSearchTerm = () => {
+  setFilters((prevFilters) => ({
+    ...prevFilters,
+    search: '',
+  }));
+  setCurrentPage(1);
+};
 
-  const handleFilterChange = (filter: string) => {
-    let updatedFilters = [...selectedFilters];
+ const handleFilterChange = (filter: string) => {
+   let updatedFilters = [...selectedFilters];
 
-    // Toggle selected filter
-    if (updatedFilters.includes(filter)) {
-      updatedFilters = updatedFilters.filter((f) => f !== filter);
-    } else {
-      updatedFilters.push(filter);
-    }
+   // Toggle selected filter
+   if (updatedFilters.includes(filter)) {
+     updatedFilters = updatedFilters.filter((f) => f !== filter);
+   } else {
+     updatedFilters.push(filter);
+   }
 
-    setSelectedFilters(updatedFilters);
-    handleApplyFilters({ appliedFilters: updatedFilters });
-  };
+   setSelectedFilters(updatedFilters);
+   const priceFilter = updatedFilters.includes('min')
+     ? 'min'
+     : updatedFilters.includes('max')
+       ? 'max'
+       : undefined;
+
+   handleApplyFilters({ appliedFilters: updatedFilters, price: priceFilter });
+ };
 
   return (
     <div className="p-4 md:p-6">
       <SearchBar onSearch={handleSearch} />
+      {filters.search && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          <div className="bg-gray-200 rounded-full px-3 py-1 flex items-center">
+            <span>{filters.search}</span>
+            <button
+              onClick={removeSearchTerm}
+              className="ml-2 text-gray-500 hover:text-gray-700"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
       <div className="md:flex w-full h-full">
         {/* Botón de filtros para móviles */}
         <button
@@ -120,7 +157,6 @@ export default function Menu() {
             applyFilters={handleApplyFilters}
             selectedFilters={selectedFilters}
             handleFilterChange={handleFilterChange}
-            hasChanges={true}
           />
         </div>
 
