@@ -119,8 +119,6 @@ export async function getProductsByCategoryId(
     throw error;
   }
 }
-
-
 export async function getAllCategories(): Promise<Category[]> {
   try {
     const res = await fetch('https://chilyapi.onrender.com/category', {

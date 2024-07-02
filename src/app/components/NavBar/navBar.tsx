@@ -11,16 +11,6 @@ import Image from 'next/image';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/app/contexts/AuthContext';
 
-//Rompe el responsive el titulo de la pagina, por ejemplo en Registrarme en mobile.
-
-/* const pageNames: { [key: string]: string } = {
-  '/home': 'Home',
-  '/menu': 'Menu',
-  '/profile': 'Mi Perfil',
-  '/login': 'Iniciar Sesión',
-  '/register': 'Registrarme',
-  '/cart': 'Carrito',
-}; */
 
 export const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -139,6 +129,7 @@ export const Navbar: React.FC = () => {
           >
             <AiOutlineShoppingCart className="text-2xl" />
           </Link>
+
         </div>
 
         <div className="xl:hidden flex relative" ref={menuRef}>
