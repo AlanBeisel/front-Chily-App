@@ -15,6 +15,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       // Llamar a la función onSearch con el término de búsqueda
       onSearch(searchText);
 
+      // Limpiar el input después de la búsqueda
+      setSearchText('');
+
       // Redirigir a la ruta del menú sin parámetros de búsqueda en la URL
       router.push('/menu');
     }
