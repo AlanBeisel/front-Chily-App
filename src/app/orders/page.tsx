@@ -1,6 +1,6 @@
 import React from 'react';
 import OrderList from '../components/OrderComponents/OrderList';
-import { IOrderProps} from '../components/OrderComponents/OrderItem';
+import { IOrderProps } from '../components/OrderComponents/OrderItem';
 
 const orders: IOrderProps[] = [
   {
@@ -25,9 +25,6 @@ const orders: IOrderProps[] = [
   },
 ];
 
-
-
-
 /*export async function getServerSideProps() {
   const res = await fetch ('https://chilyapi.onrender.com/pedidos');
   const orders = await res.json();
@@ -38,17 +35,16 @@ const orders: IOrderProps[] = [
   };
 }*/
 
-
 const Orders: React.FC = () => {
-/*<{orders: IOrderProps[]}> = ({orders}) => {*/
+  /*<{orders: IOrderProps[]}> = ({orders}) => {*/
   return (
     <div>
       <header className="text-center mb-4">
         <h1 className="text-2xl font-bold text-red-500">Mis Pedidos</h1>
       </header>
-      <OrderList orders = {orders} />
+      <OrderList orders={orders} />
     </div>
   );
 };
 
-export default Orders
+export default Orders;

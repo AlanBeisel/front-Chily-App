@@ -31,7 +31,6 @@ const ProfileAdmin: React.FC = () => {
   };
 
   const handleLogout = () => {
-    // Lógica para cerrar sesión
     console.log('Cerrar sesión');
   };
 
