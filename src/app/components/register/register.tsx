@@ -1,4 +1,5 @@
 'use client';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -13,12 +14,14 @@ import {
 import { Input } from '@/app/components/ui/input';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 const formSchema = z
   .object({
     name: z
       .string()
-      .min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
+      .min(3, { message: 'El nombre debe tener al menos 3 caracteres.' }),
     email: z
       .string()
       .email({ message: 'Debe ser un correo electrónico válido.' }),
@@ -64,9 +67,19 @@ export function RegisterForm() {
       nin: '',
       phone: '',
     },
+    mode: 'onChange',
   });
 
+  const { watch, trigger } = form;
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    const subscription = watch(() => {
+      trigger();
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, trigger]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log('precionado');
@@ -141,9 +154,21 @@ export function RegisterForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormControl>
-                <Input placeholder="Contraseña" {...field} type="password" />
-              </FormControl>
+              <div className="text-red-600 relative">
+                <FormControl>
+                  <Input
+                    placeholder="Contraseña"
+                    {...field}
+                    type={showPassword ? 'text' : 'password'}
+                  />
+                </FormControl>
+                <div
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                </div>
+              </div>
               <FormMessage />
             </FormItem>
           )}
@@ -153,12 +178,38 @@ export function RegisterForm() {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
+              <div className="text-red-600 relative">
+                <FormControl>
+                  <Input
+                    placeholder="Repetir contraseña"
+                    {...field}
+                    type={showPassword ? 'text' : 'password'}
+                  />
+                </FormControl>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="nin"
+          render={({ field }) => (
+            <FormItem>
               <FormControl>
-                <Input
-                  placeholder="Repetir contraseña"
-                  {...field}
-                  type="password"
-                />
+                <Input placeholder="NIN" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input placeholder="Teléfono" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -194,11 +245,9 @@ export function RegisterForm() {
       </form>
       <h2 className="text-sm font-regular mt-[15px]">
         ¿ya estas{' '}
-        {
-          <Link href="/login" className="underline font-semibold">
-            logueado
-          </Link>
-        }
+        <Link href="/login" className="underline font-semibold">
+          logueado
+        </Link>
         ?
       </h2>
       <Button
