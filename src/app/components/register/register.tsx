@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { showToast } from '@/lib/utils';
 
 const formSchema = z
   .object({
@@ -82,7 +83,6 @@ export function RegisterForm() {
   }, [watch, trigger]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('precionado');
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
@@ -102,18 +102,27 @@ export function RegisterForm() {
           }),
         },
       );
-      console.log(response);
       if (response.status === 201) {
-        alert('Te has registrado correctamente, por favor inicia sesión');
+        showToast(
+          'success',
+          <p>Te has registrado correctamente, por favor inicia sesión</p>,
+        );
         router.push('/login');
       } else {
         const res = await response.json();
-        alert(`Hubo un problema durante el registro, ${res?.message?.[0]}`);
+        showToast(
+          'error',
+          <p>Hubo un problema durante el registro, {res?.message?.[0]}</p>,
+        );
       }
     } catch (error) {
       console.error('Error durante el registro:', error);
-      alert(
-        'Ocurrió un error durante el registro, por favor intenta de nuevo más tarde',
+      showToast(
+        'error',
+        <p>
+          Ocurrió un error durante el registro, por favor intenta de nuevo más
+          tarde
+        </p>,
       );
     }
   }

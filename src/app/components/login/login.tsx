@@ -14,6 +14,9 @@ import { Input } from '@/app/components/ui/input';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/contexts/AuthContext';
 import Link from 'next/link';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { showToast } from '@/lib/utils';
+import { useEffect, useState } from 'react';
 
 const formSchema = z.object({
   email: z
@@ -46,7 +49,16 @@ export function LoginForm() {
     },
   });
 
+  const { watch, trigger } = form;
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    const subscription = watch(() => {
+      trigger();
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, trigger]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
@@ -64,29 +76,34 @@ export function LoginForm() {
           }),
         },
       );
-      
+
       if (response.status === 201) {
         const data = await response.json();
         login(data.user, data.access_token);
-        alert('Has iniciado sesión correctamente');
+        showToast('success', <p>Has iniciado sesión correctamente</p>);
         router.push('/');
       } else {
-        alert(
-          'Hubo un problema durante el inicio de sesión, por favor intenta de nuevo',
+        showToast(
+          'error',
+          <p>
+            Hubo un problema durante el inicio de sesión, por favor intenta de
+            nuevo
+          </p>,
         );
       }
     } catch (error) {
       console.error('Error durante el inicio de sesión:', error);
-      alert(
-        'Ocurrió un error durante el inicio de sesión, por favor intenta de nuevo más tarde',
+      showToast(
+        'error',
+        <p>
+          Ocurrió un error durante el inicio de sesión, por favor intenta de
+          nuevo más tarde
+        </p>,
       );
     }
   }
 
   function handleGoogleLogin() {
-    <Link href="/register" className="underline font-semibold">
-      registrado
-    </Link>;
     router.push(`${process.env.NEXT_PUBLIC_API_URL}/auth/google/login`);
   }
 
@@ -110,10 +127,22 @@ export function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormControl>
-                <Input placeholder="contraseña" {...field} type="password" />
-              </FormControl>
-              <FormMessage className="text-white" />
+              <div className="text-red-600 relative">
+                <FormControl>
+                  <Input
+                    placeholder="Contraseña"
+                    {...field}
+                    type={showPassword ? 'text' : 'password'}
+                  />
+                </FormControl>
+                <div
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                </div>
+              </div>
+              <FormMessage />
             </FormItem>
           )}
         />
