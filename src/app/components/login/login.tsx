@@ -151,13 +151,18 @@ export function LoginForm() {
         </Button>
       </form>
       <h2 className="text-sm font-regular mt-[15px]">
-        ¿Aún no estás{' '}
         {
-          <Link href="/register" className="underline font-semibold">
-            registrado
+          <Link href="/req-reset" className="underline font-semibold">
+            Has olvidado tu contraseña?
           </Link>
         }
-        ?
+      </h2>
+      <h2 className="text-sm font-regular mt-[15px]">
+        {
+          <Link href="/register" className="underline font-semibold">
+            Crea una cuenta nueva
+          </Link>
+        }
       </h2>
       <Button
         onClick={handleGoogleLogin}
