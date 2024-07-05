@@ -2,15 +2,17 @@
 import { useAuth } from '../contexts/AuthContext';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { CartItemType } from '@/types';
+import { CartItemType, ProductsInOrder } from '@/types';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
 import { FiMinus, FiPlus, FiTrash } from 'react-icons/fi';
+import { useRouter } from 'next/navigation';
 
 const CartPage: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, address, user } = useAuth();
   const [items, setItems] = useState<CartItemType[]>([]);
   const [orderInstructions, setOrderInstructions] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -52,13 +54,35 @@ const CartPage: React.FC = () => {
   };
 
   const proceedToCheckout = () => {
+    if (!address) {
+      toast.warn(
+        'Por favor, proporciona tu dirección antes de proceder al checkout.',
+      );
+      localStorage.setItem('fromCart', 'true');
+      router.push('/address');
+      return;
+    }
+
+    const productsInOrder: ProductsInOrder[] = items.map((item) => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+    }));
+
     const order = {
-      items,
+      userId: user?.id,
+      productsInOrder,
       orderInstructions,
+      address,
       total: calculateTotal(),
     };
+    
     localStorage.setItem('order', JSON.stringify(order));
+    console.log('Order saved to localStorage:', order);
+    router.push('/checkout');
   };
+
 
   if (items.length === 0) {
     return (
@@ -133,13 +157,12 @@ const CartPage: React.FC = () => {
           <span>Subtotal:</span>
           <span>${calculateTotal().toFixed(2)}</span>
         </div>
-        <Link
-          href="/checkout"
+        <button
           onClick={proceedToCheckout}
           className="block w-full bg-red-500 text-white text-center font-bold py-2 px-4 rounded-md hover:bg-red-600 transition duration-300"
         >
           Ir al checkout
-        </Link>
+        </button>
       </div>
       <div className="mt-4 text-center">
         <Link href="/" className="text-blue-500 hover:underline">

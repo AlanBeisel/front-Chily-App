@@ -51,7 +51,7 @@ export function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/signin`,
+        `http://localhost:3002/auth/signin`,
         {
           method: 'POST',
           headers: {
@@ -69,7 +69,7 @@ export function LoginForm() {
         const data = await response.json();
         login(data.user, data.access_token);
         alert('Has iniciado sesión correctamente');
-        router.push("/")
+        router.push("/address")
       } else {
         alert(
           'Hubo un problema durante el inicio de sesión, por favor intenta de nuevo',

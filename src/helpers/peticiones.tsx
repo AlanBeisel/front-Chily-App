@@ -1,7 +1,9 @@
 import { Product, Category } from '../types';
 
 
-const API_URL = 'https://chilyapi.onrender.com';
+// const API_URL = 'https://chilyapi.onrender.com';
+const API_URL = 'http://localhost:3002'
+
 
 
 export async function getProducts(
@@ -123,7 +125,7 @@ export async function getProductsByCategoryId(
 
 export async function getAllCategories(): Promise<Category[]> {
   try {
-    const res = await fetch('https://chilyapi.onrender.com/category', {
+    const res = await fetch('http://localhost:3002/category', {
       method: 'GET',
       next: { revalidate: 3600 },
     })

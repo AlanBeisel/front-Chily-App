@@ -22,20 +22,28 @@ export interface User {
   email: string;
 }
 
+
+export interface ProductsInOrder {
+  id: number;
+  name: string;
+  quantity: number;
+  individualDiscount?: number;
+  price: number;
+}
+
+
 export interface Order {
   id: string;
-  userId: string;
-  products: OrderProduct[];
-  totalAmount: number;
+  userId: number;
+  address: string;
+  productsInOrder: ProductsInOrder[];
+  generalDiscount?: number;
+  shipping: number;
+  total: number;
+  finalPrice: number;
   status: 'pending' | 'completed' | 'cancelled';
   createdAt: Date;
 }
-
-export interface OrderProduct {
-  productId: string;
-  quantity: number;
-}
-
 
 export interface CartItemProps {
   id: number;
@@ -53,4 +61,16 @@ export interface CartItemType {
   price: number;
   quantity: number;
   img: string;
+}
+
+
+
+export interface Address {
+  id: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
+  address: string;
+  note: string;
 }

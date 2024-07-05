@@ -72,7 +72,7 @@ export function RegisterForm() {
     console.log('precionado');
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
+        `http://localhost:3002/auth/register`,
         {
           method: 'POST',
           headers: {

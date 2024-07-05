@@ -162,15 +162,21 @@ const removeSearchTerm = () => {
 
         {/* Contenedor de productos */}
         <div className="md:flex-grow md:p-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAddToCart={handleAddToCart}
-              />
-            ))}
-          </div>
+          {products.length === 0 ? (
+            <div className="text-center text-gray-500">
+              <p>No tenemos productos en esta categoría.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onAddToCart={handleAddToCart}
+                />
+              ))}
+            </div>
+          )}
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
