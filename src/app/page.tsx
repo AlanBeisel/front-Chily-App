@@ -2,10 +2,14 @@
 import { Promotions } from '../app/components/HomeComponents/Promotions';
 import { Popular } from '../app/components/HomeComponents/Popular';
 import { CategoryFilter } from '../app/components/MenuComponents/CategoryFilter';
-
 import { RenderCategory } from './components/HomeComponents/RenderCategory';
 
+
+
 export default function Home() {
+
+   
+  
   return (
     <>
       <div className="w-full flex justify-center">
@@ -13,7 +17,7 @@ export default function Home() {
           <CategoryFilter />
           <Promotions />
           <Popular />
-          <RenderCategory />
+          <RenderCategory />          
         </main>
       </div>
     </>

@@ -1,4 +1,5 @@
 import React from 'react';
+import StatusTracker from './StatusTracker';
 
 export interface IProductOrder {
   name: string;
@@ -33,7 +34,9 @@ const OrderDetails: React.FC<IOrderProps> = ({
         ))}
       </div>
 
-      <div className="text-sm">{status}</div>
+      <div className="text-sm">{status}
+        {status!== "Cancelada"?(<StatusTracker status={status}/>):null}        
+      </div>
       <div className="text-lg text-yellow-300">${totalPrice}</div>
     </div>
   );
