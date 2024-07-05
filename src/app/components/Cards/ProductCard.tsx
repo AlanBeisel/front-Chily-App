@@ -6,6 +6,7 @@ import { useAuth } from '@/app/contexts/AuthContext';
 import { toast } from 'react-toastify';
 import { useState } from 'react';
 
+
 interface ProductCardProps {
   product: Product;
   onAddToCart: (product: Product) => void;

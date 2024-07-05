@@ -1,0 +1,46 @@
+/* StatusTracker.module.css */
+.container {
+  position: relative;
+  width: 80%;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.icon {
+  position: absolute;
+  top: -20px;
+  transform: translateX(-50%);
+  transition: left 0.3s ease-in-out;
+}
+
+.line {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  background-color: #ccc;
+  margin-top: 20px;
+}
+
+.progress {
+  position: absolute;
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.3s ease-in-out;
+}
+
+.statuses {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.status {
+  width: 25%;
+  font-weight: normal;
+  color: #777;
+}
+
+.status.active {
+  font-weight: bold;
+  color: #000;
+}

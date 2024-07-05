@@ -121,8 +121,6 @@ export async function getProductsByCategoryId(
     throw error;
   }
 }
-
-
 export async function getAllCategories(): Promise<Category[]> {
   try {
     const res = await fetch('http://localhost:3002/category', {

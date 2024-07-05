@@ -5,7 +5,12 @@ import Horarios from './components/HomeComponents/Horarios';
 
 import { RenderCategory } from './components/HomeComponents/RenderCategory';
 
+
+
 export default function Home() {
+
+   
+  
   return (
     <>
       <div className="w-full flex justify-center">
@@ -13,7 +18,7 @@ export default function Home() {
           <CategoryFilter />
           <Horarios/>
           <Popular />
-          <RenderCategory />
+          <RenderCategory />          
         </main>
       </div>
     </>

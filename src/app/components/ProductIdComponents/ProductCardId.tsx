@@ -97,26 +97,33 @@ if (!product) {
 
 
 return (
-    <div className="max-w-sm bg-white rounded-lg shadow-md p-5">
-        <Image
-         src={product.img}
-         alt= {product.name}
-         width= {300}
-         height={200}
-         className="w-full h-auto rounded-md mb-4"
-         />
-         <div className="flex justify-between items-center mb-4">
-          <PriceTag price={product.price} />
-         </div>
-         <h2 className="text-2xl font-bold mb-2">{product.name}</h2>
-         <p className="text-gray-600 text-sm mb-4">{product.description}</p>
-         <CartButtons
-           quantity={quantity}
-           onIncrease={handleIncrease}
-           onDecrease={handleDecrease}
-           addToCart = {addToCart}
-          />
+  <div className="flex flex-col lg:flex-row lg:space-x-8 bg-white rounded-lg shadow-md p-12 lg:max-w-6xl mx-auto h-auto lg:h-full">
+    <div className="flex-shrink-0 mb-4 lg:mb-0 lg:max-w-md h-auto lg:h-full">
+      <Image
+        src={product.img}
+        alt={product.name}
+        width={1200}
+        height={1000}
+        className="w-full h-auto rounded-md"
+      />
     </div>
+    <div className="flex flex-col justify-between w-full lg:w-auto p-6">
+      <div className="mb-4 lg:mb-0 flex flex-col items-start">
+        <PriceTag  price={product.price}  />
+        <h2 className="text-2xl font-bold mb-1 lg:mb-2">{product.name}</h2>
+        <p className="text-gray-600 text-sm mb-2 lg:mb-4">{product.description}</p>
+      </div>
+      <div className="flex flex-col items-center lg:items-start mb-4 lg:mb-0 mr-4 mb-4">
+        <CartButtons
+          quantity={quantity}
+          onIncrease={handleIncrease}
+          onDecrease={handleDecrease}
+          addToCart={addToCart}
+        />
+      </div>
+    </div>
+  </div>
+
 );
 };
 
