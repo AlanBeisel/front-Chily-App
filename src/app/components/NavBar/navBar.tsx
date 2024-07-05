@@ -6,26 +6,18 @@ import {
   AiOutlineMenu,
   AiOutlineClose,
 } from 'react-icons/ai';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
-import { useAuth } from '@/app/contexts/AuthContext'; 
+import { useAuth } from '@/app/contexts/AuthContext';
 
-const pageNames: { [key: string]: string } = {
-  '/home': 'Home',
-  '/menu': 'Menu',
-  '/profile': 'Mi Perfil',
-  '/login': 'Iniciar Sesión',
-  '/register': 'Registrarme',
-  '/cart': 'Carrito',
-};
 
 export const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const pathname = usePathname();
-  const currentPage = pageNames[pathname] || 'Chily';
+  /* const pathname = usePathname(); */
+  const currentPage = /* pageNames[pathname] || */ 'Chily';
   const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
@@ -47,7 +39,6 @@ export const Navbar: React.FC = () => {
     router.push('/');
   };
 
-
   const handleCartClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isAuthenticated) {
       e.preventDefault();
@@ -64,10 +55,9 @@ export const Navbar: React.FC = () => {
     }
   };
 
-
   return (
-    <nav className="bg-red-500 text-white p-4 sm:p-6 rounded-xl m-4">
-      <div className="container mx-auto flex justify-between items-center">
+    <nav className="bg-red-500 text-white p-4 mb-4">
+      <div className="container flex justify-between items-center">
         <div className="flex items-center">
           <Image
             src="/LogoLay.png"
@@ -93,13 +83,13 @@ export const Navbar: React.FC = () => {
                 Mi perfil
               </Link>
 
-              {user?.role === 'admin' || user?.role === 'superAdmin'  && (
-                <Link href="/admin-panel" className="hover:text-gray-300">
-                  Panel Ordenes
-                </Link>
-              )}
+              {user?.role === 'admin' ||
+                (user?.role === 'superAdmin' && (
+                  <Link href="/admin-panel" className="hover:text-gray-300">
+                    Panel Ordenes
+                  </Link>
+                ))}
               {user?.role === 'superAdmin' && (
-                
                 <Link href="/menu-panel" className="hover:text-gray-300">
                   Menu Products
                 </Link>
@@ -107,13 +97,6 @@ export const Navbar: React.FC = () => {
               <button onClick={handleLogout} className="hover:text-gray-300">
                 Cerrar sesión
               </button>
-              <Link
-                href="/cart"
-                className="hover:text-gray-300"
-                onClick={handleCartClick}
-              >
-                <AiOutlineShoppingCart className="text-2xl" />
-              </Link>
             </>
           ) : (
             <>
@@ -139,6 +122,14 @@ export const Navbar: React.FC = () => {
               </Link>
             </>
           )}
+          <Link
+            href="/cart"
+            className="hover:text-gray-300"
+            onClick={handleCartClick}
+          >
+            <AiOutlineShoppingCart className="text-2xl" />
+          </Link>
+
         </div>
 
         <div className="xl:hidden flex relative" ref={menuRef}>
@@ -183,13 +174,6 @@ export const Navbar: React.FC = () => {
                       Panel Menu
                     </Link>
                   )}
-                  <Link
-                    href="/cart"
-                    className="block p-2 hover:text-gray-300"
-                    onClick={handleCartClick}
-                  >
-                    <AiOutlineShoppingCart className="text-2xl" />
-                  </Link>
                 </>
               ) : (
                 <>
@@ -215,6 +199,13 @@ export const Navbar: React.FC = () => {
                   </Link>
                 </>
               )}
+              <Link
+                href="/cart"
+                className="block p-2 hover:text-gray-300"
+                onClick={handleCartClick}
+              >
+                <AiOutlineShoppingCart className="text-2xl" />
+              </Link>
             </div>
           )}
         </div>

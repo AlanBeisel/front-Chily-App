@@ -1,41 +1,44 @@
 'use client'
-import React, {useState, useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import OrderList from '../components/OrderComponents/OrderList';
-import { Order } from '@/types';
-import { useAuth } from '../contexts/AuthContext';
 import { getOrders } from '@/helpers/peticionOrder';
+import { Order } from '@/types';
+import Link from 'next/link';
 
-
-
-const Orders: React.FC = () => {
-
-const {user} = useAuth();
-const [orders, setOrders] = useState<Order[]>([]);
+const UserOrders: React.FC<{ userId: string }> = ({ userId }) => {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchOrders = async () => {
-      if (user) {
-        try {
-          const ordersData = await getOrders(user); //agregar a context de auth (user.userID)
-          setOrders(ordersData);
-        } catch (error) {
-          console.error ('Error al obtener órdenes del usuario:', error);
-        }
+      try {
+        const ordersData = await getOrders(userId);
+        setOrders(ordersData);
+      } catch (error) {
+        setError('No se pudieron cargar los pedidos');
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchOrders();
-  }, []); //[user]
+  }, [userId]);
 
+  if (loading) return <div className= "text-center mt-4">Cargando...</div>;
+  if (error) return <div className="text-center mt-4 text-red-500">Error: {error}</div>;
 
-  return (
-    <div>
-      <header className="text-center mb-4">
-        <h1 className="text-2xl font-bold text-red-500">Mis Pedidos</h1>
-      </header>
-      <OrderList orders = {orders} />
-    </div>
-  );
+  if (orders.length ===0) {
+    return(
+      <div className="text-center mt-8">
+        <p className="text-lg font-semibold text-gray-700 mb-4">¡Todavía no hiciste ningún pedido!</p>
+        <Link href="/menu" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+        Menú
+        </Link>
+      </div>
+    );
+  } 
+  return <OrderList orders={orders} />;
 };
 
-export default Orders
+export default UserOrders;

@@ -6,7 +6,7 @@ export interface Product {
   img: string;
   available: boolean;
   isPopular: boolean;
-  category: string;
+  category: Category[];
 }
 
 export interface Category {

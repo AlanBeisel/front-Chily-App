@@ -7,17 +7,49 @@ const API_URL = 'https://chilyapi.onrender.com';
 export async function getProducts(
   page: number,
   limit: number,
-  appliedFilters?: string[],
+  options: {
+    filter?: number;
+    search?: string;
+    min?: number;
+    max?: number;
+    price?: 'min' | 'max';
+    appliedFilters?: string[];
+  } = {},
 ): Promise<any[]> {
   try {
-    let url = `${API_URL}/products/filter?page=${page}&limit=${limit}`;
+    let url = new URL(`${API_URL}/products/filter`);
 
-    if (appliedFilters && appliedFilters.length > 0) {
-      const filtersQueryParam = appliedFilters.join(',');
-      url = `${url}&filter=${filtersQueryParam}`;
+    url.searchParams.append('page', page.toString());
+    url.searchParams.append('limit', limit.toString());
+
+    if (options.filter !== undefined) {
+      url.searchParams.append('filter', options.filter.toString());
+    }
+    if (options.search) {
+      url.searchParams.append('search', options.search);
+    }
+    if (options.min !== undefined) {
+      url.searchParams.append('min', options.min.toString());
+    }
+    if (options.max !== undefined) {
+      url.searchParams.append('max', options.max.toString());
     }
 
-    const response = await fetch(url, {
+    // Añadir price si existe
+    if (options.price) {
+      url.searchParams.append('price', options.price);
+    }
+
+    // Añadir filtros aplicados si existen y no hay price
+    if (
+      !options.price &&
+      options.appliedFilters &&
+      options.appliedFilters.length > 0
+    ) {
+      url.searchParams.append('filter', options.appliedFilters.join(','));
+    }
+
+    const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -29,7 +61,6 @@ export async function getProducts(
     }
 
     const products: any[] = await response.json();
-    console.log('Productos obtenidos:', products);
     return products;
   } catch (error) {
     console.error('Error en getProducts:', error);
@@ -70,7 +101,6 @@ export async function getProductsByCategoryId(
     }
     const url = `${API_URL}/category/${id}?${queryParams}`;
     const response = await fetch(url);
-
     if (!response.ok) {
       throw new Error(`Error al obtener productos para la categoría ${id}`);
     }
@@ -82,7 +112,7 @@ export async function getProductsByCategoryId(
     }
 
     const products: Product[] = categoryData.products;
-    console.log('Productos obtenidos:', products);
+    
     return products;
   } catch (error) {
     console.error(`Error en getProductsByCategoryId para id ${id}:`, error);

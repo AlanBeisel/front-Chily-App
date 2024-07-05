@@ -1,17 +1,17 @@
 import React from 'react';
 import Head from 'next/head';
 import MenuNavigation from '../components/MenuNavigation/MenuNavigation';
-import { useAuth } from '../contexts/AuthContext';
+//import { useAuth } from '../contexts/AuthContext';
 
 
 const UserMenu = () => {
 
-  const {isAuthenticated} = useAuth();
+ // const {isAuthenticated} = useAuth();
 
 
-  if(!isAuthenticated) {
-    return <p> Debes iniciar sesión para acceder a esta pagina.</p>
-  }
+  //if(!isAuthenticated) {
+    //return <p> Debes iniciar sesión para acceder a esta pagina.</p>
+ // }
 
   
   return( 

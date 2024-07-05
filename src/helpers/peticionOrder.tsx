@@ -1,8 +1,8 @@
-const API_URL = 'https://chilyapi.onrender.com';
+const API_URL = 'http://35.199.103.129:4000/api';
 
 export async function getOrders (userId: string) {
   try{
-    const response = await fetch (`${API_URL}/orders?userId=${userId}`, {
+    const response = await fetch (`${API_URL}/orders/user/${userId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
