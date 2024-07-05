@@ -14,14 +14,11 @@ function Search() {
   const state = stateUrl ? JSON.parse(decodeURIComponent(stateUrl)) : false;
 
   useEffect(() => {
-    console.log('useEffect corriendoo');
     if (state) {
-      console.log('State existee:', state);
       login(state.user, state.access_token);
       showToast('success', <p>Has iniciado seccion con google.</p>);
-      // router.push('/');
+      router.push('/');
     } else {
-      console.log('estado inexistente');
       showToast(
         'error',
         <p>

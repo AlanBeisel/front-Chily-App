@@ -18,7 +18,7 @@ const formSchema = z.object({
     .email({ message: 'Debe ser un correo electrónico válido.' }),
 });
 
-function Resetpass() {
+function ReqResetpass() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -66,4 +66,4 @@ function Resetpass() {
   );
 }
 
-export default Resetpass;
+export default ReqResetpass;
