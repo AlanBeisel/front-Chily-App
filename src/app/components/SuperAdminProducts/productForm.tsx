@@ -8,10 +8,10 @@ import { getAllCategories } from '@/helpers/peticiones';
 const ProductData = z.object({
   name: z.string().min(1, 'Nombre es requerido'),
   description: z.string().min(1, 'Descripción es requerida'),
-  price: z.number().positive('El precio debe ser un número positivo').nonnegative(),
-  stock: z.number().int().min(0, 'El stock debe ser un número entero no negativo'),
+  price: z.number().positive('El precio debe ser un número positivo').nonnegative(), //Expected number, received string
+  stock: z.number().int().min(0, 'El stock debe ser un número entero no negativo'), //Expected number, received string
   image: z.any().optional(),
-  category: z.array(z.number()).min(1, 'Debe seleccionar al menos una categoría'),
+  category: z.array(z.number()).min(1, 'Debe seleccionar al menos una categoría'), // ver validacion
 });
 
 type Category = {
@@ -129,6 +129,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ defaultValues, onSubmit, isEd
   };
 
   const handleSubmitForm = async (data: any) => {
+    console.log('handleSubmitForm se ha llamado');
     data.price = parseFloat(data.price);
     data.category = selectedCategories;
     console.log('handleSubmitForm llamado con datos:', data);
@@ -178,19 +179,21 @@ const ProductForm: React.FC<ProductFormProps> = ({ defaultValues, onSubmit, isEd
           {errors.description && <div className="text-red-500">{errors.description.message?.toString()}</div>}
         </div>
         <div className="col-span-1 mb-4">
-          <label className="block text-grey-500 font-bold">Precio</label>
+          <label htmlFor="price"className="block text-grey-500 font-bold">Precio</label>
           <input
             type="number"
-            {...register("price")}
+            id="price"
+            {...register("price", {valueAsNumber: true})}
             className="w-full p-2 border border-gray-300 rounded-lg shadow-sm"
           />
           {errors.price && <div className="text-red-500">{errors.price.message?.toString()}</div>}
         </div>
         <div className="col-span-1 mb-4">
-          <label className="block text-grey-500 font-bold">Stock</label>
+          <label htmlFor="stock" className="block text-grey-500 font-bold">Stock</label>
           <input
             type="number"
-            {...register("stock")}
+            id="stock"
+            {...register("stock", {valueAsNumber: true})}
             className="w-full p-2 border border-gray-300 rounded-lg shadow-sm"
           />
           {errors.stock && <div className="text-red-500">{errors.stock.message?.toString()}</div>}
@@ -215,7 +218,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ defaultValues, onSubmit, isEd
                     key={category.id}
                     onClick={() => handleCategorySelect(category.id)}
                     className={`p-2 cursor-pointer hover:bg-gray-100 ${
-                      selectedCategories.includes(category.id) ? 'bg-gray-200' : ''
+                      selectedCategories.includes(category.id) ? 'bg-white' : ''
                     }`}
                   >
                     {category.name}
@@ -228,7 +231,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ defaultValues, onSubmit, isEd
             {selectedCategories.map((categoryId) => {
               const category = categories.find((cat) => cat.id === categoryId);
               return (
-                <div key={categoryId} className="p-2 bg-gray-200 rounded-lg flex items-center">
+                <div key={categoryId} className="p-2 bg-white rounded-lg flex items-center">
                   {category?.name}
                   <button
                     type="button"
@@ -246,7 +249,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ defaultValues, onSubmit, isEd
         <div className="col-span-1 md:col-span-2 flex justify-end">
           <button
             type="submit"
-            className="p-2 bg-blue-500 text-white rounded-lg shadow-sm hover:bg-blue-600"
+            className="p-2 bg-red-500 text-white rounded-lg shadow-sm hover:bg-red-600"
           >
             {isEditMode ? "Actualizar" : "Crear"}
           </button>

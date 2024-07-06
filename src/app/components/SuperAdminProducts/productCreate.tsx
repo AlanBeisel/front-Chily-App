@@ -31,10 +31,11 @@ const ProductCreate: React.FC = () => {
  const uploadImageToCloudinary = async(file: File) =>{
   const formData = new FormData();
   formData.append('file', file);
-  formData.append ('upload_preset', 'dqsxlntau');
+  formData.append ('upload_preset', 'process.env.CLOUDINARY_UPLOAD_PRESET!');
+  formData.append ('upload_preset', 'process.env.CLOUDINARY_CLOUD_NAME!');
 
   try{
-  const response = await fetch(`https://api.cloudinary.com/v1_1//image/upload`,{
+  const response = await fetch(`https://api.cloudinary.com/v1_1/+ process.env.CLOUDINARY_CLOUD_NAME +/image/upload`,{
     method: 'POST',
     body: formData,
   });
@@ -44,6 +45,7 @@ const ProductCreate: React.FC = () => {
   }
 
   const data= await response.json();
+  console.log('Imagen subida correctamente:', data);
   return data.secure_url;
 } catch (error) {
   console.error('Error al subir la imagem a Cloudinary', error);
@@ -93,7 +95,7 @@ const ProductCreate: React.FC = () => {
       <div className="w-full max-w-4xl p-4">
         <div className="flex items-center justify-start  mb-4">
           <BackButton />
-      <h2 className="text-2xl text-red-500 font-bold mb-4">Nuevo producto</h2>
+     <h2 className="text-2xl text-red-500 font-bold mb-4">Nuevo producto</h2>
       </div>
       {error && <div className="text-red-500 mb-4"> {error}</div>}
       <ProductForm onSubmit={handleCreate} defaultValues={formData} />

@@ -1,6 +1,6 @@
 import { Product } from "@/types";
 
-const API_URL = 'http://35.199.103.129:3000/api';
+const API_URL = 'http://35.199.103.129:4000/api';
 
 const handleResponse = async (response: Response) => {
   if(!response.ok) {
@@ -98,3 +98,4 @@ export async function updateProductStock(productId: string, newStock:number) {
     throw error;
   }
 }
+
