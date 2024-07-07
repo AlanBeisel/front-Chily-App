@@ -61,7 +61,7 @@ const Checkout: React.FC = () => {
       const fetchClientSecret = async () => {
         console.log("este es el monto:", amount)
         const response = await fetch(
-          'http://localhost:3002/payments/payment-intent',
+          `${process.env.NEXT_PUBLIC_API_URL}/payments/payment-intent`,
           {
             method: 'POST',
             headers: {
@@ -104,7 +104,7 @@ const handlePaymentMethodChange = (method: 'efectivo' | 'tarjeta') => {
     try {
       if (!order) return;
 
-      const response = await fetch('http://localhost:3002/orders', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ const handlePaymentMethodChange = (method: 'efectivo' | 'tarjeta') => {
 
     try {
       const response = await fetch(
-        `http://localhost:3002/discount/invalid?code=${encodeURIComponent(couponCode)}&userId=${order.userId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/discount/invalid?code=${encodeURIComponent(couponCode)}&userId=${order.userId}`,
         {
           method: 'PUT',
           headers: {

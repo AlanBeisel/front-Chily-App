@@ -1,6 +1,6 @@
 import { Product } from "@/types";
 
-const API_URL = 'https://chilyapi.onrender.com';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const handleResponse = async (response: Response) => {
   if(!response.ok) {
