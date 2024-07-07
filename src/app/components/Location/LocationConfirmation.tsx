@@ -83,7 +83,7 @@ const LocationConfirmation = () => {
       };
 
 
-        const response = await fetch('http://localhost:3002/addresses/add', {
+        const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/addresses/add', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
