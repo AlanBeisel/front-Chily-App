@@ -1,5 +1,7 @@
 import React from 'react';
-import { Order } from '@/types';
+import { Order} from '@/types';
+import StatusTracker from './StatusTracker';
+
 
 interface OrderProps {
   order: Order;
@@ -14,16 +16,18 @@ const OrderDetails: React.FC<OrderProps> = ({ order }) => {
       </div>
       <div className="mb-4">
         <div className="text-lg font-bold mb-2">Productos:</div>
-        {order.products.map((product, index) => (
+        {order.productsInOrder.map((product, index) => (
           <div key={index} className="flex items-center mb-2">
-            <div className="mr-2">{product.productId}</div>
+            <div className="mr-2">{product.id}</div>
             <div className="text-white">Cantidad: {product.quantity}</div>
           </div>
         ))}
       </div>
       <div className="flex flex-col sm:flex-row justify-between items-center">
-        <div className="text-sm mb-6 sm:mb-0">Estado: {order.status}</div>
-        <div className="text-lg text-yellow-300 font-bold">${order.totalAmount}</div>
+        <div className="text-sm mb-6 sm:mb-0">
+           <StatusTracker status= {order.status} />
+        </div>
+        <div className="text-lg text-yellow-300 font-bold">${order.finalPrice}</div>
       </div>
     </div>
   );
