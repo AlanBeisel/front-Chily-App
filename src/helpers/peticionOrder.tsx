@@ -1,4 +1,4 @@
-const API_URL = 'http://35.199.103.129:4000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function getOrders (userId: string) {
   try{
