@@ -10,10 +10,9 @@ import CouponInput from './CuponInput';
 // import { Address } from '@/types';
 import { useAuth } from '@/app/contexts/AuthContext';
 
-
-
-
-const stripePromise = loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY}`); 
+const stripePromise = loadStripe(
+  `${process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY}`,
+);
 
 interface ProductsInOrder {
   productId: number;
@@ -33,22 +32,19 @@ interface Order {
   formBuy: 'efectivo' | 'tarjeta';
 }
 
-
-
-
 const Checkout: React.FC = () => {
   const [order, setOrder] = useState<Order | null>(null);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('efectivo');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState<string>('efectivo');
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [modalType, setModalType] = useState<'success' | 'error'>('success');
   const router = useRouter();
   const [couponDiscount, setCouponDiscount] = useState<number>(0);
-  const {accessToken, address} = useAuth();
+  const { accessToken, address } = useAuth();
   const token = accessToken;
-  const calle = address?.address
-
+  const calle = address?.address;
 
   useEffect(() => {
     const storedOrder = localStorage.getItem('order');
@@ -76,23 +72,22 @@ const Checkout: React.FC = () => {
 
   useEffect(() => {
     if (order) {
-      const amount = order.total *1000; 
+      const amount = order.total * 1000;
 
       const fetchClientSecret = async () => {
-        console.log("este es el monto:", amount)
+        console.log('este es el monto:', amount);
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/payments/payment-intent`,
           {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              
             },
             body: JSON.stringify({ amount }),
           },
         );
         const data = await response.json();
-        console.log(data)
+        console.log(data);
         setClientSecret(data.clientSecret);
       };
 
@@ -104,21 +99,19 @@ const Checkout: React.FC = () => {
     return <p>Cargando...</p>;
   }
 
-const handlePaymentMethodChange = (method: 'efectivo' | 'tarjeta') => {
-  if (!order) return;
+  const handlePaymentMethodChange = (method: 'efectivo' | 'tarjeta') => {
+    if (!order) return;
 
-  setOrder((prevOrder) => {
-    if (!prevOrder) return prevOrder;
+    setOrder((prevOrder) => {
+      if (!prevOrder) return prevOrder;
 
-    return {
-      ...prevOrder,
-      formBuy: method,
-    };
-  });
-  setSelectedPaymentMethod(method);
-};
-
-  
+      return {
+        ...prevOrder,
+        formBuy: method,
+      };
+    });
+    setSelectedPaymentMethod(method);
+  };
 
   const handlePayment = async (success: boolean) => {
     try {
@@ -131,11 +124,11 @@ const handlePaymentMethodChange = (method: 'efectivo' | 'tarjeta') => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(order),
-      }); 
-      console.log("esta es la order:", order)
+      });
+      console.log('esta es la order:', order);
       if (!response.ok) {
         throw new Error('Error al enviar la orden.');
       }
@@ -168,8 +161,8 @@ const handlePaymentMethodChange = (method: 'efectivo' | 'tarjeta') => {
     }
   };
 
-const handleApplyCoupon = async (couponCode: string) => {
-  if (!order) return;
+  const handleApplyCoupon = async (couponCode: string) => {
+    if (!order) return;
 
     try {
       const response = await fetch(
@@ -180,48 +173,47 @@ const handleApplyCoupon = async (couponCode: string) => {
             'Content-Type': 'application/json',
           },
         },
-      },
-    );
+      );
 
-    if (!response.ok) {
-      throw new Error('Error al validar el cupón');
-    }
+      if (!response.ok) {
+        throw new Error('Error al validar el cupón');
+      }
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.isValid) {
-      const discountData = {
-        discount: data.discount,
-        couponCode,
-      };
-
-      // Guardar en localStorage
-      localStorage.setItem('couponDiscount', JSON.stringify(discountData));
-
-      setCouponDiscount(data.discount);
-      setOrder((prevOrder) => {
-        if (!prevOrder) return prevOrder;
-
-        return {
-          ...prevOrder,
-          couponDiscount: data.discount,
-          couponId: couponCode,
-          total: prevOrder.total - data.discount,
+      if (data.isValid) {
+        const discountData = {
+          discount: data.discount,
+          couponCode,
         };
-      });
-      setModalType('success');
-      setModalMessage('Cupón aplicado con éxito!');
-    } else {
-      throw new Error('Cupón no válido');
+
+        // Guardar en localStorage
+        localStorage.setItem('couponDiscount', JSON.stringify(discountData));
+
+        setCouponDiscount(data.discount);
+        setOrder((prevOrder) => {
+          if (!prevOrder) return prevOrder;
+
+          return {
+            ...prevOrder,
+            couponDiscount: data.discount,
+            couponId: couponCode,
+            total: prevOrder.total - data.discount,
+          };
+        });
+        setModalType('success');
+        setModalMessage('Cupón aplicado con éxito!');
+      } else {
+        throw new Error('Cupón no válido');
+      }
+    } catch (error) {
+      console.error('Error al aplicar el cupón:', error);
+      setModalType('error');
+      setModalMessage('Cupón no válido o expirado.');
+    } finally {
+      setIsModalOpen(true);
     }
-  } catch (error) {
-    console.error('Error al aplicar el cupón:', error);
-    setModalType('error');
-    setModalMessage('Cupón no válido o expirado.');
-  } finally {
-    setIsModalOpen(true);
-  }
-};
+  };
 
   return (
     <div className="max-w-full mx-auto bg-white p-6">
