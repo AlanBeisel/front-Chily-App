@@ -80,7 +80,7 @@ export function LoginForm() {
       if (response.status === 201) {
         const data = await response.json();
         login(data.user, data.access_token);
-        alert('Has iniciado sesión correctamente');
+        showToast('success', <p>Has iniciado sesión correctamente</p>);
         router.push("/address")
       } else {
         showToast(
