@@ -63,7 +63,7 @@ export function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const response = await fetch(
-        `http://localhost:3002/auth/signin`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/signin`,
         {
           method: 'POST',
           headers: {

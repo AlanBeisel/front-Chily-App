@@ -22,7 +22,7 @@ const ConfirmLocationPage = () => {
     const fetchAddresses = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3002/addresses/user?id=${user?.id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/addresses/user?id=${user?.id}`,
           {
             method: 'GET',
             headers: {
