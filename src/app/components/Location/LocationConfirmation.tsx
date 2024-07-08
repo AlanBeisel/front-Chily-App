@@ -74,7 +74,7 @@ const handleConfirmLocation = async () => {
 
       console.log('Datos enviados al servidor:', addressData);
 
-      const response = await fetch('http://localhost:3002/addresses/add', {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/addresses/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -86,7 +86,6 @@ const handleConfirmLocation = async () => {
       if (response.ok) {
         const newAddressFromServer = await response.json();
         console.log('Respuesta del servidor:', newAddressFromServer);
-
         setAddress(newAddressFromServer);
         console.log('Nueva dirección seteada:', newAddressFromServer);
 
@@ -95,7 +94,7 @@ const handleConfirmLocation = async () => {
         if (fromCart) {
           localStorage.removeItem('fromCart');
           router.push('/cart');
-        } else {
+          } else {
           router.push('/');
         }
       } else {

@@ -85,7 +85,7 @@ export function RegisterForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const response = await fetch(
-        `http://localhost:3002/auth/register`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
         {
           method: 'POST',
           headers: {
@@ -110,9 +110,18 @@ export function RegisterForm() {
         router.push('/login');
       } else {
         const res = await response.json();
+        console.error('Error durante el registro:', res);
+        let remplace: any = {
+          'email': 'Correo electronico',
+          'phone': 'Teléfono'
+        };
+        
+        const messageError = res.message.replace(/Ya existe la llave \((.*?)\)=\(.*\)\./, (_: any, p1: any) => {
+          return `Ya existe este ${remplace[p1]}`
+      })
         showToast(
           'error',
-          <p>Hubo un problema durante el registro, {res?.message?.[0]}</p>,
+          <p>Hubo un problema durante el registro, {messageError}</p>,
         );
       }
     } catch (error) {

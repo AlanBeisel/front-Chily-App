@@ -13,6 +13,7 @@ export default function Home() {
   
   return (
     <>
+     <link rel="manifest" href="/manifest.json" />
       <div className="w-full flex justify-center">
         <main className="w-full flex-grow p-4">
           <CategoryFilter />

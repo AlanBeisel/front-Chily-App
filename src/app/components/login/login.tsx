@@ -63,7 +63,7 @@ export function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const response = await fetch(
-        `http://localhost:3002/auth/signin`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/signin`,
         {
           method: 'POST',
           headers: {
@@ -80,7 +80,7 @@ export function LoginForm() {
       if (response.status === 201) {
         const data = await response.json();
         login(data.user, data.access_token);
-        alert('Has iniciado sesión correctamente');
+        showToast('success', <p>Has iniciado sesión correctamente</p>);
         router.push("/address")
       } else {
         showToast(
