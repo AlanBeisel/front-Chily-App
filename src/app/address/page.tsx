@@ -66,7 +66,13 @@ const ConfirmLocationPage = () => {
         try {
           await setAddress(selectedAddress);
 
-          router.push('/');
+          const fromCart = localStorage.getItem('fromCart');
+          if (fromCart) {
+            localStorage.removeItem('fromCart');
+            router.push('/cart');
+          } else {
+            router.push('/');
+          }
         } catch (error) {
           console.error('Error al establecer la dirección:', error);
           toast.error('Error al establecer la dirección.');

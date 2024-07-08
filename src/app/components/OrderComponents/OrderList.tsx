@@ -1,6 +1,18 @@
 import React from 'react';
 import OrderDetails from './OrderItem';
-import { Order } from '@/types';
+import { Address, ProductsInOrder } from '@/types';
+
+interface Order {
+  id: number;
+  userId: number;
+  address: Address;
+  details: ProductsInOrder[];
+  formBuy: 'efectivo' | 'tarjeta';
+  total: number;
+  status: 'Pendiente' | 'Confirmada' | 'En camino' | 'Entregada';
+  date: string;
+}
+
 
 
 interface OrderListProps {
@@ -17,14 +29,14 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
             Ir al Menú
           </button>
           </div>
-      ) : (
+          ) : (
       orders.map((order) => (
         <OrderDetails
           key={order.id}
           order={order}
         />
       ))
-    )}
+    )} 
     </div>
   );
 };
