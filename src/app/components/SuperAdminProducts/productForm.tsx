@@ -27,7 +27,7 @@ type ProductFormProps = {
 };
 
 const ProductForm: React.FC<ProductFormProps> = ({ defaultValues, onSubmit, isEditMode, closeDropdownOnSelect = false }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: zodResolver(ProductData),
     defaultValues,
   });
@@ -38,6 +38,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ defaultValues, onSubmit, isEd
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(defaultValues?.image || null);
   const [imageFile, setImageFile] = useState<File | null>(null); 
+  const [, setIsSubmitting] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -92,52 +93,61 @@ const ProductForm: React.FC<ProductFormProps> = ({ defaultValues, onSubmit, isEd
     setShowCategoryCard(false);
   };
 
-  const uploadImageToCloudinary = async(file: File) =>{
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append ('upload_preset', 'dqsxlntau');
-  
-    try{
-    const response = await fetch(`https://api.cloudinary.com/v1_1/dqsxlntau/image/upload`,{
-      method: 'POST',
-      body: formData,
-    });
-  
-    if(!response.ok) {
-      throw new Error('Error al subir la imagen a Cloudinary');
-    }
-  
-    const data= await response.json();
-    return data.secure_url;
-  } catch (error) {
-    console.error('Error al subir la imagem a Cloudinary', error);
-    throw error;
-  }
-   };
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setImageFile(file);
-      try{
-        const imageUrl = await uploadImageToCloudinary(file);
-        setImagePreview(imageUrl);
-      } catch (error) {
-        console.error('Error al subir la imagen a Cloudinary', error)
-      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
+  const handleImageUpload = async () => {
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append('file', imageFile);
+      formData.append('upload_preset', 'dqsxlntau');
+      try {
+        const response = await fetch(`https://api.cloudinary.com/v1_1/dqsxlntau/image/upload`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al subir la imagen a Cloudinary');
+        }
+
+        const data = await response.json();
+        return data.secure_url;
+      } catch (error) {
+        console.error('Error al subir la imagen a Cloudinary', error);
+        throw error;
+      }
+    }
+    return null;
+  };
   const handleSubmitForm = async (data: any) => {
-    console.log('handleSubmitForm se ha llamado');
+    setIsSubmitting(true);
     data.price = parseFloat(data.price);
     data.category = selectedCategories;
     console.log('handleSubmitForm llamado con datos:', data);
 
-    if(imageFile) {
-    onSubmit(data, imageFile); 
-    } else {
-      onSubmit(data);
+    try{
+      let imageUrl= null;
+      if(imageFile) {
+        imageUrl= await handleImageUpload();
+      }
+    onSubmit(data, imageUrl); 
+    setIsSubmitting(false);
+    reset();
+
+    } catch (error) {
+      console.error('Error al enviar el formulario', error);
+      setIsSubmitting(false);
     }
   };
 

@@ -95,7 +95,6 @@ const ProductCreate: React.FC = () => {
       <div className="w-full max-w-4xl p-4">
         <div className="flex items-center justify-start  mb-4">
           <BackButton />
-     <h2 className="text-2xl text-red-500 font-bold mb-4">Nuevo producto</h2>
       </div>
       {error && <div className="text-red-500 mb-4"> {error}</div>}
       <ProductForm onSubmit={handleCreate} defaultValues={formData} />
