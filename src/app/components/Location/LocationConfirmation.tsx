@@ -9,7 +9,7 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import { Address } from '@/types';
+
 
 interface Location {
   lat: number;
@@ -62,19 +62,9 @@ const LocationConfirmation = () => {
     }
   };
 
-  const handleConfirmLocation = async () => {
-    if (location && addressInput) {
-  
-    const newAddress: Address = {
-      id: '', 
-      location,
-      address: addressInput,
-      note,
-    };
-
+const handleConfirmLocation = async () => {
+  if (location && addressInput) {
     try {
-      setAddress(newAddress);
-
       const addressData = {
         id: Number(user?.id),
         location,
@@ -82,35 +72,49 @@ const LocationConfirmation = () => {
         note,
       };
 
+      console.log('Datos enviados al servidor:', addressData);
 
-        const response = await fetch('http://localhost:3002/addresses/add', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify(addressData),
-        });
-        if (response.ok) {
-          toast.success('Ubicación confirmada y dirección guardada.');
-          const fromCart = localStorage.getItem('fromCart');
-          if (fromCart) {
-            localStorage.removeItem('fromCart');
-            router.push('/cart');
-          } else {
-            router.push('/');
-          }
+      const response = await fetch('http://localhost:3002/addresses/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(addressData),
+      });
+
+      if (response.ok) {
+        const newAddressFromServer = await response.json();
+        console.log('Respuesta del servidor:', newAddressFromServer);
+
+        setAddress(newAddressFromServer);
+        console.log('Nueva dirección seteada:', newAddressFromServer);
+
+        toast.success('Ubicación confirmada y dirección guardada.');
+        const fromCart = localStorage.getItem('fromCart');
+        if (fromCart) {
+          localStorage.removeItem('fromCart');
+          router.push('/cart');
         } else {
-          toast.error('Error al guardar la dirección. Inténtalo de nuevo.');
+          router.push('/');
         }
-      } catch (error) {
-        console.error('Error al hacer el POST:', error);
+      } else {
+        console.log(
+          'Error en la respuesta del servidor:',
+          response.status,
+          response.statusText,
+        );
         toast.error('Error al guardar la dirección. Inténtalo de nuevo.');
       }
-    } else {
-      toast.error('Por favor, proporciona una dirección válida.');
+    } catch (error) {
+      console.error('Error al hacer el POST:', error);
+      toast.error('Error al guardar la dirección. Inténtalo de nuevo.');
     }
-  };
+  } else {
+    console.log('Datos inválidos:', { location, addressInput });
+    toast.error('Por favor, proporciona una dirección válida.');
+  }
+};
 
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAddressInput(e.target.value);

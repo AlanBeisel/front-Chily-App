@@ -7,9 +7,8 @@ import CheckoutForm from './CheckoutForm';
 import CustomModal from './modals';
 import { useRouter } from 'next/navigation';
 import CouponInput from './CuponInput';
-import { Address } from '@/types';
+// import { Address } from '@/types';
 import { useAuth } from '@/app/contexts/AuthContext';
-
 
 
 
@@ -17,22 +16,25 @@ import { useAuth } from '@/app/contexts/AuthContext';
 const stripePromise = loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY}`); 
 
 interface ProductsInOrder {
-  id: number;
+  productId: number;
   name: string;
   quantity: number;
   price: number;
 }
 
 interface Order {
-  userId: string;
+  userId: number;
   productsInOrder: ProductsInOrder[];
   orderInstructions?: string;
-  address: Address;
+  address: number;
   total: number;
   couponId?: string | null;
   couponDiscount?: number;
-  metodoDePago: 'efectivo' | 'tarjeta';
+  formBuy: 'efectivo' | 'tarjeta';
 }
+
+
+
 
 const Checkout: React.FC = () => {
   const [order, setOrder] = useState<Order | null>(null);
@@ -43,14 +45,32 @@ const Checkout: React.FC = () => {
   const [modalType, setModalType] = useState<'success' | 'error'>('success');
   const router = useRouter();
   const [couponDiscount, setCouponDiscount] = useState<number>(0);
-  const {accessToken} = useAuth();
+  const {accessToken, address} = useAuth();
   const token = accessToken;
+  const calle = address?.address
 
 
   useEffect(() => {
     const storedOrder = localStorage.getItem('order');
+    const storedCouponDiscount = localStorage.getItem('couponDiscount');
+
     if (storedOrder) {
-      setOrder(JSON.parse(storedOrder));
+      const parsedOrder = JSON.parse(storedOrder);
+      setOrder(parsedOrder);
+
+      if (storedCouponDiscount) {
+        const { discount, couponCode } = JSON.parse(storedCouponDiscount);
+        setCouponDiscount(discount);
+        setOrder((prevOrder) => {
+          if (!prevOrder) return prevOrder;
+          return {
+            ...prevOrder,
+            couponDiscount: discount,
+            couponId: couponCode,
+            total: prevOrder.total - discount,
+          };
+        });
+      }
     }
   }, []);
 
@@ -92,7 +112,7 @@ const handlePaymentMethodChange = (method: 'efectivo' | 'tarjeta') => {
 
     return {
       ...prevOrder,
-      metodoDePago: method,
+      formBuy: method,
     };
   });
   setSelectedPaymentMethod(method);
@@ -100,23 +120,32 @@ const handlePaymentMethodChange = (method: 'efectivo' | 'tarjeta') => {
 
   
 
-  const handlePayment = async () => {
+  const handlePayment = async (success: boolean) => {
     try {
       if (!order) return;
+      if (!success) {
+        throw new Error('Error al enviar la orden.');
+      }
 
       const response = await fetch('http://localhost:3002/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(order),
-      });
-
+      }); 
+      console.log("esta es la order:", order)
       if (!response.ok) {
         throw new Error('Error al enviar la orden.');
       }
+      // const responseOk = true;
 
+      // if (!responseOk) {
+      //   throw new Error('Error al enviar la orden.');
+      // }
+
+      localStorage.removeItem('couponDiscount');
       localStorage.removeItem('cartItems');
       localStorage.removeItem('order');
 
@@ -128,9 +157,9 @@ const handlePaymentMethodChange = (method: 'efectivo' | 'tarjeta') => {
         router.push('/');
       }, 3000);
     } catch (error) {
-      console.error('Error al procesar el pago en efectivo:', error);
+      console.error('Error al procesar el pago:', error);
       setModalType('error');
-      setModalMessage('Algo falló al procesar el pago en efectivo.');
+      setModalMessage('Algo falló al procesar el pago.');
       setIsModalOpen(true);
       setTimeout(() => {
         setIsModalOpen(false);
@@ -139,58 +168,66 @@ const handlePaymentMethodChange = (method: 'efectivo' | 'tarjeta') => {
     }
   };
 
-  const handleApplyCoupon = async (couponCode: string) => {
-    if (!order) return;
+const handleApplyCoupon = async (couponCode: string) => {
+  if (!order) return;
 
-    try {
-      const response = await fetch(
-        `http://localhost:3002/discount/invalid?code=${encodeURIComponent(couponCode)}&userId=${order.userId}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+  try {
+    const response = await fetch(
+      `http://localhost:3002/discount/invalid?code=${encodeURIComponent(couponCode)}&userId=${order.userId}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+      },
+    );
 
-      if (!response.ok) {
-        throw new Error('Error al validar el cupón');
-      }
-
-      const data = await response.json();
-
-      if (data.isValid) {
-        setCouponDiscount(data.discount);
-        setOrder((prevOrder) => {
-          if (!prevOrder) return prevOrder;
-
-          return {
-            ...prevOrder,
-            couponDiscount: data.discount,
-            couponId: couponCode,
-            total: prevOrder.total - data.discount,
-          };
-        });
-        setModalType('success');
-        setModalMessage('Cupón aplicado con éxito!');
-      } else {
-        throw new Error('Cupón no válido');
-      }
-    } catch (error) {
-      console.error('Error al aplicar el cupón:', error);
-      setModalType('error');
-      setModalMessage('Cupón no válido o expirado.');
-    } finally {
-      setIsModalOpen(true);
+    if (!response.ok) {
+      throw new Error('Error al validar el cupón');
     }
-  };
+
+    const data = await response.json();
+
+    if (data.isValid) {
+      const discountData = {
+        discount: data.discount,
+        couponCode,
+      };
+
+      // Guardar en localStorage
+      localStorage.setItem('couponDiscount', JSON.stringify(discountData));
+
+      setCouponDiscount(data.discount);
+      setOrder((prevOrder) => {
+        if (!prevOrder) return prevOrder;
+
+        return {
+          ...prevOrder,
+          couponDiscount: data.discount,
+          couponId: couponCode,
+          total: prevOrder.total - data.discount,
+        };
+      });
+      setModalType('success');
+      setModalMessage('Cupón aplicado con éxito!');
+    } else {
+      throw new Error('Cupón no válido');
+    }
+  } catch (error) {
+    console.error('Error al aplicar el cupón:', error);
+    setModalType('error');
+    setModalMessage('Cupón no válido o expirado.');
+  } finally {
+    setIsModalOpen(true);
+  }
+};
 
   return (
     <div className="max-w-full mx-auto bg-white p-6">
       <h2 className="text-lg font-semibold mb-4">Resumen del pedido</h2>
       <div className="mb-4">
         {order.productsInOrder.map((item) => (
-          <div key={item.id} className="flex justify-between">
+          <div key={item.productId} className="flex justify-between">
             <span>{item.name}</span>
             <span>${(item.price * item.quantity).toFixed(2)}</span>
           </div>
@@ -208,14 +245,12 @@ const handlePaymentMethodChange = (method: 'efectivo' | 'tarjeta') => {
         )}
         <div className="flex justify-between border-t border-gray-300 pt-2 mt-2">
           <span className="font-bold">Total:</span>
-          <span className="font-bold">
-            ${(order.total +5.5)}
-          </span>
+          <span className="font-bold">${order.total + 5.5}</span>
         </div>
         <div className="text-sm text-gray-500 mt-1">
           <div className="flex justify-between">
             <span>Dirección:</span>
-            <span>{order.address.address}</span>
+            <span>{calle}</span>
           </div>
           Tiempo estimado: 15 – 30mins
         </div>
@@ -273,7 +308,7 @@ const handlePaymentMethodChange = (method: 'efectivo' | 'tarjeta') => {
 
       {selectedPaymentMethod === 'efectivo' && (
         <button
-          onClick={handlePayment}
+          onClick={() => handlePayment(true)}
           className="w-full bg-red-500 text-white text-center py-3 rounded-lg hover:bg-red-600 transition duration-300 mt-4"
         >
           Pagar ahora
