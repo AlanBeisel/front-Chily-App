@@ -50,10 +50,9 @@ const UserInfo = ({user} : {user: User | null}) => {
 
       {address && (
         <>
-        <h2 className="text-lg font-semibold text-gray-700">Tus direcciones:</h2>
-        <div className="mt-2">
+        <h2 className="text-1xl font-bold text-red-500">Tus direcciones</h2>
           <DataField label="Dirección" value={address.address} editable={false}/>
-        </div>
+
         </>
       )}
     </div>
