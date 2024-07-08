@@ -4,19 +4,30 @@ import OrderList from '../components/OrderComponents/OrderList';
 import { getOrders } from '@/helpers/peticionOrder';
 import { Order } from '@/types';
 import Link from 'next/link';
+import { useAuth } from '../contexts/AuthContext';
+import BackButton from '../components/ProductIdComponents/BackButton';
 
-const UserOrders: React.FC<{ userId: string }> = ({ userId }) => {
+const UserOrders: React.FC = () => {
+  const {user} = useAuth();
+  const userId = user?.id;
   const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if(!userId) {
+      setError('Usuario ni autenticado');
+      setLoading(false);
+      return;
+    }
+
     const fetchOrders = async () => {
       try {
+        setLoading(true);
         const ordersData = await getOrders(userId);
         setOrders(ordersData);
-      } catch (error) {
-        setError('No se pudieron cargar los pedidos');
+      } catch (error: any) {
+        setError(error.message || 'No se pudieron cargar los pedidos');
       } finally {
         setLoading(false);
       }
@@ -28,17 +39,23 @@ const UserOrders: React.FC<{ userId: string }> = ({ userId }) => {
   if (loading) return <div className= "text-center mt-4">Cargando...</div>;
   if (error) return <div className="text-center mt-4 text-red-500">Error: {error}</div>;
 
-  if (orders.length ===0) {
-    return(
-      <div className="text-center mt-8">
-        <p className="text-lg font-semibold text-gray-700 mb-4">¡Todavía no hiciste ningún pedido!</p>
-        <Link href="/menu" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-        Menú
-        </Link>
+ return (
+  <div className="relative min-h-screen p-4">
+      <div className="absolute top-0 left-0 p-4">
+        <BackButton />
       </div>
-    );
-  } 
-  return <OrderList orders={orders} />;
+      {orders.length === 0 ? (
+        <div className="text-center mt-8">
+          <p className="text-lg font-semibold text-gray-700 mb-4">¡Todavía no hiciste ningún pedido!</p>
+          <Link href="/menu" className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition">
+            Menú
+          </Link>
+        </div>
+      ) : (
+        <OrderList orders={orders} />
+      )}
+    </div>
+  );
 };
 
 export default UserOrders;
