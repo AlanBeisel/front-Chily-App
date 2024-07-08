@@ -24,18 +24,17 @@ export interface User {
 
 
 export interface ProductsInOrder {
-  id: number;
+  productId: number;
   name: string;
   quantity: number;
-  individualDiscount?: number;
   price: number;
 }
 
 
 export interface Order {
-  id: string;
+  id: number;
   userId: number;
-  address: string;
+  address: Address;
   productsInOrder: ProductsInOrder[];
   generalDiscount?: number;
   shipping: number;
@@ -66,7 +65,7 @@ export interface CartItemType {
 
 
 export interface Address {
-  id: string;
+  id: number;
   location: {
     lat: number;
     lng: number;

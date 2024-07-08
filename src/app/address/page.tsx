@@ -9,7 +9,7 @@ import { Address } from '@/types';
 const ConfirmLocationPage = () => {
   const { user, setAddress, accessToken } = useAuth();
   const [addresses, setAddresses] = useState<Address[]>([]);
-  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
+  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(
     null,
   );
   const [showLocationConfirmation, setShowLocationConfirmation] =
@@ -53,7 +53,7 @@ const ConfirmLocationPage = () => {
     }
   }, [user]);
 
-  const handleAddressSelect = (id: string) => {
+  const handleAddressSelect = (id: number) => {
     setSelectedAddressId(id);
   };
 

@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import CustomModal from './modals';
 
 interface CheckoutFormProps {
-  handlePayment: () => void;
+  handlePayment: (success: boolean) => void;
 }
 
 const CheckoutForm: React.FC<CheckoutFormProps> = ({ handlePayment }) => {
@@ -45,7 +45,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ handlePayment }) => {
           router.push('/checkout');
         }, 3000);
       } else {
-        handlePayment();
+        handlePayment(true);
         setModalType('success');
         setModalMessage('Pedido realizado con éxito!');
         setIsModalOpen(true);
@@ -56,6 +56,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ handlePayment }) => {
       }
     } catch (error) {
       console.error('Error al confirmar el pago:', error);
+      handlePayment(false);
       setModalType('error');
       setModalMessage('Algo falló en el pago.');
       setIsModalOpen(true);

@@ -64,17 +64,17 @@ const CartPage: React.FC = () => {
     }
 
     const productsInOrder: ProductsInOrder[] = items.map((item) => ({
-      id: item.id,
+      productId: item.id,
       name: item.name,
       price: item.price,
       quantity: item.quantity,
     }));
 
     const order = {
-      userId: user?.id,
+      userId: Number(user?.id),
       productsInOrder,
       orderInstructions,
-      address,
+      address: Number(address.id),
       total: calculateTotal(),
     };
     
