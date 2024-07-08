@@ -1,4 +1,4 @@
-'use client';
+"use client"
 import { useState } from 'react';
 
 const Horarios = () => {
@@ -21,8 +21,8 @@ const Horarios = () => {
       </div>
       {showDeliveryHours && (
         <div className="text-white mt-2">
-          <p>Lunes a Viernes: 11:00 AM - 9:00 PM</p>
-          <p>Sábados y Domingos: 12:00 PM - 8:00 PM</p>
+          <p>Lunes a Viernes: 11:00 AM - 15:00 PM /  20:00 PM - 00:00 AM </p>
+          <p>Sábados y Domingos: 11:00 PM - 15:00 PM</p>
         </div>
       )}
     </div>
