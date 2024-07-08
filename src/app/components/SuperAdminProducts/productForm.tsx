@@ -11,7 +11,7 @@ const ProductData = z.object({
   price: z.number().positive('El precio debe ser un número positivo').nonnegative(), //Expected number, received string
   stock: z.number().int().min(0, 'El stock debe ser un número entero no negativo'), //Expected number, received string
   image: z.any().optional(),
-  category: z.array(z.number()).min(1, 'Debe seleccionar al menos una categoría'), // ver validacion
+  category: z.array(z.number()), // ver validacion
 });
 
 type Category = {

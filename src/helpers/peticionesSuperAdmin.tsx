@@ -1,6 +1,6 @@
 import { Product } from "@/types";
 
-const API_URL = 'http://35.199.103.129:4000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const handleResponse = async (response: Response) => {
   if(!response.ok) {

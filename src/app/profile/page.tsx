@@ -3,6 +3,7 @@ import React from 'react';
 import UserInfo  from '../components/ProfileComponents/UserInfo';
 import { useAuth } from '../contexts/AuthContext';
 import BackButton from '../components/ProductIdComponents/BackButton';
+import Link from 'next/link';
 
 
 
@@ -30,6 +31,11 @@ const UserDashboard: React.FC = () => {
       ):(
         <div className="text-center mt-20"> Cargando...</div>
       )}
+      <Link href="/orders" passHref>
+      <button className= "mt-6 px-6 py-3 bg-red-500 text-white text-lg font semibold rounded-md shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400">
+      Mis pedidos
+      </button>
+      </Link>
       </div>
     </div>
   );

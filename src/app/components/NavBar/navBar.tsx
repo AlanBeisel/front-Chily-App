@@ -11,13 +11,11 @@ import Image from 'next/image';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/app/contexts/AuthContext';
 
-
 export const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  /* const pathname = usePathname(); */
-  const currentPage = /* pageNames[pathname] || */ 'Chily';
+  const currentPage = 'Chily';
   const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
@@ -83,12 +81,11 @@ export const Navbar: React.FC = () => {
                 Mi perfil
               </Link>
 
-              {user?.role === 'admin' ||
-                (user?.role === 'superAdmin' && (
-                  <Link href="/admin-panel" className="hover:text-gray-300">
-                    Panel Ordenes
-                  </Link>
-                ))}
+              {(user?.role === 'admin' || user?.role === 'superAdmin') && (
+                <Link href="/admin-panel" className="hover:text-gray-300">
+                  Panel Ordenes
+                </Link>
+              )}
               {user?.role === 'superAdmin' && (
                 <Link href="/menu-panel" className="hover:text-gray-300">
                   Menu Products
@@ -122,14 +119,15 @@ export const Navbar: React.FC = () => {
               </Link>
             </>
           )}
-          <Link
-            href="/cart"
-            className="hover:text-gray-300"
-            onClick={handleCartClick}
-          >
-            <AiOutlineShoppingCart className="text-2xl" />
-          </Link>
-
+          {!(user?.role === 'admin' || user?.role === 'superAdmin') && (
+            <Link
+              href="/cart"
+              className="hover:text-gray-300"
+              onClick={handleCartClick}
+            >
+              <AiOutlineShoppingCart className="text-2xl" />
+            </Link>
+          )}
         </div>
 
         <div className="xl:hidden flex relative" ref={menuRef}>
@@ -199,13 +197,15 @@ export const Navbar: React.FC = () => {
                   </Link>
                 </>
               )}
-              <Link
-                href="/cart"
-                className="block p-2 hover:text-gray-300"
-                onClick={handleCartClick}
-              >
-                <AiOutlineShoppingCart className="text-2xl" />
-              </Link>
+              {!(user?.role === 'admin' || user?.role === 'superAdmin') && (
+                <Link
+                  href="/cart"
+                  className="block p-2 hover:text-gray-300"
+                  onClick={handleCartClick}
+                >
+                  <AiOutlineShoppingCart className="text-2xl" />
+                </Link>
+              )}
             </div>
           )}
         </div>
