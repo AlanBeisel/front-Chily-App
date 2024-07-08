@@ -2,10 +2,21 @@
 import React, { useEffect, useState } from 'react';
 import OrderList from '../components/OrderComponents/OrderList';
 import { getOrders } from '@/helpers/peticionOrder';
-import { Order } from '@/types';
+import { Address, ProductsInOrder } from '@/types';
 import Link from 'next/link';
 import { useAuth } from '../contexts/AuthContext';
 import BackButton from '../components/ProductIdComponents/BackButton';
+
+interface Order {
+  id: number;
+  userId: number;
+  address: Address;
+  details: ProductsInOrder[];
+  formBuy: 'efectivo' | 'tarjeta';
+  total: number;
+  status: 'Pendiente' | 'Confirmada' | 'En camino' | 'Entregada';
+  date: string;
+}
 
 const UserOrders: React.FC = () => {
   const {user} = useAuth();
