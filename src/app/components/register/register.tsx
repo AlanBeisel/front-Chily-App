@@ -98,7 +98,7 @@ export function RegisterForm() {
             email: values.email,
             password: values.password,
             confirmPassword: values.confirmPassword,
-            phone: values.phone,
+            phone: `+52${values.phone}`,
           }),
         },
       );
@@ -218,7 +218,10 @@ export function RegisterForm() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder="Teléfono" {...field} />
+                <div className="flex flex-row items-center">
+                  <span className="m-2">+52</span>
+                  <Input placeholder="7751488347" {...field} />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
