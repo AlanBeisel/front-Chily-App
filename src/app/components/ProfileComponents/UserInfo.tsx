@@ -1,5 +1,6 @@
 import React from 'react';
 import DataField from './DataField';
+import { useAuth } from '@/app/contexts/AuthContext';
 
 type Role = 'user' | 'admin' | 'superAdmin';
 
@@ -26,6 +27,7 @@ interface User {
 
 
 const UserInfo = ({user} : {user: User | null}) => {
+  const {address} = useAuth();
 
   if(!user) {
     return (
@@ -45,6 +47,14 @@ const UserInfo = ({user} : {user: User | null}) => {
       <DataField label = "Nombre" value= {user.name} editable = {false} />
       <DataField label = "Email" value= {user.email} editable = {false} />
       <DataField label = "Teléfono" value= {user.phone} editable = {false} />
+
+      {address && (
+        <>
+        <h2 className="text-1xl font-bold text-red-500">Tus direcciones</h2>
+          <DataField label="Dirección" value={address.address} editable={false}/>
+
+        </>
+      )}
     </div>
   );
 };
