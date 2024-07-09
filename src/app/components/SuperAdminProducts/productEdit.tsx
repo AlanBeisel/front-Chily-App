@@ -40,6 +40,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({productId}) => {
     try {
       setLoading(true);
       setModalOpen(true);
+      console.log('Actualizando popularidad del producto:', productId);
       await updateProduct(productId, data);
     //  router.push('/dashboard');
     } catch (error) {

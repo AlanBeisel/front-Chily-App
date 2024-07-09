@@ -1,5 +1,5 @@
 'use client'
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 
 interface Props {
@@ -7,13 +7,25 @@ interface Props {
   value: string,
   editable: boolean,
   type?: string,
+  onChange?: (value:string) => void;
 }
 
-const DataField: React.FC<Props>= ({ label, value, editable, type= "text"}) => {
+const DataField: React.FC<Props>= ({ label, value, editable, type= "text", onChange}) => {
   const [currentValue, setCurrentValue] = useState(value);
 
+  useEffect(() => {
+    setCurrentValue(value);
+  }, [value]);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCurrentValue(event.target.value)
+    if(type === 'tel') {
+      const phoneRegex = /^[0-9]*$/;
+      if(!phoneRegex.test(event.target.value)){
+        return;
+      }
+    }
+    setCurrentValue(event.target.value);
+    onChange?.(event.target.value);
   };
 
   return(

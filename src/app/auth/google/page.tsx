@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/app/contexts/AuthContext';
+import { showToast } from '@/lib/utils';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, Suspense } from 'react';
 
@@ -15,9 +16,16 @@ function Search() {
   useEffect(() => {
     if (state) {
       login(state.user, state.access_token);
-      //TODO toast notification.
+      showToast('success', <p>Has iniciado seccion con google.</p>);
       router.push('/');
     } else {
+      showToast(
+        'error',
+        <p>
+          Hubo un problema durante el inicio de sesión, por favor intenta de
+          nuevo
+        </p>,
+      );
       router.push('/login');
     }
   }, []);

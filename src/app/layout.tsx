@@ -1,13 +1,11 @@
 import type { Metadata } from 'next';
 import { Poppins, Mochiy_Pop_One } from 'next/font/google';
 import './globals.css';
-import 'react-toastify/dist/ReactToastify.css';
 import Footer from './components/footer/footer';
 import { Navbar } from './components/NavBar/navBar';
 import { AuthProvider } from './contexts/AuthContext';
-import { ToastContainer } from 'react-toastify';
 import { CacheProvider } from './contexts/CacheContext';
-
+import ToastProvider from './contexts/ToastProvider';
 
 const mochily = Mochiy_Pop_One({ weight: '400', subsets: ['latin'] });
 const poppins = Poppins({
@@ -35,9 +33,8 @@ export default function RootLayout({
       >
         <AuthProvider>
           <CacheProvider>
-            <ToastContainer />
             <Navbar />
-            {children}
+            <ToastProvider>{children}</ToastProvider>
             <Footer />
           </CacheProvider>
         </AuthProvider>
