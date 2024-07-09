@@ -16,11 +16,11 @@ const Select: React.FC<SelectProps> = ({ options, onChange, placeholder }) => {
   };
 
   return (
-    <div className="relative inline-block w-[180px]">
+    <div className="flex flex-row justify-end">
       <select
         value={selectedValue}
         onChange={handleSelectChange}
-        className="w-full border rounded-md px-3 py-2"
+        className="w-full border rounded-md"
       >
         <option value="" disabled>
           {placeholder}

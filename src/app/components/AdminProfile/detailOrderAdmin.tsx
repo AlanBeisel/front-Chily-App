@@ -11,6 +11,7 @@ interface OrderDetailModalProps {
     id: string;
     date: string;
     price: string;
+    email: string;
     products: Product[];
   } | null;
   onClose: () => void;
@@ -26,6 +27,7 @@ export function OrderDetailModal({ order, onClose }: OrderDetailModalProps) {
         <p>ID: {order.id}</p>
         <p>Fecha: {order.date}</p>
         <p>Precio: {order.price}</p>
+        <p>Correo: {order.email}</p>
         <h3>Productos:</h3>
         <ul>
           {order.products.map((product, index) => (
