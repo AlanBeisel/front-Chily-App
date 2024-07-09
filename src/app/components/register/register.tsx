@@ -73,18 +73,7 @@ export function RegisterForm() {
     mode: 'onChange',
   });
 
-  function translateErrorMessage(message: string): string {
-    const translations: Record<string, string> = {
-      'Key ("NIN")=(12341234) already exists.': 'Numero de NIN ya existe.',
-      'phone must be a valid phone number':
-        'El numero de telefono no es valido.',
-      'Key (email)=(indisardi99@gmail.com) already exists.':
-        'El correo ya existe',
-    };
-    return translations[message] || message;
-  }
-
-  const { watch, trigger, setError } = form;
+  const { watch, trigger } = form;
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -111,10 +100,11 @@ export function RegisterForm() {
             email: values.email,
             password: values.password,
             confirmPassword: values.confirmPassword,
-            phone: `+52${values.phone}`,
+            phone: values.phone,
           }),
         },
       );
+
       if (response.status === 201) {
         showToast(
           'success',
@@ -123,22 +113,16 @@ export function RegisterForm() {
         router.push('/login');
       } else {
         const res = await response.json();
+        if (res.message && res.value && res.field) {
+          const errorMessage = `El valor '${res.value}' para el campo '${res.field}' ya está registrado.`;
+          showToast('error', <p>{errorMessage}</p>);
+        } else {
+          showToast(
+            'error',
+            <p>Ocurrió un error desconocido durante el registro</p>,
+          );
+        }
         console.error('Error durante el registro:', res);
-        let remplace: any = {
-          email: 'Correo electronico',
-          phone: 'Teléfono',
-        };
-
-        const messageError = res.message.replace(
-          /Ya existe la llave \((.*?)\)=\(.*\)\./,
-          (_: any, p1: any) => {
-            return `Ya existe este ${remplace[p1]}`;
-          },
-        );
-        showToast(
-          'error',
-          <p>Hubo un problema durante el registro, {messageError}</p>,
-        );
       }
     } catch (error) {
       console.error('Error durante el registro:', error);
@@ -243,10 +227,7 @@ export function RegisterForm() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <div className="flex flex-row items-center">
-                  <span className="m-2">+52</span>
-                  <Input placeholder="7751488347" {...field} />
-                </div>
+                <Input placeholder="+577751488347" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
