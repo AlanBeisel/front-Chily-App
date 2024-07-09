@@ -89,6 +89,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setAccessToken(storedAccessToken);
       setIsAuthenticated(true);
     }
+
+  const storedAddress = getCookie('address');
+    if (storedAddress) {
+      setAddress(JSON.parse(storedAddress));
+    }
   }, []);
 
   const login = (user: User, accessToken: string) => {
@@ -102,6 +107,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     deleteCookie('accessToken');
     deleteCookie('user');
+    deleteCookie('address');
     setUser(null);
     setAccessToken(null);
     setIsAuthenticated(false);
@@ -112,6 +118,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const isAdmin = () => user?.role === 'admin';
   const isSuperAdmin = () => user?.role === 'superAdmin';
 
+   const setAddressAndStoreCookie = (newAddress: Address) => {
+     setAddress(newAddress);
+     setCookie('address', JSON.stringify(newAddress)); // Guardar dirección en cookie
+   };
+
   return (
     <AuthContext.Provider
       value={{
@@ -120,7 +131,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         login,
         logout,
         address,
-        setAddress,
+        setAddress: setAddressAndStoreCookie,
         isUser,
         isAdmin,
         isSuperAdmin,
