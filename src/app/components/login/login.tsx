@@ -59,7 +59,7 @@ export function LoginForm() {
         const data = await response.json();
         login(data.user, data.access_token);
         showToast('success', <p>Has iniciado sesión correctamente</p>);
-        router.push('/');
+        router.push("/address")
       } else {
         showToast(
           'error',

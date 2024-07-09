@@ -123,22 +123,22 @@ export function RegisterForm() {
         router.push('/login');
       } else {
         const res = await response.json();
-        if (res.errors) {
-          (Object.keys(res.errors) as (keyof FormSchema)[]).forEach((field) => {
-            setError(field, {
-              type: 'server',
-              message: translateErrorMessage(res.errors[field][0]),
-            });
-          });
-        } else {
-          showToast(
-            'error',
-            <p>
-              Hubo un problema durante el registro,{' '}
-              {translateErrorMessage(res.message)}
-            </p>,
-          );
-        }
+        console.error('Error durante el registro:', res);
+        let remplace: any = {
+          email: 'Correo electronico',
+          phone: 'Teléfono',
+        };
+
+        const messageError = res.message.replace(
+          /Ya existe la llave \((.*?)\)=\(.*\)\./,
+          (_: any, p1: any) => {
+            return `Ya existe este ${remplace[p1]}`;
+          },
+        );
+        showToast(
+          'error',
+          <p>Hubo un problema durante el registro, {messageError}</p>,
+        );
       }
     } catch (error) {
       console.error('Error durante el registro:', error);
