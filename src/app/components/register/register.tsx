@@ -57,8 +57,10 @@ const formSchema = z
     path: ['confirmPassword'],
   });
 
+type FormSchema = z.infer<typeof formSchema>;
+
 export function RegisterForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
@@ -71,7 +73,18 @@ export function RegisterForm() {
     mode: 'onChange',
   });
 
-  const { watch, trigger } = form;
+  function translateErrorMessage(message: string): string {
+    const translations: Record<string, string> = {
+      'Key ("NIN")=(12341234) already exists.': 'Numero de NIN ya existe.',
+      'phone must be a valid phone number':
+        'El numero de telefono no es valido.',
+      'Key (email)=(indisardi99@gmail.com) already exists.':
+        'El correo ya existe',
+    };
+    return translations[message] || message;
+  }
+
+  const { watch, trigger, setError } = form;
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -82,7 +95,7 @@ export function RegisterForm() {
     return () => subscription.unsubscribe();
   }, [watch, trigger]);
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: FormSchema) {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
@@ -110,10 +123,22 @@ export function RegisterForm() {
         router.push('/login');
       } else {
         const res = await response.json();
-        showToast(
-          'error',
-          <p>Hubo un problema durante el registro, {res?.message?.[0]}</p>,
-        );
+        if (res.errors) {
+          (Object.keys(res.errors) as (keyof FormSchema)[]).forEach((field) => {
+            setError(field, {
+              type: 'server',
+              message: translateErrorMessage(res.errors[field][0]),
+            });
+          });
+        } else {
+          showToast(
+            'error',
+            <p>
+              Hubo un problema durante el registro,{' '}
+              {translateErrorMessage(res.message)}
+            </p>,
+          );
+        }
       }
     } catch (error) {
       console.error('Error durante el registro:', error);

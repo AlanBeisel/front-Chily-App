@@ -4,7 +4,8 @@ const nextConfig = {};
 module.exports = nextConfig;
 
 module.exports = {
+  reactStrictMode: false,
   images: {
-    domains: ['img.freepik.com', 'example.com', "images.pexels.com"],
+    domains: ['img.freepik.com', 'example.com', 'images.pexels.com'],
   },
 };

@@ -1,7 +1,5 @@
 'use client';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Button } from '@/app/components/ui/button';
 import {
   Form,
@@ -18,35 +16,15 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { showToast } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 
-const formSchema = z.object({
-  email: z
-    .string()
-    .email({ message: 'Debe ser un correo electrónico válido.' }),
-  password: z
-    .string()
-    .min(8, { message: 'La contraseña debe tener por lo menos 8 caracteres.' })
-    .regex(/[a-z]/, {
-      message: 'La contraseña debe contener al menos una letra minúscula.',
-    })
-    .regex(/[A-Z]/, {
-      message: 'La contraseña debe contener al menos una letra mayúscula.',
-    })
-    .regex(/[0-9]/, {
-      message: 'La contraseña debe contener al menos un número.',
-    })
-    .regex(/[^a-zA-Z0-9]/, {
-      message: 'La contraseña debe contener al menos un carácter especial.',
-    }),
-});
+const formSchema = {
+  email: '',
+  password: '',
+};
 
 export function LoginForm() {
   const { login } = useAuth();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+  const form = useForm({
+    defaultValues: formSchema,
   });
 
   const { watch, trigger } = form;
@@ -60,7 +38,7 @@ export function LoginForm() {
     return () => subscription.unsubscribe();
   }, [watch, trigger]);
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: typeof formSchema) {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/signin`,
