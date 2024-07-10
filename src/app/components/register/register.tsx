@@ -100,7 +100,7 @@ export function RegisterForm() {
             email: values.email,
             password: values.password,
             confirmPassword: values.confirmPassword,
-            phone: `+52${values.phone}`,
+            phone: `+57${values.phone}`,
           }),
         },
       );
