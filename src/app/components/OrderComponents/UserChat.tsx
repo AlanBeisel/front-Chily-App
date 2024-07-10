@@ -2,10 +2,10 @@
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 
-const socket = io('http://your-backend-url');
+const socket = io('http://localhost:3000');
 
 interface chatWindowProps{
-  orderId: string
+  orderId: number
   problemDescription:string
 }
 
@@ -26,7 +26,11 @@ const ChatWindow: React.FC<chatWindowProps> = ({ orderId, problemDescription })=
 
   const sendMessage = () => {
     if (message.trim()) {
-      socket.emit("message", message)
+      socket.emit("send-message", {
+        conversationId: 1,
+        content: message,
+        senderId:1
+      })
       setMessages((prevMessages) => [...prevMessages, message])
       setMessage("")
     }

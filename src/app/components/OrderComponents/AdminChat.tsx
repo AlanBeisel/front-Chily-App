@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import io from "socket.io-client"
 import ChatWindow from "./UserChat";
 
-const socket = io('http://your-backend-url');
+const socket = io('http://localhost:3000');
 
 interface Chat {
-  id: string;
-  orderId: string;
+  id: number;
+  orderId: number;
   problemDescription: string;
   messages: string[];
 }
@@ -34,6 +34,7 @@ const AdminChat: React.FC = () => {
   }
   return (
     <div className="admin-chat">
+      <h2>Admin Chat Box</h2>
       <div className="chats">
         {chats.map((chat, index) => (
           <div key={index} onClick={() => handleSelectChat(chat)} className="chat">Order ID: {chat.orderId }</div>

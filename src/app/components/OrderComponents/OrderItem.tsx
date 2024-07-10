@@ -1,6 +1,7 @@
 import React from 'react';
 import { Address, ProductsInOrder} from '@/types';
 import StatusTracker from './StatusTracker';
+import ChatWindow from './UserChat';
 
 interface Order {
   id: number;
@@ -38,6 +39,9 @@ const OrderDetails: React.FC<OrderProps> = ({ order }) => {
           <StatusTracker status= {order.status} />
         </div>
         <div className="text-lg text-yellow-300 font-bold">${order.total}</div>
+      </div>
+      <div>
+        <ChatWindow orderId={order.id } problemDescription='problem' />
       </div>
     </div>
   );

@@ -1,9 +1,11 @@
 'use client';
+import { mock } from 'node:test';
 import { Popular } from '../app/components/HomeComponents/Popular';
 import { CategoryFilter } from '../app/components/MenuComponents/CategoryFilter';
 import Horarios from './components/HomeComponents/Horarios';
 
 import { RenderCategory } from './components/HomeComponents/RenderCategory';
+import TestChat, { mockArr } from './components/OrderComponents/TestChat';
 
 
 
@@ -19,6 +21,7 @@ export default function Home() {
           <CategoryFilter />
           <Horarios/>
           <Popular />
+          <TestChat orders={mockArr}/>
           <RenderCategory />          
         </main>
       </div>
