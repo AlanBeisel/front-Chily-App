@@ -35,7 +35,7 @@ const ProfileAdmin: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col max-w-[320px] h-full profile-admin">
+    <div className="flex flex-col max-w-[320px] h-full ">
       <div className="flex items-center w-full h-full ">
         <Link className="bg-white text-white" href="/login">
           <a className=" text-red-700 hover:text-red-500">

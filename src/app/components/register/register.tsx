@@ -57,8 +57,10 @@ const formSchema = z
     path: ['confirmPassword'],
   });
 
+type FormSchema = z.infer<typeof formSchema>;
+
 export function RegisterForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
@@ -82,7 +84,7 @@ export function RegisterForm() {
     return () => subscription.unsubscribe();
   }, [watch, trigger]);
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: FormSchema) {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
@@ -98,7 +100,7 @@ export function RegisterForm() {
             email: values.email,
             password: values.password,
             confirmPassword: values.confirmPassword,
-            phone: values.phone,
+            phone: `+57${values.phone}`,
           }),
         },
       );
@@ -111,17 +113,9 @@ export function RegisterForm() {
       } else {
         const res = await response.json();
         console.error('Error durante el registro:', res);
-        let remplace: any = {
-          'email': 'Correo electronico',
-          'phone': 'Teléfono'
-        };
-        
-        const messageError = res.message.replace(/Ya existe la llave \((.*?)\)=\(.*\)\./, (_: any, p1: any) => {
-          return `Ya existe este ${remplace[p1]}`
-      })
         showToast(
           'error',
-          <p>Hubo un problema durante el registro, {messageError}</p>,
+          <p>Hubo un problema durante el registro, {res.message}</p>,
         );
       }
     } catch (error) {
@@ -227,7 +221,10 @@ export function RegisterForm() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder="Teléfono" {...field} />
+                <div className="flex flex-row items-center">
+                  <span className="m-2">+52</span>
+                  <Input placeholder="7751488347" {...field} />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

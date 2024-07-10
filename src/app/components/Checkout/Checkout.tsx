@@ -9,10 +9,13 @@ import { useRouter } from 'next/navigation';
 import CouponInput from './CuponInput';
 // import { Address } from '@/types';
 import { useAuth } from '@/app/contexts/AuthContext';
+import Link from 'next/link';
 
 const stripePromise = loadStripe(
   `${process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY}`,
 );
+
+const SHIPPING_COST = 5.5;
 
 interface ProductsInOrder {
   productId: number;
@@ -46,29 +49,36 @@ const Checkout: React.FC = () => {
   const token = accessToken;
   const calle = address?.address;
 
-  useEffect(() => {
-    const storedOrder = localStorage.getItem('order');
-    const storedCouponDiscount = localStorage.getItem('couponDiscount');
+useEffect(() => {
+  const storedOrder = localStorage.getItem('order');
+  const storedCouponDiscount = localStorage.getItem('couponDiscount');
 
-    if (storedOrder) {
-      const parsedOrder = JSON.parse(storedOrder);
-      setOrder(parsedOrder);
+  if (storedOrder) {
+    const parsedOrder = JSON.parse(storedOrder);
+    setOrder((prevOrder) => {
+      if (!prevOrder) return parsedOrder;
+
+      const updatedOrder = {
+        ...prevOrder,
+        ...parsedOrder,
+        total: parsedOrder.total + SHIPPING_COST,
+      };
 
       if (storedCouponDiscount) {
         const { discount, couponCode } = JSON.parse(storedCouponDiscount);
-        setCouponDiscount(discount);
-        setOrder((prevOrder) => {
-          if (!prevOrder) return prevOrder;
-          return {
-            ...prevOrder,
-            couponDiscount: discount,
-            couponId: couponCode,
-            total: prevOrder.total - discount,
-          };
-        });
+        return {
+          ...updatedOrder,
+          couponDiscount: discount,
+          couponId: couponCode,
+          total: updatedOrder.total - discount,
+        };
       }
-    }
-  }, []);
+
+      return updatedOrder;
+    });
+  }
+}, []);
+
 
   useEffect(() => {
     if (order) {
@@ -132,12 +142,7 @@ const Checkout: React.FC = () => {
       if (!response.ok) {
         throw new Error('Error al enviar la orden.');
       }
-      // const responseOk = true;
-
-      // if (!responseOk) {
-      //   throw new Error('Error al enviar la orden.');
-      // }
-
+    
       localStorage.removeItem('couponDiscount');
       localStorage.removeItem('cartItems');
       localStorage.removeItem('order');
@@ -238,16 +243,21 @@ const Checkout: React.FC = () => {
         )}
         <div className="flex justify-between border-t border-gray-300 pt-2 mt-2">
           <span className="font-bold">Total:</span>
-          <span className="font-bold">${order.total + 5.5}</span>
+          <span className="font-bold">${order.total}</span>
         </div>
         <div className="text-sm text-gray-500 mt-1">
-          <div className="flex justify-between">
-            <span>Dirección:</span>
-            <span>{calle}</span>
+          <div className="flex flex-col">
+    <div className="flex justify-between items-center">
+      <span>Dirección:</span>
+    <div className="flex justify-end mt-1"> {/* Ajusta el margen superior según necesites */}
+      <Link href={"/address"} className="text-blue-500">Cambiar dirección</Link>
+    </div>
+    </div>
+      <span>{calle}</span> 
           </div>
           Tiempo estimado: 15 – 30mins
         </div>
-      </div>
+  </div>
 
       <h2 className="text-lg font-semibold mb-4">Métodos de pago</h2>
       <div className="space-y-2 mb-4">

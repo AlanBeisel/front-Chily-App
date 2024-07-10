@@ -40,7 +40,10 @@ const ConfirmLocationPage = () => {
             setSelectedAddressId(data[0].id);
           }
         } else {
-          toast.error('Error al obtener las direcciones guardadas.');
+          const errorData = await response.json();
+          if (errorData.statusCode !== 404) {
+            toast.error('Error al obtener las direcciones guardadas.');
+          }
         }
       } catch (error) {
         console.error('Error al obtener las direcciones guardadas:', error);
@@ -51,7 +54,7 @@ const ConfirmLocationPage = () => {
     if (user) {
       fetchAddresses();
     }
-  }, [user]);
+  }, [user, token]);
 
   const handleAddressSelect = (id: number) => {
     setSelectedAddressId(id);
@@ -91,9 +94,9 @@ const ConfirmLocationPage = () => {
   };
 
   return (
-    <div className="container mx-auto mt-8">
+    <div className="container mx-auto mt-8 min-h-screen flex flex-col">
       {!isAddingNewAddress && addresses.length > 0 ? (
-        <div>
+        <div className="flex-grow">
           <h2 className="text-2xl font-bold mb-4">
             Selecciona una dirección guardada
           </h2>
@@ -132,7 +135,7 @@ const ConfirmLocationPage = () => {
           </button>
         </div>
       ) : (
-        <div>
+        <div className="flex-grow">
           <h2 className="text-2xl font-bold mb-4">
             No tienes direcciones guardadas
           </h2>
