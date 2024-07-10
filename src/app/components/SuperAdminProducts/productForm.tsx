@@ -110,21 +110,20 @@ const ProductForm: React.FC<ProductFormProps> = ({ defaultValues, onSubmit, isEd
     if (imageFile) {
       const formData = new FormData();
       formData.append('file', imageFile);
-      formData.append('upload_preset', 'dqsxlntau');
       try {
-        const response = await fetch(`https://api.cloudinary.com/v1_1/dqsxlntau/image/upload`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
           method: 'POST',
           body: formData,
         });
 
         if (!response.ok) {
-          throw new Error('Error al subir la imagen a Cloudinary');
+          throw new Error('Error al subir la imagen al backend');
         }
 
         const data = await response.json();
         return data.secure_url;
       } catch (error) {
-        console.error('Error al subir la imagen a Cloudinary', error);
+        console.error('Error al subir la imagen al backend', error);
         throw error;
       }
     }

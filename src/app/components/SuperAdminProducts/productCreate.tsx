@@ -28,45 +28,13 @@ const ProductCreate: React.FC = () => {
  });
 
 
- const uploadImageToCloudinary = async(file: File) =>{
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append ('upload_preset', 'process.env.CLOUDINARY_UPLOAD_PRESET!');
-  formData.append ('upload_preset', 'process.env.CLOUDINARY_CLOUD_NAME!');
 
-  try{
-  const response = await fetch(`https://api.cloudinary.com/v1_1/+ process.env.CLOUDINARY_CLOUD_NAME +/image/upload`,{
-    method: 'POST',
-    body: formData,
-  });
-
-  if(!response.ok) {
-    throw new Error('Error al subir la imagen a Cloudinary');
-  }
-
-  const data= await response.json();
-  console.log('Imagen subida correctamente:', data);
-  return data.secure_url;
-} catch (error) {
-  console.error('Error al subir la imagem a Cloudinary', error);
-  throw error;
-}
- };
-
-  const handleCreate = async (data: ProductData, imageFile?: File) => {
+  const handleCreate = async (data: ProductData, imageUrl?: File) => {
     try{
-      console.log(data)
-      setFormData(data)
-      setModalOpen(true);
-
-      let imageUrl = '';
-      if (imageFile) {
-        imageUrl= await uploadImageToCloudinary(imageFile);
-      }
 
       const formattedData ={
         ...data,
-        image: imageUrl,
+        image: imageUrl || '',
         price: parseFloat(data.price),
         category: data.category.map((cat: string) => parseInt(cat, 10)),
       };
@@ -76,7 +44,13 @@ const ProductCreate: React.FC = () => {
 
       if(responseData.success){
         setError(null);
-        setModalOpen(false);
+        setFormData({
+          name: '',
+          description: '',
+          category: [],
+          price: '',
+          image: '',
+         });
       } else {
         setError(responseData.error || 'Error al crear el producto');
       }
