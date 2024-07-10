@@ -45,7 +45,7 @@ const AdminChat: React.FC = () => {
           <div>
             <h3>Order ID:{selectedChat.orderId}</h3>
             <h3>{selectedChat.problemDescription}</h3>
-            <ChatWindow orderId={selectedChat.orderId} problemDescription={selectedChat.problemDescription } />
+            <ChatWindow orderId={selectedChat.orderId} />
           </div>
         )}
       </div>

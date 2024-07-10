@@ -65,7 +65,7 @@ const TestChat: React.FC<OrderListProps> = ({ orders }) => {
   return (
     <div>
       <div>
-        <AdminChat />
+        {/* <AdminChat /> */}
       </div>
       <div>
         <OrderList orders={orders} />
