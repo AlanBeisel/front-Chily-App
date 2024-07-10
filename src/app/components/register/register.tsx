@@ -73,18 +73,7 @@ export function RegisterForm() {
     mode: 'onChange',
   });
 
-  function translateErrorMessage(message: string): string {
-    const translations: Record<string, string> = {
-      'Key ("NIN")=(12341234) already exists.': 'Numero de NIN ya existe.',
-      'phone must be a valid phone number':
-        'El numero de telefono no es valido.',
-      'Key (email)=(indisardi99@gmail.com) already exists.':
-        'El correo ya existe',
-    };
-    return translations[message] || message;
-  }
-
-  const { watch, trigger, setError } = form;
+  const { watch, trigger } = form;
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -124,20 +113,9 @@ export function RegisterForm() {
       } else {
         const res = await response.json();
         console.error('Error durante el registro:', res);
-        let remplace: any = {
-          email: 'Correo electronico',
-          phone: 'Teléfono',
-        };
-
-        const messageError = res.message.replace(
-          /Ya existe la llave \((.*?)\)=\(.*\)\./,
-          (_: any, p1: any) => {
-            return `Ya existe este ${remplace[p1]}`;
-          },
-        );
         showToast(
           'error',
-          <p>Hubo un problema durante el registro, {messageError}</p>,
+          <p>Hubo un problema durante el registro, {res.message}</p>,
         );
       }
     } catch (error) {
