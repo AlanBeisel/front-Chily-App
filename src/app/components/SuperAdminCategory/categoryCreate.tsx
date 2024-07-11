@@ -1,63 +1,51 @@
 'use client'
 import React, {useState} from 'react';
-import ProductForm from './productForm';
-import { createProduct } from '@/helpers/peticionesSuperAdmin';
+import CategoryForm from './categoryForm';
+import { createCategory } from '@/helpers/peticionesSuperAdmin';
 import BackButton from '../ProductIdComponents/BackButton';
 import { toast } from 'react-toastify';
-import ConfirmModal from './confirmModal';
+import ConfirmModal from '../SuperAdminProducts/confirmModal';
 //import { useRouter } from 'next/router';
 
 
-interface ProductData {
+interface CategoryData {
   name: string;
-  description: string;
-  price: string;
-  imageURL: string;
-  category: string[];
+  icon: string;
 
 }
 
-const ProductCreate: React.FC = () => {
+const CategoryCreate: React.FC = () => {
  // const router = useRouter();
  const [error, setError] = useState<string | null>(null);
  const [isModalOpen, setModalOpen] = useState(false);
- const [formData, setFormData] = useState<ProductData>({
+ const [formData, setFormData] = useState<CategoryData>({
   name: '',
-  description: '',
-  category: [],
-  price: '',
-  imageURL: '',
+  icon: '',
  });
 
 
  const [modalAction, setModalAction] = useState<()=> void>(()=>{});
 
 
-  const handleCreate = async (data: ProductData, imageURL?: string) => {
+  const handleCreate = async (data: CategoryData, icon?: string) => {
     try{
 
       const formattedData ={
         ...data,
-        imageURL: imageURL || '',
-        price: parseFloat(data.price),
-        category: data.category.map((cat: string) => parseInt(cat, 10)),
+        icon: icon || '',
       };
 
       setModalAction(() => async()=>{
-        const response = await createProduct(formattedData);
-        console.log(response)
+        const response = await createCategory(formattedData);
 
 
       if(response.success){
         setError(null);
         setFormData({
           name: '',
-          description: '',
-          category: [],
-          price: '',
-          imageURL: '',
+          icon: '',
          });
-      toast.success('Producto creado exitosamente',{
+      toast.success('Categoría creada exitosamente',{
          position: 'top-center',
       autoClose: 3000,
       hideProgressBar: true,
@@ -67,8 +55,8 @@ const ProductCreate: React.FC = () => {
       progress: undefined,
       });
       } else {
-        setError(response.error || 'Error al crear el producto');
-        toast.error(response.error || 'Error al crear el producto',{
+        setError(response.error || 'Error al crear la categoría');
+        toast.error(response.error || 'Error al crear la categoría',{
          position: 'top-center',
       autoClose: 3000,
       hideProgressBar: true,
@@ -84,8 +72,8 @@ const ProductCreate: React.FC = () => {
       if(error instanceof Error) {
         setError(error.message);
       } else {
-        setError('Error al crear el producto. Inténtalo de nuevo más tarde.');
-        toast.error('Error al crear el producto. Inténtalo de nuevo más tarde.', {
+        setError('Error al crear la categoría. Inténtalo de nuevo más tarde.');
+        toast.error('Error al crear la categoría. Inténtalo de nuevo más tarde.', {
           position: 'top-center',
        autoClose: 3000,
        hideProgressBar: true,
@@ -115,17 +103,17 @@ const ProductCreate: React.FC = () => {
           <BackButton />
       </div>
       {error && <div className="text-red-500 mb-4"> {error}</div>}
-      <ProductForm onSubmit={handleCreate} defaultValues={formData} />
+      <CategoryForm onSubmit={handleCreate} defaultValues={formData} />
       <ConfirmModal
           isOpen={isModalOpen}
           onConfirm={handleConfirm}
           onCancel={handleCancel}
-          title="Confirmar creación de producto"
-          message="¿Estás seguro de que deseas crear este producto?"
+          title="Confirmar creación de categoría"
+          message="¿Estás seguro de que deseas crear esta categoría?"
         />
     </div>
     </div>
   );
 };
 
-export default ProductCreate;
+export default CategoryCreate;

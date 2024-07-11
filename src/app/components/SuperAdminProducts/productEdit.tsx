@@ -6,6 +6,7 @@ import { updateProduct } from '@/helpers/peticionesSuperAdmin';
 import { Product } from '@/types';
 import ConfirmModal from './confirmModal';
 import PopularProductSwitch from './popularSwitch';
+import { toast } from 'react-toastify';
 
 interface ProductEditProps {
   productId: string;
@@ -42,10 +43,28 @@ const ProductEdit: React.FC<ProductEditProps> = ({productId}) => {
       setModalOpen(true);
       console.log('Actualizando popularidad del producto:', productId);
       await updateProduct(productId, data);
+      toast.success('Producto actualizado correctamente',{
+        position: 'top-center',
+     autoClose: 3000,
+     hideProgressBar: true,
+     closeOnClick: true,
+     pauseOnHover: true,
+     draggable: true,
+     progress: undefined,
+     });
     //  router.push('/dashboard');
     } catch (error) {
       console.error('Error al actualizar el producto', error);
       setError('No se pudo actualizar el producto. Por favor, inténtalo nuevamente.');
+      toast.error('Error al actualizar el producto.POr favor inténtalo nuevamente.',{
+        position: 'top-center',
+     autoClose: 3000,
+     hideProgressBar: true,
+     closeOnClick: true,
+     pauseOnHover: true,
+     draggable: true,
+     progress: undefined,
+     });
     }finally {
       setLoading(false);
     }
@@ -58,9 +77,27 @@ const ProductEdit: React.FC<ProductEditProps> = ({productId}) => {
       setModalOpen(false);
       const updatedProduct = await getProductById(productId);
       setProduct(updatedProduct);
+      toast.success('Producto actualizado correctamente',{
+        position: 'top-center',
+     autoClose: 3000,
+     hideProgressBar: true,
+     closeOnClick: true,
+     pauseOnHover: true,
+     draggable: true,
+     progress: undefined,
+     });
     } catch (error) {
       console.error('Error al actualizar el producto.', error);
       setError('No se pudo actualizar el producto. Por favor, inténtalo nuevamente.');
+      toast.error('Error al actualizar el producto.POr favor inténtalo nuevamente.',{
+        position: 'top-center',
+     autoClose: 3000,
+     hideProgressBar: true,
+     closeOnClick: true,
+     pauseOnHover: true,
+     draggable: true,
+     progress: undefined,
+     });
     }
   };
 
@@ -77,10 +114,28 @@ const ProductEdit: React.FC<ProductEditProps> = ({productId}) => {
       console.log('Respuesta del servidor:', Response);
       setProduct(updatedProduct);
       setLoading(false);
+      toast.success('Popularidad del producto actualizada correctamente',{
+        position: 'top-center',
+     autoClose: 3000,
+     hideProgressBar: true,
+     closeOnClick: true,
+     pauseOnHover: true,
+     draggable: true,
+     progress: undefined,
+     });
     }catch (error) {
       console.error('Error al actualizar la popularidad del producto, error');
       setError('No se pudo actualizar la popularidad del producto. Por Favor, inténtalo nuevamente');
       setLoading(false);
+      toast.error('Error al actualizar la popularidad del producto.POr favor inténtalo nuevamente.',{
+        position: 'top-center',
+     autoClose: 3000,
+     hideProgressBar: true,
+     closeOnClick: true,
+     pauseOnHover: true,
+     draggable: true,
+     progress: undefined,
+     });
     }
   };
 
@@ -100,7 +155,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({productId}) => {
       <div className="flex items-center">
         <PopularProductSwitch productId={productId} isInitiallyPopular={product.isPopular} onUpdatePopular={handlePopularUpdate} />
       </div>
-      <ProductForm defaultValues={{...product, category: product.category, image: product.img}} onSubmit={handleUpdate} isEditMode/>
+      <ProductForm defaultValues={{...product, category: product.category, imageURL: product.img}} onSubmit={handleUpdate} isEditMode/>
       <ConfirmModal
        isOpen={modalOpen}
        onConfirm={confirmUpdate}

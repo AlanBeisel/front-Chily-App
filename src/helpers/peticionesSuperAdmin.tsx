@@ -1,13 +1,19 @@
-import { Product } from "@/types";
+import { Category, Product } from "@/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+
 const handleResponse = async (response: Response) => {
+  const contentType = response.headers.get('content-type');
   if(!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Error en la solicitud');
+    const errorMessage = contentType && contentType.indexOf('application/json') ! ==-1
+    ? (await response.json()).message
+    : await response.text();
+    throw new Error(errorMessage || 'Error en la solicitud');
   }
-  return response.json();
+  return contentType && contentType.indexOf('application/json') !== -1
+  ? response.json()
+  : response.text();
 };
 
 export const fetchProducts = async (): Promise<Product[]> => {
@@ -56,7 +62,20 @@ export const deleteProduct = async (id: string) => {
     const response = await fetch(`${API_URL}/products/delete/${id}`, {
       method: 'DELETE',
     });
-    return handleResponse(response);
+
+    const text = await response.text();
+
+    if(!response.ok) {
+      const text = await response.text();
+      console.error('Error en la respuesta del servidor', text);
+      throw new Error(text);
+    }
+
+    try{
+      return JSON.parse(text);
+    } catch (error) {
+      return text;
+    }
   }catch (error) {
     console.error('Error al eliminar el producto', error);
     throw error;
@@ -99,3 +118,59 @@ export async function updateProductStock(productId: string, newStock:number) {
   }
 }
 
+export const createCategory = async (data: any) => {
+  try{
+    const response = await fetch(`${API_URL}/category/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    return handleResponse(response);
+  } catch (error) {
+    console.error('Error al crear la categoría', error);
+    throw error;
+  }
+};
+
+export const updateCategory = async (id: string, data:any) => {
+  try {
+    const response = await fetch(`${API_URL}/category/update/${id}`,{
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    return handleResponse(response);
+  } catch(error) {
+    console.error('Error al actualizar la categoria', error);
+    throw error;
+  }
+};
+
+export const deleteCategory = async (id: string) => {
+  try {
+    const response = await fetch(`${API_URL}/category/delete/${id}`, {
+      method: 'DELETE',
+    });
+    return handleResponse(response);
+  }catch (error) {
+    console.error('Error al eliminar la categoria', error);
+    throw error;
+  }
+};
+
+export async function getCategoryById(id: string): Promise<Category> {
+  try {
+    const response = await fetch(`${API_URL}/category/${id}`);
+    if (!response.ok) {
+      throw new Error('Error al obtener el producto');
+    }
+    return handleResponse(response);
+  } catch (error) {
+    console.error(`Error en getCategoryById para id ${id}:`, error);
+    throw error;
+  }
+}

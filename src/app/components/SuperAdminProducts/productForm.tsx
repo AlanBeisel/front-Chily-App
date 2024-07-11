@@ -8,10 +8,10 @@ import { getAllCategories } from '@/helpers/peticiones';
 const ProductData = z.object({
   name: z.string().min(1, 'Nombre es requerido'),
   description: z.string().min(1, 'Descripción es requerida'),
-  price: z.number().positive('El precio debe ser un número positivo').nonnegative(), //Expected number, received string
-  stock: z.number().int().min(0, 'El stock debe ser un número entero no negativo'), //Expected number, received string
-  image: z.any().optional(),
-  category: z.array(z.number()), // ver validacion
+  price: z.number().positive('El precio debe ser un número positivo').nonnegative(),
+  stock: z.number().int().min(0, 'El stock debe ser un número entero no negativo'), 
+  imageURL: z.any().optional(),
+  category: z.array(z.number()),
 });
 
 type Category = {
@@ -21,7 +21,7 @@ type Category = {
 
 type ProductFormProps = {
   defaultValues?: any;
-  onSubmit: (data: any, imageFile?: File) => void; 
+  onSubmit: (data: any, imageURL?: string) => void; 
   isEditMode?: boolean;
   closeDropdownOnSelect?: boolean;
 };
@@ -109,7 +109,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ defaultValues, onSubmit, isEd
   const handleImageUpload = async () => {
     if (imageFile) {
       const formData = new FormData();
-      formData.append('file', imageFile);
+      formData.append('image', imageFile);
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
           method: 'POST',
@@ -117,10 +117,14 @@ const ProductForm: React.FC<ProductFormProps> = ({ defaultValues, onSubmit, isEd
         });
 
         if (!response.ok) {
-          throw new Error('Error al subir la imagen al backend');
+          const errorResponse = await response.json();
+          throw new Error(`Error al subir la imagen al backend: ${errorResponse.message}`);
         }
 
         const data = await response.json();
+        console.log('Respuesta del backend:', data);
+        setImagePreview(null);
+        setImageFile(null);
         return data.secure_url;
       } catch (error) {
         console.error('Error al subir la imagen al backend', error);
@@ -131,18 +135,24 @@ const ProductForm: React.FC<ProductFormProps> = ({ defaultValues, onSubmit, isEd
   };
   const handleSubmitForm = async (data: any) => {
     setIsSubmitting(true);
-    data.price = parseFloat(data.price);
+    
     data.category = selectedCategories;
     console.log('handleSubmitForm llamado con datos:', data);
 
     try{
-      let imageUrl= null;
+      data.price = parseFloat(data.price);
+      data.stock = parseInt(data.stock);
+
+      let image= null;
       if(imageFile) {
-        imageUrl= await handleImageUpload();
+        image= await handleImageUpload();
       }
-    onSubmit(data, imageUrl); 
+    onSubmit(data, image); 
     setIsSubmitting(false);
     reset();
+    setImagePreview(null);
+    setImageFile(null);
+    setSelectedCategories([]);
 
     } catch (error) {
       console.error('Error al enviar el formulario', error);
@@ -156,14 +166,14 @@ const ProductForm: React.FC<ProductFormProps> = ({ defaultValues, onSubmit, isEd
         <div className="col-span-1 md:col-span-2 mb-4">
           {imagePreview ? (
             <img src={imagePreview} alt="Preview" className="w-full h-auto mb-2 rounded-lg shadow-lg" />
-          ) : defaultValues?.image ? (
-            <img src={defaultValues.image} alt="Product Image" className="w-full h-auto mb-2 rounded-lg shadow-lg" />
+          ) : defaultValues?.imageURL ? (
+            <img src={defaultValues.imageURL} alt="Product Image" className="w-full h-auto mb-2 rounded-lg shadow-lg" />
           ) : null}
           <label className="block text-grey-500 font-bold">Imagen (Archivo)</label>
           <div className="flex items-center">
             <input
               type="file"
-              {...register("image")}
+              {...register("imageURL")}
               onChange={handleImageChange}
               accept="image/*"
               className="w-full p-2 border border-gray-300 rounded-lg shadow-sm"
@@ -188,7 +198,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ defaultValues, onSubmit, isEd
           {errors.description && <div className="text-red-500">{errors.description.message?.toString()}</div>}
         </div>
         <div className="col-span-1 mb-4">
-          <label htmlFor="price"className="block text-grey-500 font-bold">Precio</label>
+          <label htmlFor="price"className="block text-gray-500 font-bold">Precio</label>
           <input
             type="number"
             id="price"
@@ -198,7 +208,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ defaultValues, onSubmit, isEd
           {errors.price && <div className="text-red-500">{errors.price.message?.toString()}</div>}
         </div>
         <div className="col-span-1 mb-4">
-          <label htmlFor="stock" className="block text-grey-500 font-bold">Stock</label>
+          <label htmlFor="stock" className="block text-gray-500 font-bold">Stock</label>
           <input
             type="number"
             id="stock"
@@ -237,10 +247,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ defaultValues, onSubmit, isEd
             )}
           </div>
           <div className="flex flex-wrap mt-2 gap-2">
-            {selectedCategories.map((categoryId) => {
+            {selectedCategories.map((categoryId, index) => {
               const category = categories.find((cat) => cat.id === categoryId);
               return (
-                <div key={categoryId} className="p-2 bg-white rounded-lg flex items-center">
+                <div key={`${categoryId}-${index}`} className="p-2 bg-white rounded-lg flex items-center">
                   {category?.name}
                   <button
                     type="button"
