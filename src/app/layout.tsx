@@ -8,6 +8,7 @@ import { CacheProvider } from './contexts/CacheContext';
 import ToastProvider from './contexts/ToastProvider';
 import ReactQueryProvider from './contexts/ReactQueryProvider';
 
+
 const mochily = Mochiy_Pop_One({ weight: '400', subsets: ['latin'] });
 const poppins = Poppins({
   weight: ['400', '500', '600', '700'],

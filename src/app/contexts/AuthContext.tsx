@@ -10,7 +10,7 @@ import {
 import { setCookie, deleteCookie, getCookie } from 'cookies-next';
 import { Address } from '@/types';
 
-type Role = 'user' | 'admin' | 'superAdmin';
+type Role = 'user' | 'admin' | 'superadmin';
 
 interface Credential {
   id: string;
@@ -116,7 +116,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const isUser = () => user?.role === 'user';
   const isAdmin = () => user?.role === 'admin';
-  const isSuperAdmin = () => user?.role === 'superAdmin';
+  const isSuperAdmin = () => user?.role === 'superadmin';
 
    const setAddressAndStoreCookie = (newAddress: Address) => {
      setAddress(newAddress);

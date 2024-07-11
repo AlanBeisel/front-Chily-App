@@ -8,7 +8,6 @@ import MenuFilters from '../components/MenuComponents/MenuFilter';
 import { Product } from '@/types';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid';
 
-
 const PRODUCTS_PER_PAGE = 8;
 
 interface Filters {
@@ -65,60 +64,62 @@ export default function Menu() {
 
   const handleAddToCart = (product: Product) => {
     console.log('Añadir al carrito:', product);
-    // Implementa la lógica para agregar al carrito aquí
   };
 
-
-
- const handleApplyFilters = (newFilters: Partial<Filters>) => {
-   setFilters((prevFilters) => ({
-     ...prevFilters,
-     ...newFilters,
-   }));
-   setCurrentPage(1);
-   if (window.innerWidth < 768) {
-     setIsFilterOpen(false);
-   }
- };
-
-
-const handleSearch = (searchTerm: string) => {
-  if (searchTerm.trim() !== '') {
-    setFilters(prevFilters => ({
+  const handleApplyFilters = (newFilters: Partial<Filters>) => {
+    setFilters((prevFilters) => ({
       ...prevFilters,
-      search: searchTerm.trim()
+      ...newFilters,
     }));
     setCurrentPage(1);
-  }
-};
+    if (window.innerWidth < 768) {
+      setIsFilterOpen(false);
+    }
+  };
 
-const removeSearchTerm = () => {
-  setFilters((prevFilters) => ({
-    ...prevFilters,
-    search: '',
-  }));
-  setCurrentPage(1);
-};
+  const handleSearch = (searchTerm: string) => {
+    if (searchTerm.trim() !== '') {
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        search: searchTerm.trim(),
+      }));
+      setCurrentPage(1);
+    }
+  };
 
- const handleFilterChange = (filter: string) => {
-   let updatedFilters = [...selectedFilters];
+  const removeSearchTerm = () => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      search: '',
+    }));
+    setCurrentPage(1);
+  };
 
-   // Toggle selected filter
-   if (updatedFilters.includes(filter)) {
-     updatedFilters = updatedFilters.filter((f) => f !== filter);
-   } else {
-     updatedFilters.push(filter);
-   }
+  const handleFilterChange = (filter: string) => {
+    let updatedFilters = [...selectedFilters];
 
-   setSelectedFilters(updatedFilters);
-   const priceFilter = updatedFilters.includes('min')
-     ? 'min'
-     : updatedFilters.includes('max')
-       ? 'max'
-       : undefined;
+    // Toggle selected filter
+    if (updatedFilters.includes(filter)) {
+      updatedFilters = updatedFilters.filter((f) => f !== filter);
+    } else {
+      updatedFilters.push(filter);
+    }
 
-   handleApplyFilters({ appliedFilters: updatedFilters, price: priceFilter });
- };
+    setSelectedFilters(updatedFilters);
+
+    // Aplicar filtros sin incluir 'min' y 'max'
+    const categoryFilters = updatedFilters.filter(
+      (f) => f !== 'min' && f !== 'max',
+    );
+
+    const priceFilter = updatedFilters.includes('min')
+      ? 'min'
+      : updatedFilters.includes('max')
+        ? 'max'
+        : undefined;
+
+    handleApplyFilters({ appliedFilters: categoryFilters, price: priceFilter });
+  };
 
   return (
     <div className="p-4 md:p-6">
