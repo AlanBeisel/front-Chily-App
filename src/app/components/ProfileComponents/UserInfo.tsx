@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import DataField from './DataField';
 import { useAuth } from '@/app/contexts/AuthContext';
@@ -5,7 +6,7 @@ import Link from 'next/link';
 import { setCookie, getCookie } from 'cookies-next';
 import { useEffect, useState } from 'react';
 
-type Role = 'user' | 'admin' | 'superAdmin';
+type Role = 'user' | 'admin' | 'superadmin';
 
 interface Credential {
   id: string;
@@ -30,7 +31,7 @@ interface User {
 
 
 const UserInfo = ({user} : {user: User | null}) => {
-  const {address} = useAuth();
+  const {address, login} = useAuth();
   const[currentUser, setCurrentUser] = useState<User | null>(user);
 
   useEffect(() => {
@@ -51,8 +52,10 @@ const UserInfo = ({user} : {user: User | null}) => {
   const isPhoneEditable = currentUser.googleAuth;
 
   const handlePhoneChange = (newPhone: string) => {
-    setCurrentUser({...currentUser, phone: newPhone});
-    setCookie('user', JSON.stringify({...currentUser, phone:newPhone}));
+    const updatedUser = {...currentUser, phone: newPhone};
+    setCurrentUser(updatedUser);
+    setCookie('user', JSON.stringify(updatedUser));
+    login(updatedUser, getCookie('accessToken') as string);
   };
 
 
@@ -73,9 +76,9 @@ const UserInfo = ({user} : {user: User | null}) => {
         </>
       )}
 
-      <Link href="/req-reset" passHref>
+      <Link href="/change-password" passHref>
       <button className="mt-4 p-2 bg-red-500 text-white rounded-md hover:bg-red-700">
-        Recuperar Contraseña
+        Cambiar Contraseña
         </button>
       </Link>
     </div>
