@@ -67,6 +67,10 @@ export const PopularProduct = async (productId: string, status: boolean) => {
   try{
     const productIdNumber = parseInt(productId, 10)
     const statusString = status ? 'true' : 'false';
+    console.log('productId (original):', productId);
+    console.log('productIdNumber (convertido):', productIdNumber);
+    console.log('status (booleano):', status);
+    console.log('statusString (convertido a string):', statusString);
      const response = await fetch(`${API_URL}/products/popular?id=${productIdNumber}&status=${statusString}`, {
      method: 'PUT',
      headers: {
@@ -94,3 +98,4 @@ export async function updateProductStock(productId: string, newStock:number) {
     throw error;
   }
 }
+

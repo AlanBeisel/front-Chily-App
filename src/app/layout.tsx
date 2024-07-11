@@ -6,6 +6,7 @@ import { Navbar } from './components/NavBar/navBar';
 import { AuthProvider } from './contexts/AuthContext';
 import { CacheProvider } from './contexts/CacheContext';
 import ToastProvider from './contexts/ToastProvider';
+import ReactQueryProvider from './contexts/ReactQueryProvider';
 
 
 const mochily = Mochiy_Pop_One({ weight: '400', subsets: ['latin'] });
@@ -35,7 +36,9 @@ export default function RootLayout({
         <AuthProvider>
           <CacheProvider>
             <Navbar />
-            <ToastProvider>{children}</ToastProvider>
+            <ReactQueryProvider>
+              <ToastProvider>{children}</ToastProvider>
+            </ReactQueryProvider>
             <Footer />
           </CacheProvider>
         </AuthProvider>

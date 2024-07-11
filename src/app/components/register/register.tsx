@@ -57,8 +57,10 @@ const formSchema = z
     path: ['confirmPassword'],
   });
 
+type FormSchema = z.infer<typeof formSchema>;
+
 export function RegisterForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
@@ -82,7 +84,7 @@ export function RegisterForm() {
     return () => subscription.unsubscribe();
   }, [watch, trigger]);
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: FormSchema) {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
@@ -102,6 +104,7 @@ export function RegisterForm() {
           }),
         },
       );
+
       if (response.status === 201) {
         showToast(
           'success',
@@ -110,19 +113,16 @@ export function RegisterForm() {
         router.push('/login');
       } else {
         const res = await response.json();
+        if (res.message && res.value && res.field) {
+          const errorMessage = `El valor '${res.value}' para el campo '${res.field}' ya está registrado.`;
+          showToast('error', <p>{errorMessage}</p>);
+        } else {
+          showToast(
+            'error',
+            <p>Ocurrió un error desconocido durante el registro</p>,
+          );
+        }
         console.error('Error durante el registro:', res);
-        let remplace: any = {
-          'email': 'Correo electronico',
-          'phone': 'Teléfono'
-        };
-        
-        const messageError = res.message.replace(/Ya existe la llave \((.*?)\)=\(.*\)\./, (_: any, p1: any) => {
-          return `Ya existe este ${remplace[p1]}`
-      })
-        showToast(
-          'error',
-          <p>Hubo un problema durante el registro, {messageError}</p>,
-        );
       }
     } catch (error) {
       console.error('Error durante el registro:', error);
@@ -227,7 +227,7 @@ export function RegisterForm() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder="Teléfono" {...field} />
+                <Input placeholder="+577751488347" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
