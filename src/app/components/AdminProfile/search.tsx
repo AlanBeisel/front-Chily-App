@@ -21,7 +21,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <form className="flex">
+    <form
+      className="flex"
+      onSubmit={(e) => {
+        e.preventDefault;
+      }}
+    >
       <input
         type="text"
         placeholder="Buscar por email"
@@ -37,11 +42,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         Buscar
       </Button>
       <Button
-        type="submit"
         onClick={handleSearch}
         className="bg-red-500 text-white  rounded-md"
       >
-        Limpiar
+        Reiniciar
       </Button>
     </form>
   );

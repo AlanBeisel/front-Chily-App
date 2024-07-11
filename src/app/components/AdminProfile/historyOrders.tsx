@@ -23,7 +23,7 @@ import {
 import { OrderDetailModal } from './detailOrderAdmin';
 import Select from './select';
 import { SearchBar } from './search';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 interface Product {
   name: string;
@@ -49,6 +49,7 @@ export function HistoryOrders() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [totalPages, setTotalPages] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
+  const queryClient = useQueryClient();
 
   const statusOptions = [
     { value: 'En camino', label: 'En camino' },
@@ -60,6 +61,27 @@ export function HistoryOrders() {
   const handleSelectChange = (value: string) => {
     const filtered = orders.filter((order) => order.status === value);
     setFilteredOrders(filtered);
+  };
+
+  const handleStatusEditChange = async (value: string, id: string) => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/orders/update`,
+      {
+        method: 'PUT',
+        headers: {
+          accept: '*/*',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: parseInt(id),
+          status: value,
+        }),
+      },
+    )
+      .then((data) => {
+        queryClient.invalidateQueries({ queryKey: ['orders'] });
+      })
+      .catch((e) => console.error(e));
   };
 
   const detailOrderAdmin = (orderId: string) => {
@@ -126,7 +148,7 @@ export function HistoryOrders() {
 
   return (
     <div className="flex flex-col min-h-screen m-2">
-      <div className="flex m-2 flex-row justify-between">
+      <div className="flex flex-col md:flex-row m-2 justify-between">
         <div className="m-2 p-2">
           <Select
             options={statusOptions}
@@ -134,10 +156,10 @@ export function HistoryOrders() {
             placeholder="Selecciona un estado"
           />
         </div>
-        <div className="">
+        <div className="m-2 p-2 flex-1">
           <SearchBar onSearch={handleSearch} searchValue={searchQuery} />
         </div>
-        <div className="">
+        <div className="m-2 p-2">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -174,42 +196,48 @@ export function HistoryOrders() {
           </Pagination>
         </div>
       </div>
-      <Table>
-        <TableCaption>Historial de órdenes</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>#ID</TableHead>
-            <TableHead>Fecha</TableHead>
-            <TableHead>Estado</TableHead>
-            <TableHead>Precio</TableHead>
-            <TableHead>Correo electrónico</TableHead>
-            <TableHead className="text-right">Detalles</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredOrders?.map((order) => (
-            <TableRow key={order.id}>
-              <TableCell className="font-medium">{order.id}</TableCell>
-              <TableCell>{order.date}</TableCell>
-              <TableCell className={getStatusStyle(order.status)}>
-                {order.status}
-              </TableCell>
-              <TableCell>{order.price}</TableCell>
-              <TableCell>{order.email}</TableCell>
-              <TableCell className="text-right">
-                {order?.products?.length > 0 && (
-                  <Button
-                    className="bg-red-500"
-                    onClick={() => detailOrderAdmin(order.id)}
-                  >
-                    Ver Detalle
-                  </Button>
-                )}
-              </TableCell>
+      <div className="overflow-x-auto">
+        <Table className="min-w-full">
+          <TableCaption>Historial de órdenes</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>#ID</TableHead>
+              <TableHead>Fecha</TableHead>
+              <TableHead>Estado</TableHead>
+              <TableHead>Precio</TableHead>
+              <TableHead>Correo electrónico</TableHead>
+              <TableHead className="text-right">Detalles</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {filteredOrders?.map((order) => (
+              <TableRow key={order.id}>
+                <TableCell className="font-medium">{order.id}</TableCell>
+                <TableCell>{order.date}</TableCell>
+                <TableCell className={getStatusStyle(order.status)}>
+                  <Select
+                    options={statusOptions}
+                    onChange={(e) => handleStatusEditChange(e, order.id)}
+                    placeholder={order.status}
+                  />
+                </TableCell>
+                <TableCell>{order.price}</TableCell>
+                <TableCell>{order.email}</TableCell>
+                <TableCell className="text-right">
+                  {order?.products?.length > 0 && (
+                    <Button
+                      className="bg-red-500"
+                      onClick={() => detailOrderAdmin(order.id)}
+                    >
+                      Ver Detalle
+                    </Button>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
       <OrderDetailModal order={selectedOrder} onClose={handleCloseModal} />
     </div>
   );
