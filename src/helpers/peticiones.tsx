@@ -41,13 +41,10 @@ export async function getProducts(
       url.searchParams.append('price', options.price);
     }
 
-    // Añadir filtros aplicados si existen y no hay price
-    if (
-      !options.price &&
-      options.appliedFilters &&
-      options.appliedFilters.length > 0
-    ) {
-      url.searchParams.append('filter', options.appliedFilters.join(','));
+    // Añadir filtros aplicados si existen
+    if (options.appliedFilters && options.appliedFilters.length > 0) {
+      const filtersToApply = options.appliedFilters.join(',');
+      url.searchParams.append('filter', filtersToApply);
     }
 
     const response = await fetch(url.toString(), {

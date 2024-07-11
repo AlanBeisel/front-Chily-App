@@ -13,7 +13,9 @@ import { useAuth } from '@/app/contexts/AuthContext';
 
 export const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const currentPage = 'Chily';
   const { user, isAuthenticated, logout } = useAuth();
@@ -22,6 +24,12 @@ export const Navbar: React.FC = () => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setMenuOpen(false);
+      }
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
       }
     }
 
@@ -80,20 +88,41 @@ export const Navbar: React.FC = () => {
               <Link href="/profile" className="hover:text-gray-300">
                 Mi perfil
               </Link>
-
-              {(user?.role === 'admin' || user?.role === 'superAdmin') && (
-                <Link href="/admin-panel" className="hover:text-gray-300">
-                  Panel Ordenes
-                </Link>
-              )}
-              {user?.role === 'superAdmin' && (
-                <Link href="/menu-panel" className="hover:text-gray-300">
-                  Menu Products
-                </Link>
-              )}
-              <button onClick={handleLogout} className="hover:text-gray-300">
-                Cerrar sesión
-              </button>
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="hover:text-gray-300"
+                >
+                  Panel
+                </button>
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-red-500 text-white rounded-md border shadow-lg z-20">
+                    {(user?.role === 'admin' ||
+                      user?.role === 'superadmin') && (
+                      <Link
+                        href="/admin-panel"
+                        className="block p-2 hover:text-gray-700"
+                      >
+                        Panel Ordenes
+                      </Link>
+                    )}
+                    {user?.role === 'superadmin' && (
+                      <Link
+                        href="/menu-panel"
+                        className="block p-2 hover:text-gray-700"
+                      >
+                        Menu Products
+                      </Link>
+                    )}
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left p-2 hover:text-gray-700"
+                    >
+                      Cerrar sesión
+                    </button>
+                  </div>
+                )}
+              </div>
             </>
           ) : (
             <>
@@ -119,7 +148,7 @@ export const Navbar: React.FC = () => {
               </Link>
             </>
           )}
-          {!(user?.role === 'admin' || user?.role === 'superAdmin') && (
+          {!(user?.role === 'admin' || user?.role === 'superadmin') && (
             <Link
               href="/cart"
               className="hover:text-gray-300"
@@ -164,7 +193,7 @@ export const Navbar: React.FC = () => {
                       Panel Administrador
                     </Link>
                   )}
-                  {user?.role === 'superAdmin' && (
+                  {user?.role === 'superadmin' && (
                     <Link
                       href="/menu-panel"
                       className="block p-2 hover:text-gray-300"
@@ -197,7 +226,7 @@ export const Navbar: React.FC = () => {
                   </Link>
                 </>
               )}
-              {!(user?.role === 'admin' || user?.role === 'superAdmin') && (
+              {!(user?.role === 'admin' || user?.role === 'superadmin') && (
                 <Link
                   href="/cart"
                   className="block p-2 hover:text-gray-300"
