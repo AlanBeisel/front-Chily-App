@@ -117,7 +117,7 @@ export function HistoryOrders() {
 
   useEffect(() => {
     if (data) {
-      setOrders(data);
+      setOrders([...orders, data.orders]);
       setTotalOrders(data?.total ? data.total : 1);
     }
   }, [data]);
