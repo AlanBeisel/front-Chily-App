@@ -1,0 +1,47 @@
+.container {
+  position: relative;
+  width: 80%;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.icon {
+  position: absolute;
+  top: -28px;
+  transform: translateX(-50%);
+  transition: left 0.3s ease-in-out;
+}
+
+.line {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  background-color: #f0f0f0; /* Cambié el color de fondo */
+  margin-top: 25px;
+}
+
+.progress {
+  position: absolute;
+  height: 100%;
+  background-color: #4caf50; /* Cambié el color de progreso */
+  transition: width 0.3s ease-in-out;
+}
+
+.statuses {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.status {
+  width: 25%;
+  font-weight: normal;
+  color: #777;
+  padding: 10px 0; /* Añadí padding para mejor legibilidad */
+  transition: color 0.3s ease-in-out;
+}
+
+.status.active {
+  font-weight: bold;
+  color: #000; /* Cambié el color activo */
+}

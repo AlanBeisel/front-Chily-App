@@ -57,7 +57,7 @@ export const CategoryFilter = () => {
             WebkitOverflowScrolling: 'touch',
           }}
         >
-          <div className="flex space-x-2 sm:space-x-3 md:space-x-4 p-2 sm:p-3 md:p-4">
+          <div className="flex justify-center space-x-2 sm:space-x-3 md:space-x-4 p-2 sm:p-3 md:p-4 w-full">
             <button
               className="flex flex-col items-center focus:outline-none group flex-shrink-0"
               onClick={handleViewAllProducts}

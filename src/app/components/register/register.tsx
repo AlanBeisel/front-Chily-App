@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { showToast } from '@/lib/utils';
 
 const formSchema = z
   .object({
@@ -56,8 +57,10 @@ const formSchema = z
     path: ['confirmPassword'],
   });
 
+type FormSchema = z.infer<typeof formSchema>;
+
 export function RegisterForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
@@ -81,8 +84,7 @@ export function RegisterForm() {
     return () => subscription.unsubscribe();
   }, [watch, trigger]);
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('precionado');
+  async function onSubmit(values: FormSchema) {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
@@ -102,18 +104,34 @@ export function RegisterForm() {
           }),
         },
       );
-      console.log(response);
+
       if (response.status === 201) {
-        alert('Te has registrado correctamente, por favor inicia sesión');
+        showToast(
+          'success',
+          <p>Te has registrado correctamente, por favor inicia sesión</p>,
+        );
         router.push('/login');
       } else {
         const res = await response.json();
-        alert(`Hubo un problema durante el registro, ${res?.message?.[0]}`);
+        if (res.message && res.value && res.field) {
+          const errorMessage = `El valor '${res.value}' para el campo '${res.field}' ya está registrado.`;
+          showToast('error', <p>{errorMessage}</p>);
+        } else {
+          showToast(
+            'error',
+            <p>Ocurrió un error desconocido durante el registro</p>,
+          );
+        }
+        console.error('Error durante el registro:', res);
       }
     } catch (error) {
       console.error('Error durante el registro:', error);
-      alert(
-        'Ocurrió un error durante el registro, por favor intenta de nuevo más tarde',
+      showToast(
+        'error',
+        <p>
+          Ocurrió un error durante el registro, por favor intenta de nuevo más
+          tarde
+        </p>,
       );
     }
   }
@@ -209,31 +227,7 @@ export function RegisterForm() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder="Teléfono" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="nin"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input placeholder="NIN" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input placeholder="Teléfono" {...field} />
+                <Input placeholder="+577751488347" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
