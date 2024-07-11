@@ -4,7 +4,7 @@ export interface Product {
   description: string;
   price: number;
   img: string;
-  available: boolean;
+  stock: number,
   isPopular: boolean;
   category: Category[];
 }
@@ -22,20 +22,27 @@ export interface User {
   email: string;
 }
 
+
+export interface ProductsInOrder {
+  productId: number;
+  name: string;
+  quantity: number;
+  price: number;
+}
+
+
 export interface Order {
-  id: string;
-  userId: string;
-  products: OrderProduct[];
-  totalAmount: number;
+  id: number;
+  userId: number;
+  address: Address;
+  productsInOrder: ProductsInOrder[];
+  generalDiscount?: number;
+  shipping: number;
+  total: number;
+  finalPrice: number;
   status: 'pending' | 'completed' | 'cancelled';
   createdAt: Date;
 }
-
-export interface OrderProduct {
-  productId: string;
-  quantity: number;
-}
-
 
 export interface CartItemProps {
   id: number;
@@ -53,4 +60,16 @@ export interface CartItemType {
   price: number;
   quantity: number;
   img: string;
+}
+
+
+
+export interface Address {
+  id: number;
+  location: {
+    lat: number;
+    lng: number;
+  };
+  address: string;
+  note: string;
 }

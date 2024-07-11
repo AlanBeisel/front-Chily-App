@@ -1,3 +1,4 @@
+"use client"
 import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/types';
@@ -5,7 +6,6 @@ import { FaPlus, FaMinus } from 'react-icons/fa';
 import { useAuth } from '@/app/contexts/AuthContext';
 import { toast } from 'react-toastify';
 import { useState } from 'react';
-
 
 interface ProductCardProps {
   product: Product;
@@ -15,6 +15,11 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { isAuthenticated } = useAuth();
   const [quantity, setQuantity] = useState<number>(0);
+
+
+  if (product.stock <= 0) {
+    return null;
+  }
 
   const handleAddToCart = () => {
     if (!isAuthenticated) {
@@ -36,12 +41,36 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     const existingItem = cartItems.find((item: any) => item.id === product.id);
 
     if (existingItem) {
+      if (existingItem.quantity >= product.stock) {
+        toast.warn('No hay suficiente stock disponible.', {
+          position: 'top-center',
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        return;
+      }
       cartItems = cartItems.map((item: any) =>
         item.id === product.id
           ? { ...item, quantity: item.quantity + 1 }
           : item,
       );
     } else {
+      if (product.stock <= 0) {
+        toast.warn('No hay suficiente stock disponible.', {
+          position: 'top-center',
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        return;
+      }
       cartItems.push({ ...product, quantity: 1 });
     }
 
@@ -80,7 +109,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <Link href={`/product/${product.id}`} passHref>
-      <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition duration-300 relative max-w-xs">
+      <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition duration-300 relative max-w-xs md:min-w-[200px]">
         <div className="relative w-full h-32 sm:h-40 md:h-48 lg:h-56 mb-4">
           <Image
             src={product.img}
