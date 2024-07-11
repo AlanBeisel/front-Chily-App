@@ -30,7 +30,7 @@ const WhatsAppForm = () => {
         <textarea
           id="message"
           className="w-full p-4 border border-gray-300 rounded-lg mb-4 resize-none"
-          rows="6" // Este "error" no afecta en nada
+          rows={6}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Escribe tu mensaje aquí..."

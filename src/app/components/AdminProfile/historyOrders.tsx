@@ -6,7 +6,6 @@ import {
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -64,21 +63,18 @@ export function HistoryOrders() {
   };
 
   const handleStatusEditChange = async (value: string, id: string) => {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/orders/update`,
-      {
-        method: 'PUT',
-        headers: {
-          accept: '*/*',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: parseInt(id),
-          status: value,
-        }),
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders/update`, {
+      method: 'PUT',
+      headers: {
+        accept: '*/*',
+        'Content-Type': 'application/json',
       },
-    )
-      .then((data) => {
+      body: JSON.stringify({
+        id: parseInt(id),
+        status: value,
+      }),
+    })
+      .then(() => {
         queryClient.invalidateQueries({ queryKey: ['orders'] });
       })
       .catch((e) => console.error(e));
