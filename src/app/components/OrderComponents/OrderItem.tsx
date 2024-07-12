@@ -1,7 +1,7 @@
 import React from 'react';
 import { Address, ProductsInOrder} from '@/types';
 import StatusTracker from './StatusTracker';
-import ChatWindow from './UserChat';
+import ChatWindow from '../Chat/UserChat';
 
 interface Order {
   id: number;

@@ -5,7 +5,7 @@ import { CategoryFilter } from '../app/components/MenuComponents/CategoryFilter'
 import Horarios from './components/HomeComponents/Horarios';
 
 import { RenderCategory } from './components/HomeComponents/RenderCategory';
-import TestChat, { mockArr } from './components/OrderComponents/TestChat';
+import TestChat, { mockArr } from './components/Chat/TestChat';
 
 
 

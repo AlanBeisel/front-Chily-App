@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import io from "socket.io-client"
 import ChatWindow from "./UserChat";
 
+
 const socket = io('http://localhost:3000');
 
 interface Chat {
@@ -45,7 +46,7 @@ const AdminChat: React.FC = () => {
           <div>
             <h3>Order ID:{selectedChat.orderId}</h3>
             <h3>{selectedChat.problemDescription}</h3>
-            <ChatWindow orderId={selectedChat.orderId} />
+            
           </div>
         )}
       </div>

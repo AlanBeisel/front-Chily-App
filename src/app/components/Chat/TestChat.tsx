@@ -1,7 +1,7 @@
 
-import AdminChat from "./AdminChat"
-import OrderList from "./OrderList"
+
 import React from "react";
+import OrderList from "../OrderComponents/OrderList";
 
 interface Address {
   id: number;
