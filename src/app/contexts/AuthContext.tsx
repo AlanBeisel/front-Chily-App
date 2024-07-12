@@ -40,6 +40,7 @@ type AuthContextType = {
   isAuthenticated: boolean;
   accessToken: string | null;
   address: Address | null;
+  isLoading: boolean; 
   setAddress: (address: Address) => void;
   login: (user: User, accessToken: string) => void;
   logout: () => void;
@@ -53,6 +54,7 @@ const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   accessToken: null,
   address: null,
+  isLoading: true, 
   setAddress: (_address: Address) => {},
   login: (_user: User, _accessToken: string) => {},
   logout: () => {},
@@ -72,28 +74,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [address, setAddress] = useState<Address | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  // useEffect(() => {
-  //   console.log(user, accessToken)
-  // }, [user, accessToken])
-
+  const [isLoading, setIsLoading] = useState(true); // Nuevo estado
 
   useEffect(() => {
-    const storedUser = getCookie('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    const loadAuthState = async () => {
+      const storedUser = getCookie('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
 
-    const storedAccessToken = getCookie('accessToken');
-    if (storedAccessToken) {
-      setAccessToken(storedAccessToken);
-      setIsAuthenticated(true);
-    }
+      const storedAccessToken = getCookie('accessToken');
+      if (storedAccessToken) {
+        setAccessToken(storedAccessToken);
+        setIsAuthenticated(true);
+      }
 
-  const storedAddress = getCookie('address');
-    if (storedAddress) {
-      setAddress(JSON.parse(storedAddress));
-    }
+      const storedAddress = getCookie('address');
+      if (storedAddress) {
+        setAddress(JSON.parse(storedAddress));
+      }
+
+      setIsLoading(false); 
+    };
+
+    loadAuthState();
   }, []);
 
   const login = (user: User, accessToken: string) => {
@@ -118,10 +122,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const isAdmin = () => user?.role === 'admin';
   const isSuperAdmin = () => user?.role === 'superadmin';
 
-   const setAddressAndStoreCookie = (newAddress: Address) => {
-     setAddress(newAddress);
-     setCookie('address', JSON.stringify(newAddress)); // Guardar dirección en cookie
-   };
+  const setAddressAndStoreCookie = (newAddress: Address) => {
+    setAddress(newAddress);
+    setCookie('address', JSON.stringify(newAddress));
+  };
 
   return (
     <AuthContext.Provider
@@ -136,6 +140,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isAdmin,
         isSuperAdmin,
         accessToken,
+        isLoading, // Nuevo valor en el contexto
       }}
     >
       {children}

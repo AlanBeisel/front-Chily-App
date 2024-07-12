@@ -214,10 +214,13 @@ export function HistoryOrders() {
             <TableCell className="">
               $
               {orders
-                .reduce(
-                  (total, order) => total + parseFloat(order.price.slice(1)),
-                  0,
-                )
+                .reduce((total, order) => {
+                  if (order && order.price) {
+                    return total + parseFloat(order.price.slice(1));
+                  } else {
+                    return total;
+                  }
+                }, 0)
                 .toFixed(2)}
             </TableCell>
           </TableRow>
