@@ -69,13 +69,16 @@ async function onSubmit(values: typeof formSchema) {
         router.push('/address'); 
       }
     } else {
-      showToast(
-        'error',
-        <p>
-          Hubo un problema durante el inicio de sesión, por favor intenta de
-          nuevo
-        </p>,
-      );
+      const res = await response.json();
+      if (res.message) {
+        showToast('error', <p>{res.message}</p>);
+      } else {
+        showToast(
+          'error',
+          <p>Ocurrió un error desconocido durante el registro</p>,
+        );
+      }
+      console.error('Error durante el registro:', res);
     }
   } catch (error) {
     console.error('Error durante el inicio de sesión:', error);
