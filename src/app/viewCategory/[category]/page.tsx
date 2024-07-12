@@ -46,33 +46,37 @@ const CategoryPage = ({ params }: { params: { category: string } }) => {
   const [hasMore, setHasMore] = useState(true);
   const limit = 10;
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        console.log(
-          `Fetching products for category ${categoryId}, page ${page}`,
-        );
-        const fetchedProducts = await getProductsByCategoryId(
-          categoryId,
-          page,
-          limit,
-        );
-        setProducts(
-          page === 1 ? fetchedProducts : [...products, ...fetchedProducts],
-        );
-        setHasMore(fetchedProducts.length === limit);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-        setProducts([]);
-        setHasMore(false);
-      } finally {
-        setLoading(false);
-      }
-    };
+useEffect(() => {
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      console.log(`Fetching products for category ${categoryId}, page ${page}`);
+      const fetchedProducts = await getProductsByCategoryId(
+        categoryId,
+        page,
+        limit,
+      );
 
-    fetchProducts();
-  }, [categoryId, page]);
+      if (page === 1) {
+        setProducts(fetchedProducts);
+      } else {
+    
+        setProducts([...fetchedProducts]);
+      }
+
+      setHasMore(fetchedProducts.length === limit);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setProducts([]);
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, [categoryId, page]);
+
 
   const handlePageChange = (pageNumber: number) => {
     setPage(pageNumber);

@@ -100,10 +100,11 @@ export function RegisterForm() {
             email: values.email,
             password: values.password,
             confirmPassword: values.confirmPassword,
-            phone: `+57${values.phone}`,
+            phone: values.phone,
           }),
         },
       );
+
       if (response.status === 201) {
         showToast(
           'success',
@@ -112,11 +113,16 @@ export function RegisterForm() {
         router.push('/login');
       } else {
         const res = await response.json();
+        if (res.message && res.value && res.field) {
+          const errorMessage = `El valor '${res.value}' para el campo '${res.field}' ya está registrado.`;
+          showToast('error', <p>{errorMessage}</p>);
+        } else {
+          showToast(
+            'error',
+            <p>Ocurrió un error desconocido durante el registro</p>,
+          );
+        }
         console.error('Error durante el registro:', res);
-        showToast(
-          'error',
-          <p>Hubo un problema durante el registro, {res.message}</p>,
-        );
       }
     } catch (error) {
       console.error('Error durante el registro:', error);
@@ -221,10 +227,7 @@ export function RegisterForm() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <div className="flex flex-row items-center">
-                  <span className="m-2">+52</span>
-                  <Input placeholder="7751488347" {...field} />
-                </div>
+                <Input placeholder="+577751488347" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
