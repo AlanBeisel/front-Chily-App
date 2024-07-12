@@ -4,7 +4,7 @@ import { useAuth } from '@/app/contexts/AuthContext';
 import PhoneModal from './PhoneModal';
 import NameModal from './NameModal';
 
-type Role = 'user' | 'admin' | 'superadmin';
+type Role = 'user' | 'admin' | 'superAdmin';
 
 interface Credential {
   id: string;
@@ -61,9 +61,10 @@ const UserInfo = ({ user }: { user: User | null }) => {
       <header className="flex items-center justify-center w-full mb-4">
         <h1 className="text-2xl font-bold text-red-500">Mi Cuenta</h1>
       </header>
-      <DataField label = "Nombre" value= {currentUser.name} editable = {false} />
-      <DataField label = "Email" value= {currentUser.email} editable = {false} />
-      <DataField label="Teléfono" value={currentUser.credential.phone} type='tel' onChange={handlePhoneChange} editable={isPhoneEditable}/>
+      <DataField label="Nombre" value={user.name} editable={true}  onEdit={openNameModal}/>
+      <DataField label="Email" value={user.email} editable={false}  />
+      <DataField label="Teléfono" value={user.credential.phone} editable={true} onEdit={openPhoneModal}/>
+
 
       {address && (
         <div>
