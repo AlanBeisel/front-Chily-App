@@ -236,7 +236,7 @@ export function HistoryOrders() {
                 <TableCell className="text-right">
                   {order?.products?.length > 0 && (
                     <Button
-                      className="bg-red-500"
+                      className="bg-red-500 hover:bg-gray-500"
                       onClick={() => detailOrderAdmin(order.id)}
                     >
                       Ver Detalle
