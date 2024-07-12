@@ -6,7 +6,7 @@ import RouteGuard from '@/helpers/routeGuard';
 
 const ProductListPage: React.FC = () => {
   return(
-    <RouteGuard allowedRoles={['superadmin']}>
+    <RouteGuard allowedRoles={['superadmin', 'admin']}>
       <div className="flex flex-col items-center justify-start min-h-screen bg-white p-4">
       <BackButton className= "self-start ml-4 mt-4" />
       <div className="mt-4">
