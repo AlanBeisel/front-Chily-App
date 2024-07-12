@@ -23,7 +23,8 @@ import {
 import { OrderDetailModal } from './detailOrderAdmin';
 import Select from './select';
 import { SearchBar } from './search';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+
 
 interface Product {
   name: string;
@@ -44,9 +45,14 @@ const ITEMS_PER_PAGE = 5;
 
 export function HistoryOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
+
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [totalOrders, setTotalOrders] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const queryClient = useQueryClient();
+
 
   const statusOptions = [
     { value: 'En camino', label: 'En camino' },
@@ -56,8 +62,27 @@ export function HistoryOrders() {
   ];
 
   const handleSelectChange = (value: string) => {
-    const filteredOrders = orders.filter((order) => order.status === value);
-    setOrders(filteredOrders);
+    const filtered = orders.filter((order) => order.status === value);
+    setFilteredOrders(filtered);
+  };
+
+  const handleStatusEditChange = async (value: string, id: string) => {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders/update`, {
+      method: 'PUT',
+      headers: {
+        accept: '*/*',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: parseInt(id),
+        status: value,
+      }),
+    })
+      .then(() => {
+        queryClient.invalidateQueries({ queryKey: ['orders'] });
+      })
+      .catch((e) => console.error(e));
+
   };
 
   const detailOrderAdmin = (orderId: string) => {
@@ -74,13 +99,10 @@ export function HistoryOrders() {
   };
 
   const handleSearch = (query: string) => {
-    const filteredOrders = orders.filter((order) =>
-      order.email.toLowerCase().includes(query.toLowerCase()),
-    );
-    setOrders(filteredOrders);
+    setSearchQuery(query);
+    setCurrentPage(1);
   };
 
-  const totalPages = Math.ceil(totalOrders / ITEMS_PER_PAGE);
 
   const getStatusStyle = (status: string) => {
     switch (status) {
@@ -100,7 +122,7 @@ export function HistoryOrders() {
   const { data, isLoading, isError } = useQuery({
     queryFn: async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/all-orders?page=${currentPage}&limit=${ITEMS_PER_PAGE}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/all-orders?page=${currentPage}&limit=${ITEMS_PER_PAGE}&email=${searchQuery}`,
         {
           method: 'GET',
           headers: {
@@ -111,14 +133,18 @@ export function HistoryOrders() {
 
       return response;
     },
-    queryKey: ['orders', currentPage],
+    queryKey: ['orders', currentPage, searchQuery],
+
     staleTime: 5 * 60 * 1000,
   });
 
   useEffect(() => {
     if (data) {
-      setOrders([...orders, data.orders]);
-      setTotalOrders(data?.total ? data.total : 1);
+
+      setOrders(data.orders);
+      setFilteredOrders(data.orders);
+      setTotalPages(data.total);
+
     }
   }, [data]);
 
@@ -127,7 +153,7 @@ export function HistoryOrders() {
 
   return (
     <div className="flex flex-col min-h-screen m-2">
-      <div className="flex m-2 flex-row justify-between">
+      <div className="flex flex-col md:flex-row m-2 justify-between">
         <div className="m-2 p-2">
           <Select
             options={statusOptions}
@@ -135,10 +161,12 @@ export function HistoryOrders() {
             placeholder="Selecciona un estado"
           />
         </div>
-        <div className="">
-          <SearchBar onSearch={handleSearch} />
+
+        <div className="m-2 p-2 flex-1">
+          <SearchBar onSearch={handleSearch} searchValue={searchQuery} />
         </div>
-        <div className="">
+        <div className="m-2 p-2">
+
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -175,57 +203,49 @@ export function HistoryOrders() {
           </Pagination>
         </div>
       </div>
-      <Table>
-        <TableCaption>Historial de órdenes</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>#ID</TableHead>
-            <TableHead>Fecha</TableHead>
-            <TableHead>Estado</TableHead>
-            <TableHead>Precio</TableHead>
-            <TableHead>Correo electrónico</TableHead>
-            <TableHead className="text-right">Detalles</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {orders.map((order) => (
-            <TableRow key={order.id}>
-              <TableCell className="font-medium">{order.id}</TableCell>
-              <TableCell>{order.date}</TableCell>
-              <TableCell className={getStatusStyle(order.status)}>
-                {order.status}
-              </TableCell>
-              <TableCell>{order.price}</TableCell>
-              <TableCell>{order.email}</TableCell>
-              <TableCell className="text-right">
-                <Button
-                  className="bg-red-500"
-                  onClick={() => detailOrderAdmin(order.id)}
-                >
-                  Ver Detalle
-                </Button>
-              </TableCell>
+      <div className="overflow-x-auto">
+        <Table className="min-w-full">
+          <TableCaption>Historial de órdenes</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>#ID</TableHead>
+              <TableHead>Fecha</TableHead>
+              <TableHead>Estado</TableHead>
+              <TableHead>Precio</TableHead>
+              <TableHead>Correo electrónico</TableHead>
+              <TableHead className="text-right">Detalles</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
-            <TableCell className="">
-              $
-              {orders
-                .reduce((total, order) => {
-                  if (order && order.price) {
-                    return total + parseFloat(order.price.slice(1));
-                  } else {
-                    return total;
-                  }
-                }, 0)
-                .toFixed(2)}
-            </TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {filteredOrders?.map((order) => (
+              <TableRow key={order.id}>
+                <TableCell className="font-medium">{order.id}</TableCell>
+                <TableCell>{order.date}</TableCell>
+                <TableCell className={getStatusStyle(order.status)}>
+                  <Select
+                    options={statusOptions}
+                    onChange={(e) => handleStatusEditChange(e, order.id)}
+                    placeholder={order.status}
+                  />
+                </TableCell>
+                <TableCell>{order.price}</TableCell>
+                <TableCell>{order.email}</TableCell>
+                <TableCell className="text-right">
+                  {order?.products?.length > 0 && (
+                    <Button
+                      className="bg-red-500"
+                      onClick={() => detailOrderAdmin(order.id)}
+                    >
+                      Ver Detalle
+                    </Button>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
       <OrderDetailModal order={selectedOrder} onClose={handleCloseModal} />
     </div>
   );
