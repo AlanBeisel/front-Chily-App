@@ -157,7 +157,7 @@ export function HistoryOrders() {
     return (
       <div className="min-h-screen">Hubo un error, intenta nuevamente</div>
     );
-
+  // comentario
   return (
     <div className="flex flex-col min-h-screen m-2">
       <div className="flex flex-wrap md:flex-row m-2 justify-between">
