@@ -30,4 +30,3 @@ export async function getOrders (userId: string) {
     throw error;
   }
 }
-

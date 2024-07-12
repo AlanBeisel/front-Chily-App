@@ -20,6 +20,7 @@ const Footer = () => {
           </a>
           <a
             href="/policy-privacy"
+
             className="underline decoration-white hover:decoration-yellow-400"
           >
             Política de Privacidad

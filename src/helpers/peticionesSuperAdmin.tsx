@@ -98,4 +98,3 @@ export async function updateProductStock(productId: string, newStock:number) {
     throw error;
   }
 }
-

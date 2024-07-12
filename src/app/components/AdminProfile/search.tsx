@@ -10,6 +10,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   onSearch,
   searchValue,
 }) => {
+
   const [query, setQuery] = useState('');
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,16 +32,19 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         type="text"
         placeholder="Buscar por email"
         value={query || searchValue}
+
         onChange={handleInputChange}
         className="border border-gray-300 rounded-md focus:outline-none "
       />
       <Button
         type="submit"
+
         onClick={handleSearch}
         className="bg-red-500 text-white  rounded-md"
       >
         Buscar
       </Button>
+
       <Button
         onClick={handleSearch}
         className="bg-red-500 text-white  rounded-md"
@@ -48,5 +52,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         Reiniciar
       </Button>
     </form>
+
   );
 };

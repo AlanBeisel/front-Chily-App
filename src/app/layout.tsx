@@ -10,6 +10,7 @@ import ReactQueryProvider from './contexts/ReactQueryProvider';
 import ChatBot from '@/components/ui/chatbot';
 
 
+
 const mochily = Mochiy_Pop_One({ weight: '400', subsets: ['latin'] });
 const poppins = Poppins({
   weight: ['400', '500', '600', '700'],

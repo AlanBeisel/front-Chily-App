@@ -6,6 +6,7 @@ import {
   TableBody,
   TableCaption,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -23,6 +24,7 @@ import { OrderDetailModal } from './detailOrderAdmin';
 import Select from './select';
 import { SearchBar } from './search';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+
 
 interface Product {
   name: string;
@@ -43,12 +45,14 @@ const ITEMS_PER_PAGE = 5;
 
 export function HistoryOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
+
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [totalPages, setTotalPages] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const queryClient = useQueryClient();
+
 
   const statusOptions = [
     { value: 'En camino', label: 'En camino' },
@@ -78,6 +82,7 @@ export function HistoryOrders() {
         queryClient.invalidateQueries({ queryKey: ['orders'] });
       })
       .catch((e) => console.error(e));
+
   };
 
   const detailOrderAdmin = (orderId: string) => {
@@ -97,6 +102,7 @@ export function HistoryOrders() {
     setSearchQuery(query);
     setCurrentPage(1);
   };
+
 
   const getStatusStyle = (status: string) => {
     switch (status) {
@@ -128,14 +134,17 @@ export function HistoryOrders() {
       return response;
     },
     queryKey: ['orders', currentPage, searchQuery],
+
     staleTime: 5 * 60 * 1000,
   });
 
   useEffect(() => {
     if (data) {
+
       setOrders(data.orders);
       setFilteredOrders(data.orders);
       setTotalPages(data.total);
+
     }
   }, [data]);
 
@@ -152,10 +161,12 @@ export function HistoryOrders() {
             placeholder="Selecciona un estado"
           />
         </div>
+
         <div className="m-2 p-2 flex-1">
           <SearchBar onSearch={handleSearch} searchValue={searchQuery} />
         </div>
         <div className="m-2 p-2">
+
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -234,6 +245,7 @@ export function HistoryOrders() {
           </TableBody>
         </Table>
       </div>
+
       <OrderDetailModal order={selectedOrder} onClose={handleCloseModal} />
     </div>
   );
