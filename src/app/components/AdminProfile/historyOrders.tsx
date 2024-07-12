@@ -192,6 +192,7 @@ export function HistoryOrders() {
                       </PaginationLink>
                     </PaginationItem>
                   );
+                return null;
               })}
               <PaginationItem>
                 {currentPage < totalPages ? (
