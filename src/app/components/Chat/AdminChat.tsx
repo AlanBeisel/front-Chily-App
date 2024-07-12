@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import io from "socket.io-client"
-import ChatWindow from "./UserChat";
+
 
 
 const socket = io('http://localhost:3000');
