@@ -1,27 +1,32 @@
-'use client'
-import React, { useState }  from 'react';
-import { FaRegEdit } from "react-icons/fa";
+'use client';
+import React, { useState } from 'react';
+import { FaRegEdit } from 'react-icons/fa';
 
 interface Props {
-  label: string,
-  value: string,
-  editable: boolean,
-  type?: string,
+  label: string;
+  value: string;
+  editable: boolean;
+  type?: string;
   onEdit?: () => void;
 }
 
-const DataField: React.FC<Props>= ({ label, value, editable, type= "text", onEdit}) => {
+const DataField: React.FC<Props> = ({
+  label,
+  value,
+  editable,
+  type = 'text',
+  onEdit,
+}) => {
   const [currentValue, setCurrentValue] = useState(value);
   const [isEditing, setIsEditing] = useState(false);
   const [originalValue, setOriginalValue] = useState(value);
 
-
   const handleEditClick = () => {
     setIsEditing(true);
     setOriginalValue(currentValue);
-    if(onEdit) {
+    if (onEdit) {
       onEdit();
-    } 
+    }
   };
 
   const handleCancelEdit = () => {
@@ -51,10 +56,10 @@ const DataField: React.FC<Props>= ({ label, value, editable, type= "text", onEdi
             className="text-red-500 w-full text-right border-b border-gray-200"
           />
         </div>
-      ):(
-        <div className="text-black w-2/3 text-right"> 
-        {type === 'pasword' ? '*******' : currentValue}
-        {editable && (
+      ) : (
+        <div className="text-black w-2/3 text-right">
+          {type === 'pasword' ? '*******' : currentValue}
+          {editable && (
             <button
               onClick={handleEditClick}
               className="ml-2 text-red-500 underline hover:text-red-700 focus:outline-none"
@@ -68,4 +73,4 @@ const DataField: React.FC<Props>= ({ label, value, editable, type= "text", onEdi
   );
 };
 
-export default DataField; 
+export default DataField;
