@@ -4,7 +4,7 @@ import { useAuth } from '@/app/contexts/AuthContext';
 import PhoneModal from './PhoneModal';
 import NameModal from './NameModal';
 
-type Role = 'user' | 'admin' | 'superAdmin';
+type Role = 'user' | 'admin' | 'superadmin';
 
 interface Credential {
   id: string;
