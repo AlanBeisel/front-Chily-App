@@ -1,4 +1,4 @@
-"use client"
+/*"use client"
 import { useEffect } from 'react';
 
 const ChatBot: React.FC = () => {
@@ -36,4 +36,4 @@ const ChatBot: React.FC = () => {
   return null;
 };
 
-export default ChatBot;
+export default ChatBot;*/

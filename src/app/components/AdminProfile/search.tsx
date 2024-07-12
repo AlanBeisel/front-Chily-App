@@ -10,7 +10,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   onSearch,
   searchValue,
 }) => {
-
   const [query, setQuery] = useState('');
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,7 +22,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <form
-      className="flex"
+      className="flex flex-wrap"
       onSubmit={(e) => {
         e.preventDefault;
       }}
@@ -32,26 +31,23 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         type="text"
         placeholder="Buscar por email"
         value={query || searchValue}
-
         onChange={handleInputChange}
-        className="border border-gray-300 rounded-md focus:outline-none "
+        className="border pl-2 border-gray-300 rounded-md "
       />
       <Button
         type="submit"
-
         onClick={handleSearch}
-        className="bg-red-500 text-white  rounded-md"
+        className="bg-white hover:bg-gray-300 text-black border-2 border-gray-400  rounded-md  m-2"
       >
         Buscar
       </Button>
 
       <Button
         onClick={handleSearch}
-        className="bg-red-500 text-white  rounded-md"
+        className="bg-white text-black border-2 border-gray-400  rounded-md m-2 hover:bg-gray-300"
       >
-        Reiniciar
+        Limpiar filtros
       </Button>
     </form>
-
   );
 };

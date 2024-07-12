@@ -64,7 +64,7 @@ async function onSubmit(values: typeof formSchema) {
       if (data.user.role === 'admin') {
         router.push('/admin-history'); 
       } else if (data.user.role === 'superadmin') {
-        router.push('/adminaccounts'); 
+        router.push('/superadmin/dashboard'); 
       } else {
         router.push('/address'); 
       }

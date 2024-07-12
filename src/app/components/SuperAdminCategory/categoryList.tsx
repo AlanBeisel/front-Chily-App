@@ -96,10 +96,10 @@ const CategoryList: React.FC = ()=> {
               <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>
                 <img src={category.icon} alt={category.name} className="h-12 w-12 object-cover rounded-full"/>
                 </td>
-              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>
-              <button className=" text-green-500 px-2 py-1 rounded mr-2">
+              <td className="border px-4 py-2">
+              <button className="bg-green-500 text-white px-2 py-1 rounded mr-2">
                 <Link href={`/superadmin/categories/edit/${category.id.toString()}`}>
-                <BiEdit  className="text-4xl"/>
+                Editar
                 </Link>
                 </button>
                 <button
