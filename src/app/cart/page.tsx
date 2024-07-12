@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import Image from 'next/image';
 import { FiMinus, FiPlus, FiTrash } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
+import RouteGuard from '@/helpers/routeGuard';
 
 const CartPage: React.FC = () => {
   const { isAuthenticated, address, user } = useAuth();
@@ -84,93 +85,95 @@ const CartPage: React.FC = () => {
   };
 
 
- return (
-   <div className="min-h-screen flex flex-col">
-     {items.length === 0 ? (
-       <div className="max-w-md mx-auto text-center py-12 px-4 flex-grow">
-         <h2 className="text-2xl font-semibold mb-4">Tu carrito está vacío</h2>
-         <p className="mb-4">
-           Agrega algunos productos para comenzar a comprar.
-         </p>
-         <Link href="/menu" className="text-blue-500 hover:underline">
-           Volver al menú
-         </Link>
-       </div>
-     ) : (
-       <div className="max-w-md mx-auto p-4 sm:max-w-2xl md:max-w-4xl flex-grow">
-         <div className="bg-white rounded-lg shadow-md p-6 mb-4">
-           {items.map((item) => (
-             <div
-               key={item.id}
-               className="flex items-center justify-between py-4 border-b"
-             >
-               <div className="flex items-center space-x-4">
-                 <Image
-                   src={item.img}
-                   alt={item.name}
-                   width={60}
-                   height={60}
-                   className="rounded-md"
-                 />
-                 <div>
-                   <h3 className="font-semibold">{item.name}</h3>
-                   <p className="text-gray-600">${item.price}</p>
-                 </div>
-               </div>
-               <div className="flex items-center space-x-2">
-                 <button
-                   onClick={() => updateQuantity(item.id, -1)}
-                   className="text-gray-500 hover:text-gray-700 p-2 rounded-full bg-gray-200 hover:bg-gray-300"
-                 >
-                   <FiMinus size={24} />
-                 </button>
-                 <span>{item.quantity}</span>
-                 <button
-                   onClick={() => updateQuantity(item.id, 1)}
-                   className="text-gray-500 hover:text-gray-700 p-2 rounded-full bg-gray-200 hover:bg-gray-300"
-                 >
-                   <FiPlus size={24} />
-                 </button>
-                 <button
-                   onClick={() => removeItem(item.id)}
-                   className="ml-2 text-red-500 hover:text-red-700 p-2 rounded-full bg-red-100 hover:bg-red-200"
-                 >
-                   <FiTrash size={24} />
-                 </button>
-               </div>
-             </div>
-           ))}
-           <div className="mt-4">
-             <h3 className="font-semibold mb-2">Instrucciones del Pedido:</h3>
-             <textarea
-               value={orderInstructions}
-               onChange={(e) => setOrderInstructions(e.target.value)}
-               className="w-full p-2 border rounded-md"
-               rows={3}
-             />
-           </div>
-         </div>
-         <div className="bg-white rounded-lg shadow-md p-6">
-           <div className="flex justify-between mb-2">
-             <span>Subtotal:</span>
-             <span>${calculateTotal().toFixed(2)}</span>
-           </div>
-           <button
-             onClick={proceedToCheckout}
-             className="block w-full bg-red-500 text-white text-center font-bold py-2 px-4 rounded-md hover:bg-red-600 transition duration-300"
-           >
-             Ir al checkout
-           </button>
-         </div>
-         <div className="mt-4 text-center">
-           <Link href="/" className="text-blue-500 hover:underline">
-             ← Volver al Menu
-           </Link>
-         </div>
-       </div>
-     )}
-   </div>
- );
+return (
+  <RouteGuard allowedRoles={['user']}>
+    <div className="min-h-screen flex flex-col">
+    {items.length === 0 ? (
+      <div className="max-w-md mx-auto text-center py-12 px-4 flex-grow">
+        <h2 className="text-2xl font-semibold mb-4">Tu carrito está vacío</h2>
+        <p className="mb-4">
+          Agrega algunos productos para comenzar a comprar.
+        </p>
+        <Link href="/menu" className="text-blue-500 hover:underline">
+          Volver al menú
+        </Link>
+      </div>
+    ) : (
+      <div className="max-w-md mx-auto p-4 sm:max-w-2xl md:max-w-4xl flex-grow">
+        <div className="bg-white rounded-lg shadow-md p-6 mb-4">
+          {items.map((item) => (
+            <div
+            key={item.id}
+            className="flex items-center justify-between py-4 border-b"
+            >
+              <div className="flex items-center space-x-4">
+                <Image
+                  src={item.img}
+                  alt={item.name}
+                  width={60}
+                  height={60}
+                  className="rounded-md"
+                  />
+                <div>
+                  <h3 className="font-semibold">{item.name}</h3>
+                  <p className="text-gray-600">${item.price}</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => updateQuantity(item.id, -1)}
+                  className="text-gray-500 hover:text-gray-700 p-2 rounded-full bg-gray-200 hover:bg-gray-300"
+                  >
+                  <FiMinus size={24} />
+                </button>
+                <span>{item.quantity}</span>
+                <button
+                  onClick={() => updateQuantity(item.id, 1)}
+                  className="text-gray-500 hover:text-gray-700 p-2 rounded-full bg-gray-200 hover:bg-gray-300"
+                  >
+                  <FiPlus size={24} />
+                </button>
+                <button
+                  onClick={() => removeItem(item.id)}
+                  className="ml-2 text-red-500 hover:text-red-700 p-2 rounded-full bg-red-100 hover:bg-red-200"
+                  >
+                <FiTrash size={24} />
+                </button>
+              </div>
+            </div>
+          ))}
+          <div className="mt-4">
+            <h3 className="font-semibold mb-2">Instrucciones del Pedido:</h3>
+            <textarea
+              value={orderInstructions}
+              onChange={(e) => setOrderInstructions(e.target.value)}
+              className="w-full p-2 border rounded-md"
+              rows={3}
+              />
+          </div>
+        </div>
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="flex justify-between mb-2">
+            <span>Subtotal:</span>
+            <span>${calculateTotal().toFixed(2)}</span>
+          </div>
+          <button
+            onClick={proceedToCheckout}
+            className="block w-full bg-red-500 text-white text-center font-bold py-2 px-4 rounded-md hover:bg-red-600 transition duration-300"
+            >
+            Ir al checkout
+          </button>
+        </div>
+        <div className="mt-4 text-center">
+          <Link href="/" className="text-blue-500 hover:underline">
+            ← Volver al Menu
+          </Link>
+        </div>
+      </div>
+    )}
+  </div>
+    </RouteGuard>
+);
 };
 
 export default CartPage;
