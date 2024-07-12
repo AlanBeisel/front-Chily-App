@@ -19,15 +19,17 @@ interface Order {
 }
 
 const UserOrders: React.FC = () => {
-  const {user} = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const userId = user?.id;
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if(!userId) {
-      setError('Usuario ni autenticado');
+    if (authLoading) return; 
+
+    if (!userId) {
+      setError('Usuario no autenticado');
       setLoading(false);
       return;
     }
@@ -45,20 +47,27 @@ const UserOrders: React.FC = () => {
     };
 
     fetchOrders();
-  }, [userId]);
+  }, [userId, authLoading]);
 
-  if (loading) return <div className= "text-center mt-4">Cargando...</div>;
-  if (error) return <div className="text-center mt-4 text-red-500">Error: {error}</div>;
+  if (authLoading || loading)
+    return <div className="text-center mt-4">Cargando...</div>;
+  if (error)
+    return <div className="text-center mt-4 text-red-500">Error: {error}</div>;
 
- return (
-  <div className="relative min-h-screen p-4">
+  return (
+    <div className="relative min-h-screen p-4">
       <div className="absolute top-0 left-0 p-4">
         <BackButton />
       </div>
       {orders.length === 0 ? (
         <div className="text-center mt-8">
-          <p className="text-lg font-semibold text-gray-700 mb-4">¡Todavía no hiciste ningún pedido!</p>
-          <Link href="/menu" className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition">
+          <p className="text-lg font-semibold text-gray-700 mb-4">
+            ¡Todavía no hiciste ningún pedido!
+          </p>
+          <Link
+            href="/menu"
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+          >
             Menú
           </Link>
         </div>

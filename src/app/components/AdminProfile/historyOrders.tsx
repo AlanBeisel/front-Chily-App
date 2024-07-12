@@ -6,7 +6,6 @@ import {
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -37,7 +36,7 @@ interface Order {
   price: string;
   date: string;
   email: string;
-  status: 'En camino' | 'Pendiente' | 'En preparación' | 'Entregada';
+  status: 'En camino' | 'Pendiente' | 'En preparación' | 'Entregada' | 'Confirmada';
   products: Product[];
 }
 
@@ -59,6 +58,7 @@ export function HistoryOrders() {
     { value: 'Pendiente', label: 'Pendiente' },
     { value: 'En preparación', label: 'En preparación' },
     { value: 'Entregada', label: 'Entregada' },
+    { value: 'Confirmada', label: 'Confirmada'}
   ];
 
   const handleSelectChange = (value: string) => {

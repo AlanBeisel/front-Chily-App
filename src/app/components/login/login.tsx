@@ -38,52 +38,60 @@ export function LoginForm() {
     return () => subscription.unsubscribe();
   }, [watch, trigger]);
 
-  async function onSubmit(values: typeof formSchema) {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/signin`,
-        {
-          method: 'POST',
-          headers: {
-            accept: '*/*',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: values.email,
-            password: values.password,
-          }),
+async function onSubmit(values: typeof formSchema) {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/signin`,
+      {
+        method: 'POST',
+        headers: {
+          accept: '*/*',
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+        }),
+      },
+    );
 
-      if (response.status === 201) {
-        const data = await response.json();
-        login(data.user, data.access_token);
-        showToast('success', <p>Has iniciado sesión correctamente</p>);
-        router.push("/address")
+    if (response.status === 201) {
+      const data = await response.json();
+      login(data.user, data.access_token);
+      showToast('success', <p>Has iniciado sesión correctamente</p>);
+
+      
+      if (data.user.role === 'admin') {
+        router.push('/admin-history'); 
+      } else if (data.user.role === 'superadmin') {
+        router.push('/adminaccounts'); 
       } else {
-        showToast(
-          'error',
-          <p>
-            Hubo un problema durante el inicio de sesión, por favor intenta de
-            nuevo
-          </p>,
-        );
+        router.push('/address'); 
       }
-    } catch (error) {
-      console.error('Error durante el inicio de sesión:', error);
+    } else {
       showToast(
         'error',
         <p>
-          Ocurrió un error durante el inicio de sesión, por favor intenta de
-          nuevo más tarde
+          Hubo un problema durante el inicio de sesión, por favor intenta de
+          nuevo
         </p>,
       );
     }
+  } catch (error) {
+    console.error('Error durante el inicio de sesión:', error);
+    showToast(
+      'error',
+      <p>
+        Ocurrió un error durante el inicio de sesión, por favor intenta de nuevo
+        más tarde
+      </p>,
+    );
   }
+}
 
-  function handleGoogleLogin() {
-    router.push(`${process.env.NEXT_PUBLIC_API_URL}/auth/google/login`);
-  }
+function handleGoogleLogin() {
+  router.push(`${process.env.NEXT_PUBLIC_API_URL}/auth/google/login`);
+}
 
   return (
     <Form {...form}>

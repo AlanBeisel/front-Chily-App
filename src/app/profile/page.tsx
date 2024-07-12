@@ -9,12 +9,22 @@ import Link from 'next/link';
 
 const UserDashboard: React.FC = () => {
 
-  const {user, isAuthenticated} = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-white w-full h-full">
+        <p className="text-gray-500 text-xl">Cargando...</p>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-white w-full h-full">
-        <p className="text-red-500 text-xl">Usuario no autenticado. Por favor inicie sesión.</p>
+        <p className="text-red-500 text-xl">
+          Usuario no autenticado. Por favor inicie sesión.
+        </p>
       </div>
     );
   }
