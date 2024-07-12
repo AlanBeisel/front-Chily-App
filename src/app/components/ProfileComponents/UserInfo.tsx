@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { setCookie, getCookie } from 'cookies-next';
 import { useEffect, useState } from 'react';
 
-type Role = 'user' | 'admin' | 'superAdmin';
+type Role = 'user' | 'admin' | 'superadmin';
 
 interface Credential {
   id: string;
@@ -63,7 +63,7 @@ const UserInfo = ({user} : {user: User | null}) => {
       </header>
       <DataField label = "Nombre" value= {currentUser.name} editable = {false} />
       <DataField label = "Email" value= {currentUser.email} editable = {false} />
-      <DataField label="Teléfono" value={currentUser.phone} type='tel' onChange={handlePhoneChange} editable={isPhoneEditable}/>
+      <DataField label="Teléfono" value={currentUser.credential.phone} type='tel' onChange={handlePhoneChange} editable={isPhoneEditable}/>
 
       {address && (
         <>

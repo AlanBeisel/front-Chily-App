@@ -29,5 +29,4 @@ const ProductStockUpdate: React.FC<ProductStockUpdateProps> = ({productId, curre
     </div>
   );
 }
-
 export default ProductStockUpdate;
