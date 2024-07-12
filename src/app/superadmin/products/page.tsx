@@ -9,5 +9,4 @@ const ProductListPage: React.FC = () => {
     </div>
   );
 };
-
 export default ProductListPage;
