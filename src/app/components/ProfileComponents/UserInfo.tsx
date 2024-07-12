@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DataField from './DataField';
 import { useAuth } from '@/app/contexts/AuthContext';
-import Link from 'next/link';
-import { setCookie, getCookie } from 'cookies-next';
-import { useEffect, useState } from 'react';
+import PhoneModal from './PhoneModal';
+import NameModal from './NameModal';
 
 type Role = 'user' | 'admin' | 'superAdmin';
 
@@ -28,56 +27,68 @@ interface User {
   credential: Credential;
 }
 
+const UserInfo = ({ user }: { user: User | null }) => {
+  const { address, isAuthenticated } = useAuth();
+  const[isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
+  const[isNameModalOpen, setIsNameModalOpen] = useState(false);
 
-const UserInfo = ({user} : {user: User | null}) => {
-  const {address} = useAuth();
-  const[currentUser, setCurrentUser] = useState<User | null>(user);
+  const openPhoneModal = () => setIsPhoneModalOpen(true);
+  const closePhoneModal = () => setIsPhoneModalOpen(false);
 
-  useEffect(() => {
-    const storedUser = getCookie('user');
-    if(storedUser) {
-      setCurrentUser(JSON.parse(storedUser as string));
-    }
-  }, [])
+  const openNameModal = () => setIsNameModalOpen(true);
+  const closeNameModal = () => setIsNameModalOpen(false);
 
-  if(!currentUser) {
+  const handlePhoneSave = (newPhone: string) => {
+    console.log('Nuevo teléfono guardado:', newPhone);
+  };
+
+  const handleNameSave = (newName: string) => {
+    console.log('Nuevo teléfono guardado:', newName);
+  };
+
+ 
+
+  if (!user || !isAuthenticated) {
     return (
       <div className="bg-white rounded-lg shadow-lg p-6 h-screen w-screen flex justify-center items-center">
-        <p className="text-red-500 text-xl"> Usuario no autenticado. Por favor inicie sesión</p>
+        <p className="text-red-500 text-xl">Usuario no autenticado. Por favor inicie sesión.</p>
       </div>
     );
   }
 
-  const isPhoneEditable = currentUser.googleAuth;
-
-  const handlePhoneChange = (newPhone: string) => {
-    setCurrentUser({...currentUser, phone: newPhone});
-    setCookie('user', JSON.stringify({...currentUser, phone:newPhone}));
-  };
-
-
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 w-full mx-auto mt-4 flex flex-col justify-center items-center space-y-4">
+    <div className="bg-white rounded-lg shadow-lg p-6 w-full mx-auto mt-4 space-y-4">
       <header className="flex items-center justify-center w-full mb-4">
-        <h1 className="text-2xl font-bold text-red-500"> Mi Cuenta</h1>
+        <h1 className="text-2xl font-bold text-red-500">Mi Cuenta</h1>
       </header>
-      <DataField label = "Nombre" value= {currentUser.name} editable = {false} />
-      <DataField label = "Email" value= {currentUser.email} editable = {false} />
-      <DataField label="Teléfono" value={currentUser.phone} type='tel' onChange={handlePhoneChange} editable={isPhoneEditable}/>
+      <DataField label="Nombre" value={user.name} editable={true}  onEdit={openNameModal}/>
+      <DataField label="Email" value={user.email} editable={false}  />
+      <DataField label="Teléfono" value={user.credential.phone} editable={true} onEdit={openPhoneModal}/>
+
 
       {address && (
-        <>
-        <h2 className="text-1xl font-bold text-red-500">Tus direcciones</h2>
-          <DataField label="Dirección" value={address.address} editable={false}/>
-
-        </>
+        <div>
+          <h2 className="text-lg font-semibold text-red-500">Tus direcciones:</h2>
+          <div className="mt-2">
+            <DataField label="Dirección" value={address.address} editable={false} />
+          </div>
+        </div>
       )}
 
-      <Link href="/req-reset" passHref>
-      <button className="mt-4 p-2 bg-red-500 text-white rounded-md hover:bg-red-700">
-        Recuperar Contraseña
-        </button>
-      </Link>
+      <PhoneModal
+      isOpen={isPhoneModalOpen}
+      onClose={closePhoneModal}
+      onSave={handlePhoneSave}
+      initialPhone = {user.credential.phone}
+      userId={parseInt(user.id)}
+      />
+      <NameModal
+      isOpen={isNameModalOpen}
+      onClose={closeNameModal}
+      onSave={handleNameSave}
+      initialName = {user.name}
+      userId={parseInt(user.id)}
+      />
     </div>
   );
 };

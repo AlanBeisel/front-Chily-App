@@ -3,6 +3,7 @@ import React from 'react';
 import UserInfo  from '../components/ProfileComponents/UserInfo';
 import { useAuth } from '../contexts/AuthContext';
 import BackButton from '../components/ProductIdComponents/BackButton';
+import { HiChevronRight } from "react-icons/hi";
 import Link from 'next/link';
 
 
@@ -31,12 +32,27 @@ const UserDashboard: React.FC = () => {
       ):(
         <div className="text-center mt-20"> Cargando...</div>
       )}
+       <div className="flex flex-col md:flex-row justify-center w-full">
+      <Link href="/address" passHref>
+      <div className= "md:mr-4  mt-4 px-6 py-3 bg-red-500 text-white text-lg font-semibold flex items-center justify-between cursor-pointer">
+      <span>Nueva dirección</span>
+      <HiChevronRight />
+      </div>
+      </Link> 
       <Link href="/orders" passHref>
-      <button className= "mt-6 px-6 py-3 bg-red-500 text-white text-lg font semibold rounded-md shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400">
-      Mis pedidos
-      </button>
+      <div className= "md:mr-4  mt-4 px-6 py-3 bg-red-500 text-white text-lg font-semibold flex items-center justify-between cursor-pointer">
+      <span>Mis Pedidos</span>
+      <HiChevronRight />
+      </div>
+      </Link>
+      <Link href="/change-password" passHref>
+      <div className= "md:mr-4  mt-4 px-6 py-3 bg-red-500 text-white text-lg font-semibold flex items-center justify-between cursor-pointer">
+      <span>Cambiar contraseña</span>
+      <HiChevronRight />
+      </div>
       </Link>
       </div>
+    </div>
     </div>
   );
 };
