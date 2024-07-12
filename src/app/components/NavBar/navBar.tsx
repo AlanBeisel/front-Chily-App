@@ -108,7 +108,17 @@ export const Navbar: React.FC = () => {
                       {user?.role === 'superadmin' && (
                         <>
                           <Link
-                            href="/menu-panel"
+                            href="/superadmin/categories"
+                            className="block p-2 hover:text-gray-700"
+                          >Categorias</Link>
+                          <Link
+                            href="/superadmin/dashboard"
+                            className="block p-2 hover:text-gray-700"
+                          >
+                            Dashboard
+                          </Link>
+                          <Link
+                            href="/superadmin/products"
                             className="block p-2 hover:text-gray-700"
                           >
                             Menu Products
@@ -191,22 +201,38 @@ export const Navbar: React.FC = () => {
                       {dropdownOpen && (
                         <div className="pl-4">
                           <Link
-                            href="/admin-panel"
-                            className="block p-2 hover:text-gray-300"
+                            href="/admin-history"
+                            className="block p-2 hover:text-gray-700"
                           >
                             Panel Ordenes
                           </Link>
                           {user?.role === 'superadmin' && (
                             <>
                               <Link
-                                href="/menu-panel"
-                                className="block p-2 hover:text-gray-300"
+                                href="/superadmin/dashboard"
+                                className="block p-2 hover:text-gray-700"
+                              >
+                                Dashboard
+                              </Link>
+                              <Link
+                                href="/superadmin/cotegories"
+                                className="block p-2 hover:text-gray-700"
+                              ></Link>
+                              <Link
+                                href="/cupons"
+                                className="block p-2 hover:text-gray-700"
+                              >
+                                Cupones
+                              </Link>
+                              <Link
+                                href="/superadmin/products"
+                                className="block p-2 hover:text-gray-700"
                               >
                                 Menu Products
                               </Link>
                               <Link
-                                href="/accounts-panel"
-                                className="block p-2 hover:text-gray-300"
+                                href="/adminaccounts"
+                                className="block p-2 hover:text-gray-700"
                               >
                                 Accounts
                               </Link>
