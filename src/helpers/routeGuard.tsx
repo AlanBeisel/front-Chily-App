@@ -23,7 +23,7 @@ const RouteGuard: React.FC<RouteGuardProps> = ({ children, allowedRoles }) => {
   }, [isLoading, isAuthenticated, user, allowedRoles, router]);
 
   if (isLoading) {
-    return <div>Cargando...</div>; // O cualquier componente de carga que prefieras
+    return <div>Cargando...</div>;
   }
 
   if (!isAuthenticated || !user || !allowedRoles.includes(user.role)) {

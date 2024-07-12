@@ -94,7 +94,7 @@ const CategoryList: React.FC = ()=> {
                 </td>
               <td className="border px-4 py-2">
               <button className="bg-green-500 text-white px-2 py-1 rounded mr-2">
-                <Link href={`/superadmin/category/edit/${category.id.toString()}`}>
+                <Link href={`/superadmin/categories/edit/${category.id.toString()}`}>
                 Editar
                 </Link>
                 </button>
