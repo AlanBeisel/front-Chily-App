@@ -1,68 +1,70 @@
-'use client';
+import { useSocket } from '@/app/contexts/socketContext';
 
-import { useEffect, useState } from 'react';
-import io from 'socket.io-client';
+import React, { useState } from 'react';
+import ChatBox from './ChatBox';
 
-const socket = io('http://localhost:3000');
 
-interface ChatWindowProps{
-  orderId: number
-  
+interface ChatWindowProps {
+  orderId: number;
+  userId:number
 }
 
-const ChatWindow: React.FC<ChatWindowProps> = ({ orderId }) => {
+const ChatWindow: React.FC<ChatWindowProps> = ({ orderId, userId }) => {
   const [problem, setProblem] = useState<string>('');
-  const [isConnected, setIsConnected] = useState<boolean>(false);
   const [description, setDescription] = useState<string>('');
-
-  useEffect(() => {
-    // Establish socket connection when the component mounts
-    socket.on('connect', () => {
-      console.log('Connected to the server');
-    });
-
-    socket.on('disconnect', () => {
-      console.log('Disconnected from the server');
-      setIsConnected(false);
-    });
-
-    // Clean up the connection when the component unmounts
-    return () => {
-      socket.off('connect');
-      socket.off('disconnect');
-    };
-  }, []);
-
-  useEffect(() => {
-    // Emit createRoom event only when description is not empty
-    if (description.trim() !== '') {
-      socket.emit('createRoom', { orderId, description }, (response: any) => {
-        if (response && response.success) {
-          setIsConnected(true);
-        } else {
-          console.error('Failed to create room:', response);
-        }
-      });
-    }
-  }, [description, orderId]);
+  const { isConnected, roomId, connectToRoom } = useSocket();
+  
 
   const handleDescription = () => {
     setDescription(problem);
+    connectToRoom(orderId, description);
   };
 
   return (
-    <div>
-      <div>Problem Description</div>
-      <input
-        type="text"
-        value={problem}
-        onChange={(e) => setProblem(e.target.value)}
-        placeholder="Describe the problem..."
-      />
-      <button onClick={handleDescription}>Start Chat</button>
-      <div>Chat</div>
-      {isConnected && (
-        <div>You are now connected to the chat room for order {orderId}.</div>
+    <div
+      style={{
+        backgroundColor: '#282c34',
+        color: 'white',
+        padding: '20px',
+        borderRadius: '8px',
+        width: '400px',
+        margin: '20px auto',
+      }}
+    >
+      {!isConnected || !roomId? (
+        <div>
+          <div style={{ marginBottom: '10px' }}>Problem Description</div>
+          <input
+            type="text"
+            value={problem}
+            onChange={(e) => setProblem(e.target.value)}
+            placeholder="Describe the problem..."
+            style={{
+              width: '100%',
+              padding: '10px',
+              marginBottom: '10px',
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+              color: 'blue',
+            }}
+          />
+          <button
+            onClick={handleDescription}
+            style={{
+              width: '100%',
+              padding: '10px',
+              backgroundColor: '#61dafb',
+              color: '#282c34',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+            }}
+          >
+            Start Chat
+          </button>
+        </div>
+      ) : (
+          <ChatBox orderId={orderId} userId={userId} />
       )}
     </div>
   );

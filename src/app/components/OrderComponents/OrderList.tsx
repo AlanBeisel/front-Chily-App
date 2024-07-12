@@ -33,7 +33,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
       orders.map((order) => (
         <OrderDetails
           key={order.id}
-          order={order}
+          order={order}          
         />
       ))
     )} 

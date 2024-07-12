@@ -43,7 +43,7 @@ const OrderDetails: React.FC<OrderProps> = ({ order }) => {
         <div className="text-lg text-yellow-300 font-bold">${order.total}</div>
       </div>
       <div>
-        <ChatWindow orderId={order.id}/>
+        <ChatWindow orderId={order.id} userId={order.userId}/>
       </div>
     </div>
   );

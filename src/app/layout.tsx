@@ -6,6 +6,7 @@ import { Navbar } from './components/NavBar/navBar';
 import { AuthProvider } from './contexts/AuthContext';
 import { CacheProvider } from './contexts/CacheContext';
 import ToastProvider from './contexts/ToastProvider';
+import { SocketProvider } from './contexts/socketContext';
 
 const mochily = Mochiy_Pop_One({ weight: '400', subsets: ['latin'] });
 const poppins = Poppins({
@@ -33,9 +34,11 @@ export default function RootLayout({
       >
         <AuthProvider>
           <CacheProvider>
-            <Navbar />
-            <ToastProvider>{children}</ToastProvider>
-            <Footer />
+            <SocketProvider>
+              <Navbar />
+              <ToastProvider>{children}</ToastProvider>
+              <Footer />
+            </SocketProvider>
           </CacheProvider>
         </AuthProvider>
       </body>

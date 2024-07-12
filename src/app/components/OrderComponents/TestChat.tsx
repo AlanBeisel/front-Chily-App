@@ -38,7 +38,7 @@ interface OrderListProps {
 // Mock data
 const mockOrders: Order = {
   id: 1,
-  userId: 123,
+  userId: 1,
   address: {
     id: 1,
     location: {
