@@ -5,7 +5,6 @@ import { getAllCategories } from "@/helpers/peticiones";
 import ConfirmModal from "../SuperAdminProducts/confirmModal";
 import { Category } from "@/types";
 import { HiOutlineTrash } from "react-icons/hi";
-import { BiEdit } from "react-icons/bi";
 import Link from "next/link";
 
 const PAGE_SIZE = 10;
