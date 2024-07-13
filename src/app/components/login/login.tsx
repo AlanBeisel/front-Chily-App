@@ -69,11 +69,11 @@ async function onSubmit(values: typeof formSchema) {
         router.push('/address'); 
       }
     } else {
+      const res = await response.json();
       showToast(
         'error',
         <p>
-          Hubo un problema durante el inicio de sesión, por favor intenta de
-          nuevo
+          {res.message}
         </p>,
       );
     }
