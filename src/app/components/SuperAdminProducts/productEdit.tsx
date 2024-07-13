@@ -41,6 +41,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({productId}) => {
   }, [productId]);
 
  const handleUpdate = async (data: Product) => {
+  console.log('Entrando a handleUpdate');
    if (!token) {
      console.error('Token no disponible');
      toast.error('Token no disponible', {
@@ -93,7 +94,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({productId}) => {
  };
 
   const confirmUpdate = async () => {
+    
     try {
+      console.log('Confirmando actualización del producto:', productId);
       await updateProduct(productId, product!, token!);
       setError(null);
       setModalOpen(false);
