@@ -1,26 +1,35 @@
 import { socket, useSocket } from "@/app/contexts/socketContext"
 import { useEffect, useState } from "react"
 
-const ChatBox: React.FC<{ orderId: number, userId: number }> = ({ orderId, userId }) => {
-  const [message, setMessage] = useState<string>("")
-  const [messages, setMessages] = useState<any[]>([])
-  const { sendMessage } = useSocket()
-  
+interface ChatBoxProps {
+  orderId: number;
+  userId: number;
+}
+
+const ChatBox: React.FC<ChatBoxProps> = ({ orderId, userId }) => {
+  const [message, setMessage] = useState<string>('');
+  const [messages, setMessages] = useState<any[]>([]);
+  const { sendMessage } = useSocket();
+
   const handleSendMessage = () => {
-    sendMessage(orderId, message, userId)
-    setMessage("")
-  }
+    if (orderId && message.trim() && userId) {
+      sendMessage(orderId, message, userId);
+      console.log('Message sent:', { orderId, message, userId });
+      setMessage('');
+    } else {
+      console.error('Failed to send message:', { orderId, message, userId });
+    }
+  };
 
   useEffect(() => {
-    const handdleMessage = (newMessage: any) => {
-      setMessages((prevMessages) => [...prevMessages, newMessage])
-      
-    }
-    socket.on("on-message", handdleMessage)
+    const handleMessage = (newMessage: any) => {
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    };
+    socket.on('on-message', handleMessage);
     return () => {
-      socket.off("on-message", handdleMessage)
-    }
-  }, [])
+      socket.off('on-message', handleMessage);
+    };
+  }, [socket]);
 
   return (
     <div>
@@ -40,7 +49,7 @@ const ChatBox: React.FC<{ orderId: number, userId: number }> = ({ orderId, userI
           marginBottom: '10px',
           borderRadius: '4px',
           border: '1px solid #ccc',
-          color:"black"
+          color: 'black',
         }}
       />
       <button
@@ -59,6 +68,6 @@ const ChatBox: React.FC<{ orderId: number, userId: number }> = ({ orderId, userI
       </button>
     </div>
   );
-  
-}
-export default ChatBox
+};
+
+export default ChatBox;

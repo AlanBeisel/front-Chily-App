@@ -14,7 +14,7 @@ export default function Home() {
           <CategoryFilter />
           <Horarios />
           <Popular />
-          <TestChat orders={mockArr}/>
+          <TestChat orders={mockArr}/> 
           <RenderCategory />
         </main>
       </div>

@@ -2,6 +2,7 @@
 
 import React from "react";
 import OrderList from "../OrderComponents/OrderList";
+import AdminChat from "./AdminChat";
 
 interface Address {
   id: number;
@@ -65,7 +66,7 @@ const TestChat: React.FC<OrderListProps> = ({ orders }) => {
   return (
     <div>
       <div>
-        {/* <AdminChat /> */}
+       <AdminChat /> 
       </div>
       <div>
         <OrderList orders={orders} />

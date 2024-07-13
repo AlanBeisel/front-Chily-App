@@ -1,56 +1,54 @@
 'use client';
-
-import { useEffect, useState } from "react";
-import io from "socket.io-client"
-
-
-
-const socket = io('http://localhost:3000');
-
-interface Chat {
-  id: number;
-  orderId: number;
-  problemDescription: string;
-  messages: string[];
-}
-
+import { Room, useSocket } from '@/app/contexts/socketContext';
+import { useState } from 'react';
+import ChatBox from './ChatBox';
+import { useAuth } from '@/app/contexts/AuthContext';
 
 
 
 const AdminChat: React.FC = () => {
-  const [chats, setChats] = useState<Chat[]>([]);
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
+  const { user } = useAuth();
+  const { rooms } = useSocket();
+  const [selectedChat, setSelectedChat] = useState<Room | null>(null);
+  const [orderId, setOrderId] = useState<number|null>(null)
 
-  useEffect(() => {
-    socket.on('newChat', (chat: Chat) => {
-      setChats((prevChats) => [...prevChats, chat]);
-    });
-    return () => {
-      socket.off('newChat');
-    };
-  }, []);
+  const handleSelectChat = (room: Room) => {
+    setSelectedChat(room);
+    setOrderId(room.chatLog.id);    
+  };
 
-  const handleSelectChat = (chat:Chat) => {
-    setSelectedChat(chat)
-  }
+  
+  const userId = user && user.id ? Number(user.id) : null;
+
   return (
     <div className="admin-chat">
       <h2>Admin Chat Box</h2>
       <div className="chats">
-        {chats.map((chat, index) => (
-          <div key={index} onClick={() => handleSelectChat(chat)} className="chat">Order ID: {chat.orderId }</div>
+        {rooms.map((room, index) => (
+          <div
+            key={index}
+            onClick={() => handleSelectChat(room)}
+            className="chat"
+          >
+            Order ID: {room.roomId}
+          </div>
         ))}
       </div>
       <div className="chat-details">
         {selectedChat && (
           <div>
-            <h3>Order ID:{selectedChat.orderId}</h3>
-            <h3>{selectedChat.problemDescription}</h3>
-            
+            <h3>Order ID: {selectedChat.roomId}</h3>
+            <h3>{JSON.stringify(selectedChat.chatLog)}</h3>
           </div>
         )}
       </div>
+      {selectedChat && userId !== null && orderId !== null ? (
+        <div>
+          <ChatBox orderId={orderId} userId={userId} />
+        </div>
+      ) : null}
     </div>
   );
 };
-export default AdminChat
+
+export default AdminChat;
