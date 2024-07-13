@@ -2,11 +2,10 @@
 import React, { useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { useCache } from '@/app/contexts/CacheContext';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+import { Category } from '@/types';
 
-export const CategoryFilter = () => {
-  const { categories } = useCache();
+export const CategoryFilter = ({categories}: {categories: Category[]}) => {
   const router = useRouter();
   const sliderRef = useRef<HTMLDivElement>(null);
 

@@ -4,7 +4,6 @@ import './globals.css';
 import Footer from './components/footer/footer';
 import { Navbar } from './components/NavBar/navBar';
 import { AuthProvider } from './contexts/AuthContext';
-import { CacheProvider } from './contexts/CacheContext';
 import ToastProvider from './contexts/ToastProvider';
 import ReactQueryProvider from './contexts/ReactQueryProvider';
 //import ChatBot from '@/components/ui/chatbot';
@@ -36,13 +35,11 @@ export default function RootLayout({
         className={`${mochily.className} ${poppins.className} flex justify-center max-w-7xl flex-col w-full p-4 max-lg:p-0  `}
       >
         <AuthProvider>
-          <CacheProvider>
             <Navbar />
             <ReactQueryProvider>
               <ToastProvider>{children}</ToastProvider>
             </ReactQueryProvider>
             <Footer />
-          </CacheProvider>
         </AuthProvider>
       </body>
     </html>

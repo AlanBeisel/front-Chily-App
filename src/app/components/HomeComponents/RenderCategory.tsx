@@ -1,19 +1,17 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useCache } from '@/app/contexts/CacheContext';
 import CategoryProducts from './CategoryProducts';
+import { Category } from '@/types';
 
 
-export const RenderCategory = () => {
-  const { categories } = useCache();
+export const RenderCategory = ({ categories }: { categories: Category[] }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-
-useEffect(() => {
-  if (categories.length > 0) {
-    setIsLoading(false);
-  }
-}, [categories]);
+  useEffect(() => {
+    if (categories.length > 0) {
+      setIsLoading(false);
+    }
+  }, [categories]);
 
   return (
     <div>
