@@ -5,6 +5,8 @@ import { updateCategory } from '@/helpers/peticionesSuperAdmin';
 import { getCategoryById } from '@/helpers/peticionesSuperAdmin';
 import { Category } from '@/types';
 import ConfirmModal from '../SuperAdminProducts/confirmModal';
+import { useAuth } from '@/app/contexts/AuthContext';
+
 
 interface CategoryEditProps {
   categoryId: string;
@@ -15,13 +17,18 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({categoryId}) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const {accessToken} = useAuth();
 
 
   useEffect(() => {
+    if(!accessToken) {
+      console.error('No se encontró el token de autenticación.');
+      return;
+    }
     const fetchCategory = async () =>{
       try{
           setLoading(true)
-          const categoryData = await getCategoryById(categoryId);
+          const categoryData = await getCategoryById(categoryId, accessToken);
           console.log('Datos del producto cargado:', categoryData);
           setCategory(categoryData);
       }catch (error) {
@@ -36,10 +43,14 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({categoryId}) => {
   }, [categoryId]);
 
   const handleUpdate = async (data: Category) => {
+    if(!accessToken) {
+      console.error('No se encontró el token de autenticación.');
+      return;
+    }
     try {
       setLoading(true);
       setModalOpen(true);
-      await updateCategory(categoryId, data);
+      await updateCategory(categoryId, data, accessToken);
     //  router.push('/dashboard');
     } catch (error) {
       console.error('Error al actualizar la categoría', error);
@@ -50,11 +61,15 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({categoryId}) => {
   };
 
   const confirmUpdate = async () => {
+    if(!accessToken) {
+      console.error('No se encontró el token de autenticación.');
+      return;
+    }
     try{
-      await updateCategory(categoryId, category!);
+      await updateCategory(categoryId, category!, accessToken);
       setError(null);
       setModalOpen(false);
-      const updatedCategory = await getCategoryById(categoryId);
+      const updatedCategory = await getCategoryById(categoryId, accessToken);
       setCategory(updatedCategory);
     } catch (error) {
       console.error('Error al actualizar la categoría.', error);

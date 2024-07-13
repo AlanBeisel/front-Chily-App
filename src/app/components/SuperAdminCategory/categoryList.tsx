@@ -6,6 +6,7 @@ import ConfirmModal from "../SuperAdminProducts/confirmModal";
 import { Category } from "@/types";
 import { HiOutlineTrash } from "react-icons/hi";
 import Link from "next/link";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 const PAGE_SIZE = 10;
 
@@ -16,6 +17,8 @@ const CategoryList: React.FC = ()=> {
   const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  const {accessToken} = useAuth();
 
   useEffect(() =>{
     fetchData();
@@ -52,10 +55,14 @@ const CategoryList: React.FC = ()=> {
   };
 
   const confirmDelete = async () => {
+    if(!accessToken) {
+      console.error('No se encontró el token de autenticación.');
+      return;
+    }
     if(!categoryToDelete) return;
 
     try{
-      await deleteCategory(categoryToDelete);
+      await deleteCategory(categoryToDelete, accessToken);
       setCategory(category.filter((category) => category.id !== categoryToDelete));
       closeModal();
     } catch (error) {
