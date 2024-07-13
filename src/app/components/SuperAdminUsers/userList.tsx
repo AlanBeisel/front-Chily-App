@@ -1,22 +1,19 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { deleteCategory } from "@/helpers/peticionesSuperAdmin";
-import { getAllCategories } from "@/helpers/peticiones";
+import { deleteUser, fecthUsers } from "@/helpers/peticionesSuperAdmin";
 import ConfirmModal from "../SuperAdminProducts/confirmModal";
-import { Category } from "@/types";
 import { HiOutlineTrash } from "react-icons/hi";
-import { FiEdit } from "react-icons/fi";
-import Link from "next/link";
 import { useAuth } from "@/app/contexts/AuthContext";
 import BackButton from "../ProductIdComponents/BackButton";
+import {User} from "@/types";
 
 const PAGE_SIZE = 10;
 
-const CategoryList: React.FC = ()=> {
-  const[category, setCategory] = useState<Category[]>([]);
+const UsersList: React.FC = ()=> {
+  const[user, setUser] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
-  const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
+  const [userToDelete, setUserToDelete] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -29,14 +26,11 @@ const CategoryList: React.FC = ()=> {
     const fetchData = async () => {
       try{
       setLoading(true);
-      const startIndex = (currentPage -1) * PAGE_SIZE;
-      const endIndex = startIndex + PAGE_SIZE;
-      const categoriesData = await getAllCategories();
-      const slicedCategories = categoriesData.slice(startIndex, endIndex);
-      setCategory(slicedCategories);
-      setTotalPages(Math.ceil(categoriesData.length / PAGE_SIZE));
+      const userData = await fecthUsers(currentPage,PAGE_SIZE)
+      setUser(userData);
+      setTotalPages(Math.ceil(userData.length / PAGE_SIZE));
     } catch (error) {
-      console.error('Error al obtener las categorias', error);
+      console.error('Error al obtener los usuarios', error);
     } finally {
       setLoading(false);
     }
@@ -47,13 +41,13 @@ const CategoryList: React.FC = ()=> {
   };
 
   const openDeleteModal = (id: string) => {
-    setCategoryToDelete(id);
+    setUserToDelete(id);
     setModalOpen(true);
   }
 
   const closeModal = () => {
     setModalOpen(false);
-    setCategoryToDelete(null);
+    setUserToDelete(null);
   };
 
   const confirmDelete = async () => {
@@ -61,56 +55,44 @@ const CategoryList: React.FC = ()=> {
       console.error('No se encontró el token de autenticación.');
       return;
     }
-    if(!categoryToDelete) return;
+    if(!userToDelete) return;
 
     try{
-      await deleteCategory(categoryToDelete, accessToken);
-      setCategory(category.filter((category) => category.id !== categoryToDelete));
+      await deleteUser(userToDelete, accessToken);
+      setUser(user.filter((user) => user.id !== userToDelete));
       closeModal();
     } catch (error) {
-      console.error('Error al eliminar la categoria', error);
+      console.error('Error al eliminar el usuario', error);
     }
   };
 
 
 
   if(loading) return <div>Cargando...</div>;
-  if(category.length === 0) return <div>No hay Categorias disponibles.</div>
+  if(user.length === 0) return <div>No hay usuarios disponibles.</div>
   
   return (
     <div className="container mx-auto px-4 w-full">
       <div className="flex justify-between items-center mb-4">
         <BackButton className="mr-4"/>
-        <h2 className="text-2xl font-bold text-red-500">Categorías</h2>
-        <Link href="/superadmin/categories/create">
-        <button className="bg-red-500 text-white px-4 py-2 rounded">
-      Crear categoria
-      </button>
-      </Link>
+        <h2 className="text-2xl font-bold text-red-500">Usuarios</h2>
       </div>
       <table className="w-full table-auto">
         <thead>
           <tr>
             <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Nombre</th>
-            <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Imagen</th>
+            <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Mail</th>
             <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Gestión</th>
           </tr>
         </thead>
         <tbody>
-          {category.map((category, index)=>(
-            <tr key= {category.id}>
-              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{category.name}</td>
+          {user.map((user, index)=>(
+            <tr key= {user.id}>
+              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{user.name}</td>
+              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{user.email}</td>
               <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>
-                <img src={category.icon} alt={category.name} className="h-12 w-12 object-cover rounded-full"/>
-                </td>
-              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>
-              <button className="bg-white text-green-500 px-2 py-1 rounded mr-2">
-                <Link href={`/superadmin/categories/edit/${category.id.toString()}`}>
-                <FiEdit className="text-4xl"/>
-                </Link>
-                </button>
                 <button
-                onClick={() => openDeleteModal(category.id)}
+                onClick={() => openDeleteModal(user.id)}
                 className="text-red-500 px-2 py-1 rounded mr-2"
                 >
                   <HiOutlineTrash className="text-4xl"/>
@@ -148,4 +130,4 @@ const CategoryList: React.FC = ()=> {
   );
 };
 
-export default CategoryList;
+export default UsersList;

@@ -17,7 +17,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const NameModal: React.FC<NameModalProps> = ({isOpen, onSave, onClose, initialName, userId }) => {
   const [tempName, setTempName] = useState(initialName || '');
 
-  const accessToken = useAuth();
+  const {accessToken} = useAuth();
 
   useEffect(() =>{
     setTempName(initialName);

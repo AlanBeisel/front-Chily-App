@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/app/contexts/AuthContext';
 import { HiOutlineTrash } from 'react-icons/hi';
+import { FiEdit } from "react-icons/fi";
+import BackButton from '../ProductIdComponents/BackButton';
 
 const PAGE_SIZE = 10;
 
@@ -96,8 +98,9 @@ const ProductList: React.FC = () => {
   if (products.length === 0) return <div>No hay productos disponibles.</div>;
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 w-full">
       <div className="flex justify-between items-center mb-4">
+        <BackButton className="mr-4"/>
         <h2 className="text-2xl font-bold text-red-500">Productos</h2>
         <Link href="/superadmin/products/create">
           <button className="bg-red-500 text-white px-4 py-2 rounded">
@@ -108,28 +111,28 @@ const ProductList: React.FC = () => {
       <table className="w-full table-auto">
         <thead>
           <tr>
-            <th className="px-4 py-2 text-gray-600 font-light text-md">Producto</th>
-            <th className="px-4 py-2 text-gray-600 font-light text-md">Categoría</th>
-            <th className="px-4 py-2 text-gray-600 font-light text-md">Precio</th>
-            <th className="px-4 py-2 text-gray-600 font-light text-md">Gestión</th>
+            <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wider">Producto</th>
+            <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Categoría</th>
+            <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Precio</th>
+            <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Gestión</th>
           </tr>
         </thead>
         <tbody>
-          {products.map((product,) => (
+          {products.map((product, index) => (
             <tr key={product.id}>
-              <td className="border px-4 py-2">{product.name}</td>
-              <td className="border px-4 py-2">
+              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{product.name}</td>
+              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>
                 {Array.isArray(product.category)
                   ? product.category.map((cat: any) => cat.name).join(',')
                   : product.category}
               </td>
-              <td className="border px-4 py-2">${product.price}</td>
-              <td className="border px-4 py-2">
-                <button className="bg-green-500 text-white px-2 py-1 rounded mr-2">
+              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>${product.price}</td>
+              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>
+                <button className="bg-white text-green-500 px-2 py-1 rounded mr-2">
                   <Link
                     href={`/superadmin/products/edit/${product.id.toString()}`}
                   >
-                    Editar
+                   <FiEdit className="text-4xl"/>
                   </Link>
                 </button>
                 <button

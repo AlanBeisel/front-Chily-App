@@ -10,7 +10,7 @@ import Link from 'next/link';
 
 const UserDashboard: React.FC = () => {
 
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading, isAdmin, isSuperAdmin } = useAuth();
 
   if (isLoading) {
     return (
@@ -43,6 +43,8 @@ const UserDashboard: React.FC = () => {
         <div className="text-center mt-20"> Cargando...</div>
       )}
        <div className="flex flex-col md:flex-row justify-center w-full">
+      {!isAdmin() && !isSuperAdmin() && (
+      <>
       <Link href="/address" passHref>
       <div className= "md:mr-4  mt-4 px-6 py-3 bg-red-500 text-white text-lg font-semibold flex items-center justify-between cursor-pointer">
       <span>Nueva dirección</span>
@@ -55,6 +57,8 @@ const UserDashboard: React.FC = () => {
       <HiChevronRight />
       </div>
       </Link>
+      </>
+      )}
       <Link href="/change-password" passHref>
       <div className= "md:mr-4  mt-4 px-6 py-3 bg-red-500 text-white text-lg font-semibold flex items-center justify-between cursor-pointer">
       <span>Cambiar contraseña</span>

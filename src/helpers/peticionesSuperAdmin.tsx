@@ -1,4 +1,4 @@
-import { Category, Product } from '@/types';
+import { Category, Product, User } from '@/types';
 
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -216,3 +216,29 @@ export async function getCategoryById(
     throw error;
   }
 }
+
+export const deleteUser = async (id: string, token: string) => {
+  try {
+    const response = await fetch(`${API_URL}/user/delete/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  } catch (error) {
+    console.error('Error al eliminar el usuario', error);
+    throw error;
+  }
+}
+
+export const fecthUsers = async (page: number, limit: number) => {
+  const response = await fetch (`${API_URL}/user?page=${page}&limit=${limit}`);
+  if (!response.ok) {
+    throw new Error('Error al obtener los usuarios');
+  }
+
+const users: User[] = await response.json();
+return users;
+
+};

@@ -16,7 +16,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const PhoneModal: React.FC<PhoneModalProps> = ({isOpen, onClose, onSave, initialPhone, userId }) => {
   const [tempPhone, setTempPhone] = useState(initialPhone || '');
 
-  const accessToken = useAuth();
+  const {accessToken} = useAuth();
 
   useEffect(() =>{
     setTempPhone(initialPhone);

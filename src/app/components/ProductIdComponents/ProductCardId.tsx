@@ -43,7 +43,7 @@ const ProductIDCard: React.FC<ProductIDCardProps> = ({ params }) => {
   }, [params.productId]);
 
   const handleIncrease = () => {
-    if (product && quantity < product.stock) {
+    if (product && product.stock !== undefined && quantity < product.stock) {
       setQuantity(quantity + 1);
     } else {
       toast.warn('No hay suficiente stock disponible.', {
