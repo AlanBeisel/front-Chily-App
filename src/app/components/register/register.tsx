@@ -113,9 +113,8 @@ export function RegisterForm() {
         router.push('/login');
       } else {
         const res = await response.json();
-        if (res.message && res.value && res.field) {
-          const errorMessage = `El valor '${res.value}' para el campo '${res.field}' ya está registrado.`;
-          showToast('error', <p>{errorMessage}</p>);
+        if (res.message) {
+          showToast('error', <p>{res.message}</p>);
         } else {
           showToast(
             'error',

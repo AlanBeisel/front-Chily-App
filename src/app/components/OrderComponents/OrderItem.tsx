@@ -24,10 +24,13 @@ interface Order {
   date: string;
 }
 
+
 const OrderDetails: React.FC<OrderProps> = ({ order }) => {
-  const [showStatusTracker, setShowStatusTracker] = useState(true);
+  const [showStatusTracker, setShowStatusTracker] = useState(false);
 
   useEffect(() => {
+    let hideTimer: NodeJS.Timeout | null = null;
+
     if (
       order.status === 'Confirmada' ||
       order.status === 'En preparación' ||
@@ -36,18 +39,18 @@ const OrderDetails: React.FC<OrderProps> = ({ order }) => {
       setShowStatusTracker(true);
     } else if (order.status === 'Entregada') {
       setShowStatusTracker(true);
-
-      // Ocultar después de 5 minutos (300000 ms)
-      const hideTimer = setTimeout(() => {
+      hideTimer = setTimeout(() => {
         setShowStatusTracker(false);
-      }, 300000);
-
-
-      return () => {
-        clearTimeout(hideTimer);
-      };
+      }, 20000);
+    } else {
+      setShowStatusTracker(false);
     }
-    return undefined
+
+    return () => {
+      if (hideTimer) {
+        clearTimeout(hideTimer);
+      }
+    };
   }, [order.status]);
 
   return (
@@ -65,12 +68,14 @@ const OrderDetails: React.FC<OrderProps> = ({ order }) => {
             <div className="mr-2">{product.name}</div>
             <div className="flex flex-col sm:flex-row justify-between items-center">
               <div className="text-white">Cantidad: {product.quantity}</div>
-              <div className="text-lg text-yellow-300 font-bold">
-                ${order.total.toFixed(2)}
-              </div>
+              
             </div>
           </div>
         ))}
+        
+        <div className="text-lg text-yellow-300 font-bold mt-2">
+          Total: ${order.total.toFixed(2)}
+        </div>
       </div>
 
       <div className="text-sm mb-6 sm:mb-0 bg-white rounded-xl">

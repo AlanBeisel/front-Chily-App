@@ -8,7 +8,7 @@ import { CacheProvider } from './contexts/CacheContext';
 import ToastProvider from './contexts/ToastProvider';
 import { SocketProvider } from './contexts/socketContext';
 import ReactQueryProvider from './contexts/ReactQueryProvider';
-import ChatBot from '@/components/ui/chatbot';
+//import ChatBot from '@/components/ui/chatbot';
 
 
 
@@ -48,7 +48,6 @@ export default function RootLayout({
             </SocketProvider>
           </CacheProvider>
         </AuthProvider>
-         <ChatBot/>;
       </body>
     </html>
   );

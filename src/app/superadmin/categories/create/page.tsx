@@ -1,16 +1,16 @@
 'use client'
 import React from "react";
-import ProductCreate from "@/app/components/SuperAdminProducts/productCreate";
+import CategoryCreate from "@/app/components/SuperAdminCategory/categoryCreate";
 import RouteGuard from "@/helpers/routeGuard";
 
-const CreateProductPage: React.FC = () => {
+const CreateCategoryPage: React.FC = () => {
   return(
       <RouteGuard allowedRoles={['superadmin']}>
     <div>
-      <ProductCreate />
+      <CategoryCreate />
     </div>
       </RouteGuard>
   );
 };
 
-export default CreateProductPage;
+export default CreateCategoryPage;

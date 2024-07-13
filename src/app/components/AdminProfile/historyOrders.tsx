@@ -6,7 +6,6 @@ import {
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -25,7 +24,6 @@ import Select from './select';
 import { SearchBar } from './search';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-
 interface Product {
   name: string;
   price: string;
@@ -37,7 +35,12 @@ interface Order {
   price: string;
   date: string;
   email: string;
-  status: 'En camino' | 'Pendiente' | 'En preparación' | 'Entregada';
+  status:
+    | 'En camino'
+    | 'Pendiente'
+    | 'En preparación'
+    | 'Entregada'
+    | 'Confirmada';
   products: Product[];
 }
 
@@ -53,12 +56,12 @@ export function HistoryOrders() {
   const [searchQuery, setSearchQuery] = useState('');
   const queryClient = useQueryClient();
 
-
   const statusOptions = [
     { value: 'En camino', label: 'En camino' },
     { value: 'Pendiente', label: 'Pendiente' },
     { value: 'En preparación', label: 'En preparación' },
     { value: 'Entregada', label: 'Entregada' },
+    { value: 'Confirmada', label: 'Confirmada' },
   ];
 
   const handleSelectChange = (value: string) => {
@@ -82,7 +85,6 @@ export function HistoryOrders() {
         queryClient.invalidateQueries({ queryKey: ['orders'] });
       })
       .catch((e) => console.error(e));
-
   };
 
   const detailOrderAdmin = (orderId: string) => {
@@ -102,7 +104,6 @@ export function HistoryOrders() {
     setSearchQuery(query);
     setCurrentPage(1);
   };
-
 
   const getStatusStyle = (status: string) => {
     switch (status) {
@@ -140,11 +141,9 @@ export function HistoryOrders() {
 
   useEffect(() => {
     if (data) {
-
       setOrders(data.orders);
       setFilteredOrders(data.orders);
-      setTotalPages(data.total);
-
+      setTotalPages(Math.ceil(data.total / ITEMS_PER_PAGE));
     }
   }, [data]);
 
@@ -166,7 +165,6 @@ export function HistoryOrders() {
           <SearchBar onSearch={handleSearch} searchValue={searchQuery} />
         </div>
         <div className="m-2 p-2">
-
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -178,18 +176,24 @@ export function HistoryOrders() {
                   <button disabled>Anterior</button>
                 )}
               </PaginationItem>
-              {[...Array(totalPages)].map((_, index) => (
-                <PaginationItem key={index}>
-                  <PaginationLink
-                    onClick={() => handlePageChange(index + 1)}
-                    className={
-                      index + 1 === currentPage ? 'bg-red-500 text-white' : ''
-                    }
-                  >
-                    {index + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
+              {[...Array(totalPages)].map((_, index) => {
+                if (currentPage - 3 <= index && index < currentPage + 2)
+                  return (
+                    <PaginationItem key={index}>
+                      <PaginationLink
+                        onClick={() => handlePageChange(index + 1)}
+                        className={
+                          index + 1 === currentPage
+                            ? 'bg-red-500 text-white'
+                            : ''
+                        }
+                      >
+                        {index + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  );
+                return null;
+              })}
               <PaginationItem>
                 {currentPage < totalPages ? (
                   <PaginationNext
@@ -233,7 +237,7 @@ export function HistoryOrders() {
                 <TableCell className="text-right">
                   {order?.products?.length > 0 && (
                     <Button
-                      className="bg-red-500"
+                      className="bg-red-500 hover:bg-gray-500"
                       onClick={() => detailOrderAdmin(order.id)}
                     >
                       Ver Detalle

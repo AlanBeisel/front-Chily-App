@@ -1,9 +1,11 @@
 "use client"
+import { useAuth } from '@/app/contexts/AuthContext';
 import React, { useState } from 'react';
 
 const CrearCupon = () => {
   const [porcentaje, setPorcentaje] = useState('');
   const [mensaje, setMensaje] = useState('');
+  const {accessToken} = useAuth();
 
 const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
@@ -14,11 +16,13 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   }
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/discount/create`,
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/discount/create`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({ discount: Number(porcentaje) }),
       },
