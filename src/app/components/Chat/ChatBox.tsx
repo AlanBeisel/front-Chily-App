@@ -1,5 +1,5 @@
-import { socket, useSocket } from "@/app/contexts/socketContext"
-import { useEffect, useState } from "react"
+import {  useSocket } from "@/app/contexts/socketContext"
+import {  useState } from "react"
 
 interface ChatBoxProps {
   orderId: number;
@@ -8,12 +8,12 @@ interface ChatBoxProps {
 
 const ChatBox: React.FC<ChatBoxProps> = ({ orderId, userId }) => {
   const [message, setMessage] = useState<string>('');
-  const [messages, setMessages] = useState<any[]>([]);
-  const { sendMessage } = useSocket();
+  const { sendMessage, messages, chatLogId } = useSocket();
+  const chatMessages = messages[orderId] || [];
 
   const handleSendMessage = () => {
-    if (orderId && message.trim() && userId) {
-      sendMessage(orderId, message, userId);
+    if (chatLogId && message.trim() && userId && orderId) {
+      sendMessage(chatLogId, message, userId, orderId);
       console.log('Message sent:', { orderId, message, userId });
       setMessage('');
     } else {
@@ -21,20 +21,16 @@ const ChatBox: React.FC<ChatBoxProps> = ({ orderId, userId }) => {
     }
   };
 
-  useEffect(() => {
-    const handleMessage = (newMessage: any) => {
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-    };
-    socket.on('on-message', handleMessage);
-    return () => {
-      socket.off('on-message', handleMessage);
-    };
-  }, [socket]);
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSendMessage();
+    }
+  };
 
   return (
     <div>
       <div>
-        {messages.map((msg, index) => (
+        {chatMessages.map((msg, index) => (
           <div key={index}>{msg.text}</div>
         ))}
       </div>
@@ -42,6 +38,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ orderId, userId }) => {
         type="text"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={handleKeyDown}
         placeholder="Type your message..."
         style={{
           width: '100%',

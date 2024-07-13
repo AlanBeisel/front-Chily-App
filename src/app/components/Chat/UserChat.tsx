@@ -20,6 +20,12 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ orderId, userId }) => {
     connectToRoom(orderId, description);
   };
 
+  const handleKeyDown =(event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleDescription()
+    }
+  }
+
   return (
     <div
       style={{
@@ -38,6 +44,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ orderId, userId }) => {
             type="text"
             value={problem}
             onChange={(e) => setProblem(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="Describe the problem..."
             style={{
               width: '100%',
