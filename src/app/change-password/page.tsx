@@ -3,6 +3,7 @@ import {z} from 'zod';
 import {useState} from 'react';
 import { showToast } from '@/lib/utils';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { useAuth } from '../contexts/AuthContext';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -25,8 +26,9 @@ const formSchema = z.object ({
       });
 
 function ChangePasswordForm () {
+  const {accessToken, user} = useAuth();
   const [formData, setFormData] = useState({
-    userId: '',
+    userId: user?.id|| 0,
     oldPassword: '',
     newPassword: '',
     confirmPassword: '',
@@ -84,6 +86,7 @@ const toggleShowConfirmPassword = () => {
         method:'POST',
         headers: {
           'Content-type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
         },
         body: JSON.stringify(parsedData.data),
       });

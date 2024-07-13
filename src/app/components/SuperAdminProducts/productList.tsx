@@ -6,6 +6,7 @@ import { Product } from '@/types';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/app/contexts/AuthContext';
+import { HiOutlineTrash } from 'react-icons/hi';
 
 const PAGE_SIZE = 10;
 
@@ -95,9 +96,9 @@ const ProductList: React.FC = () => {
   if (products.length === 0) return <div>No hay productos disponibles.</div>;
 
   return (
-    <div>
+    <div className="container mx-auto px-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-red-500">Todos los productos</h2>
+        <h2 className="text-2xl font-bold text-red-500">Productos</h2>
         <Link href="/superadmin/products/create">
           <button className="bg-red-500 text-white px-4 py-2 rounded">
             Crear Producto
@@ -107,14 +108,14 @@ const ProductList: React.FC = () => {
       <table className="w-full table-auto">
         <thead>
           <tr>
-            <th className="px-4 py-2">Nombre</th>
-            <th className="px-4 py-2">Categoría</th>
-            <th className="px-4 py-2">Precio</th>
-            <th className="px-4 py-2">Acciones</th>
+            <th className="px-4 py-2 text-gray-600 font-light text-md">Producto</th>
+            <th className="px-4 py-2 text-gray-600 font-light text-md">Categoría</th>
+            <th className="px-4 py-2 text-gray-600 font-light text-md">Precio</th>
+            <th className="px-4 py-2 text-gray-600 font-light text-md">Gestión</th>
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => (
+          {products.map((product,) => (
             <tr key={product.id}>
               <td className="border px-4 py-2">{product.name}</td>
               <td className="border px-4 py-2">
@@ -133,9 +134,9 @@ const ProductList: React.FC = () => {
                 </button>
                 <button
                   onClick={() => openDeleteModal(product.id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded"
+                  className="text-red-500 px-2 py-1 rounded"
                 >
-                  Eliminar
+                   <HiOutlineTrash className="text-4xl"/>
                 </button>
               </td>
             </tr>

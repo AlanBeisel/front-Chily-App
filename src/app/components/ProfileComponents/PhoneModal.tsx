@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { toast } from 'react-toastify';
+import { useAuth } from '@/app/contexts/AuthContext';
 
 interface PhoneModalProps {
   isOpen: boolean;
@@ -7,12 +8,15 @@ interface PhoneModalProps {
   onSave: (newPhone: string) => void;
   initialPhone: string;
   userId: number;
+  accessToken: string;
 
 }
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const PhoneModal: React.FC<PhoneModalProps> = ({isOpen, onClose, onSave, initialPhone, userId }) => {
   const [tempPhone, setTempPhone] = useState(initialPhone || '');
+
+  const accessToken = useAuth();
 
   useEffect(() =>{
     setTempPhone(initialPhone);
@@ -24,16 +28,25 @@ const PhoneModal: React.FC<PhoneModalProps> = ({isOpen, onClose, onSave, initial
 
   const handleSave = async () => {
     try {
+      console.log('Token de acceso:', accessToken);
         const response = await fetch(`${API_URL}/user/${userId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization':`Bearer ${accessToken}` 
           },
           body: JSON.stringify({ phone: tempPhone}),
+          
           });
 
           console.log('Response status:', response.status);
-          console.log('Response body:', await response.json());
+       
+          if (response.headers.get('content-type')?.includes('application/json')) {
+            const responseData = await response.json();
+            console.log('Response body:', responseData);
+          } else {
+            console.log('Response body:', await response.text());
+          }
 
 
            if (!response.ok) {

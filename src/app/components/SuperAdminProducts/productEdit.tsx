@@ -105,7 +105,9 @@ const handleUpdate = async (data: Partial<Product>) => {
 };
 
   const confirmUpdate = async () => {
+    
     try {
+      console.log('Confirmando actualización del producto:', productId);
       await updateProduct(productId, product!, token!);
       setError(null);
       setModalOpen(false);

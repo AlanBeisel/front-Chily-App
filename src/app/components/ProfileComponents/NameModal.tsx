@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { toast } from 'react-toastify';
+import { useAuth } from '@/app/contexts/AuthContext';
 
 
 interface NameModalProps {
@@ -7,13 +8,16 @@ interface NameModalProps {
   onClose: () => void;
   onSave: (newName: string) => void;
   initialName: string;
-  userId: number
+  userId: number;
+  accessToken: string;
 
 }
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const NameModal: React.FC<NameModalProps> = ({isOpen, onSave, onClose, initialName, userId }) => {
   const [tempName, setTempName] = useState(initialName || '');
+
+  const accessToken = useAuth();
 
   useEffect(() =>{
     setTempName(initialName);
@@ -29,6 +33,7 @@ const NameModal: React.FC<NameModalProps> = ({isOpen, onSave, onClose, initialNa
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization':`Bearer ${accessToken}`
           },
           body: JSON.stringify({ name: tempName}),
           });

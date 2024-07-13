@@ -4,7 +4,9 @@ import { deleteCategory } from "@/helpers/peticionesSuperAdmin";
 import { getAllCategories } from "@/helpers/peticiones";
 import ConfirmModal from "../SuperAdminProducts/confirmModal";
 import { Category } from "@/types";
+import { HiOutlineTrash } from "react-icons/hi";
 import Link from "next/link";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 const PAGE_SIZE = 10;
 
@@ -15,6 +17,8 @@ const CategoryList: React.FC = ()=> {
   const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  const {accessToken} = useAuth();
 
   useEffect(() =>{
     fetchData();
@@ -51,10 +55,14 @@ const CategoryList: React.FC = ()=> {
   };
 
   const confirmDelete = async () => {
+    if(!accessToken) {
+      console.error('No se encontró el token de autenticación.');
+      return;
+    }
     if(!categoryToDelete) return;
 
     try{
-      await deleteCategory(categoryToDelete);
+      await deleteCategory(categoryToDelete, accessToken);
       setCategory(category.filter((category) => category.id !== categoryToDelete));
       closeModal();
     } catch (error) {
@@ -70,7 +78,7 @@ const CategoryList: React.FC = ()=> {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-red-500">Todas las categorias</h2>
+        <h2 className="text-2xl font-bold text-red-500">Categorías</h2>
         <Link href="/superadmin/categories/create">
         <button className="bg-red-500 text-white px-4 py-2 rounded">
       Crear categoria
@@ -80,16 +88,18 @@ const CategoryList: React.FC = ()=> {
       <table className="w-full table-auto">
         <thead>
           <tr>
-            <th className="px-4 py-2">Nombre</th>
-            <th className="px-4 py-2">Imagen</th>
-            <th className="px-4 py-2">Acciones</th>
+            <th className="px-4 py-2 text-gray-600 font-light text-md">ID</th>
+            <th className="px-4 py-2 text-gray-600 font-light text-md">Nombre</th>
+            <th className="px-4 py-2 text-gray-600 font-light text-md">Imagen</th>
+            <th className="px-4 py-2text-gray-600 font-light text-md">Gestión</th>
           </tr>
         </thead>
         <tbody>
-          {category.map((category)=>(
+          {category.map((category, index)=>(
             <tr key= {category.id}>
-              <td className="border px-4 py-2">{category.name}</td>
-              <td className="border px-4 py-2">
+              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{category.id}</td>
+              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{category.name}</td>
+              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>
                 <img src={category.icon} alt={category.name} className="h-12 w-12 object-cover rounded-full"/>
                 </td>
               <td className="border px-4 py-2">
@@ -100,9 +110,9 @@ const CategoryList: React.FC = ()=> {
                 </button>
                 <button
                 onClick={() => openDeleteModal(category.id)}
-                className="bg-red-500 text-white px-2 py-1 rounded"
+                className="text-red-500 px-2 py-1 rounded mr-2"
                 >
-                  Eliminar
+                  <HiOutlineTrash className="text-4xl"/>
                 </button>
               </td>
             </tr>
