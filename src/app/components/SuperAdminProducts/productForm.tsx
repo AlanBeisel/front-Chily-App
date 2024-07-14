@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { getAllCategories } from '@/helpers/peticiones';
 
 type Category = {
-  id: string;
+  id: number;
   name: string;
 };
 
@@ -30,8 +30,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
   });
 
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    defaultValues?.category || [],
+  const [selectedCategories, setSelectedCategories] = useState<number[]>(
+    defaultValues?.category?.map((cat: any) => cat?.id) || [],
   );
   const [, setShowCategoryCard] = useState<boolean>(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -58,7 +58,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
   useEffect(() => {
     if (defaultValues?.category) {
-      setSelectedCategories(defaultValues.category);
+      setSelectedCategories(
+        defaultValues.category
+          .filter((cat: any) => cat !== null)
+          .map((cat: any) => cat.id),
+      );
     }
   }, [defaultValues]);
 
@@ -78,7 +82,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     };
   }, []);
 
-  const handleCategorySelect = (categoryId: string) => {
+  const handleCategorySelect = (categoryId: number) => {
     setSelectedCategories((prevCategories) => {
       if (!prevCategories.includes(categoryId)) {
         return [...prevCategories, categoryId];
@@ -91,7 +95,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     }
   };
 
-  const removeCategory = (categoryId: string) => {
+  const removeCategory = (categoryId: number) => {
     setSelectedCategories(selectedCategories.filter((id) => id !== categoryId));
     setShowCategoryCard(false);
   };

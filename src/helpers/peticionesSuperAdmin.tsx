@@ -51,7 +51,7 @@ export const createProduct = async (data: any, token: string) => {
   }
 };
 
-export const updateProduct = async (id: string, data: any, token: string) => {
+export const updateProduct = async (id: number, data: any, token: string) => {
   try {
     const response = await fetch(`${API_URL}/products/update/${id}`, {
       method: 'PUT',
@@ -96,12 +96,12 @@ export const deleteProduct = async (id: string, token: string) => {
 };
 
 export const PopularProduct = async (
-  productId: string,
+  productId: number,
   status: boolean,
   token: string,
 ) => {
   try {
-    const productIdNumber = parseInt(productId, 10);
+    const productIdNumber = productId;
     const statusString = status ? 'true' : 'false';
     console.log('productId (original):', productId);
     console.log('productIdNumber (convertido):', productIdNumber);
