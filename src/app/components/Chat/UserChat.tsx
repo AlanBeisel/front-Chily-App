@@ -1,29 +1,28 @@
+'use client';
 import { useSocket } from '@/app/contexts/socketContext';
 
 import React, { useState } from 'react';
 import ChatBox from './ChatBox';
 
-
 interface ChatWindowProps {
-  orderId: number;  
+  orderId: number;
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ orderId }) => {
   const [problem, setProblem] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const { isConnected, roomId, connectToRoom } = useSocket();
-  
 
   const handleDescription = () => {
     setDescription(problem);
     connectToRoom(orderId, description);
   };
 
-  const handleKeyDown =(event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      handleDescription()
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleDescription();
     }
-  }
+  };
 
   return (
     <div
@@ -36,7 +35,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ orderId }) => {
         margin: '20px auto',
       }}
     >
-      {!isConnected || !roomId? (
+      {!isConnected || !roomId ? (
         <div>
           <div style={{ marginBottom: '10px' }}>Problem Description</div>
           <input
@@ -70,7 +69,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ orderId }) => {
           </button>
         </div>
       ) : (
-          <ChatBox/>
+        <ChatBox />
       )}
     </div>
   );

@@ -1,8 +1,8 @@
+'use client';
 
-
-import React from "react";
-import OrderList from "../OrderComponents/OrderList";
-import AdminChat from "./AdminChat";
+import React from 'react';
+import OrderList from '../OrderComponents/OrderList';
+import AdminChat from './AdminChat';
 
 interface Address {
   id: number;
@@ -66,7 +66,7 @@ const TestChat: React.FC<OrderListProps> = ({ orders }) => {
   return (
     <div>
       <div>
-       <AdminChat /> 
+        <AdminChat />
       </div>
       <div>
         <OrderList orders={orders} />
@@ -75,4 +75,4 @@ const TestChat: React.FC<OrderListProps> = ({ orders }) => {
   );
 };
 
-export default TestChat
+export default TestChat;

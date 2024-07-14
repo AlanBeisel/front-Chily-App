@@ -1,8 +1,7 @@
-import { useAuth } from "@/app/contexts/AuthContext";
-import {  useSocket } from "@/app/contexts/socketContext"
-import {  useState } from "react"
-
-
+'use client';
+import { useAuth } from '@/app/contexts/AuthContext';
+import { useSocket } from '@/app/contexts/socketContext';
+import { useState } from 'react';
 
 const ChatBox: React.FC = () => {
   const { user } = useAuth();
@@ -32,8 +31,8 @@ const ChatBox: React.FC = () => {
   return (
     <div>
       <div>
-        {chatMessages.map((msg:Record<string,any>, index:number) => (
-          <div key={index}>{msg.text}</div> 
+        {chatMessages.map((msg: Record<string, any>, index: number) => (
+          <div key={index}>{msg.text}</div>
         ))}
       </div>
       <input
