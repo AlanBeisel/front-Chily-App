@@ -1,23 +1,25 @@
+import { useAuth } from "@/app/contexts/AuthContext";
 import {  useSocket } from "@/app/contexts/socketContext"
 import {  useState } from "react"
 
-interface ChatBoxProps {
-  orderId: number;
-  userId: number;
-}
 
-const ChatBox: React.FC<ChatBoxProps> = ({ orderId, userId }) => {
+
+const ChatBox: React.FC = () => {
+  const { user } = useAuth();
   const [message, setMessage] = useState<string>('');
-  const { sendMessage, messages, chatLogId } = useSocket();
-  const chatMessages = messages[orderId] || [];
+  const { sendMessage, chatLogs, chatLogId, isConnected } = useSocket();
+
+  // Safely access chatMessages
+  const chatMessages = chatLogId ? chatLogs[chatLogId] || [] : [];
+  const userId = user ? parseInt(user.id, 10) : null;
 
   const handleSendMessage = () => {
-    if (chatLogId && message.trim() && userId && orderId) {
-      sendMessage(chatLogId, message, userId, orderId);
-      console.log('Message sent:', { orderId, message, userId });
+    if (chatLogId && message.trim() && userId !== null) {
+      sendMessage(chatLogId, message, userId);
+      console.log('Message sent:', { chatLogId, message, userId });
       setMessage('');
     } else {
-      console.error('Failed to send message:', { orderId, message, userId });
+      console.error('Failed to send message:', { chatLogId, message, userId });
     }
   };
 
@@ -30,8 +32,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({ orderId, userId }) => {
   return (
     <div>
       <div>
-        {chatMessages.map((msg, index) => (
-          <div key={index}>{msg.text}</div>
+        {chatMessages.map((msg:Record<string,any>, index:number) => (
+          <div key={index}>{msg.text}</div> 
         ))}
       </div>
       <input
@@ -48,6 +50,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ orderId, userId }) => {
           border: '1px solid #ccc',
           color: 'black',
         }}
+        disabled={!isConnected}
       />
       <button
         onClick={handleSendMessage}
@@ -60,6 +63,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ orderId, userId }) => {
           borderRadius: '4px',
           cursor: 'pointer',
         }}
+        disabled={!isConnected}
       >
         Send
       </button>

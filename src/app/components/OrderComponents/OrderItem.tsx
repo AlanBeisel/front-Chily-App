@@ -82,7 +82,7 @@ const OrderDetails: React.FC<OrderProps> = ({ order }) => {
         {showStatusTracker && <StatusTracker status={order.status} />}
       </div>
       <div>
-        <ChatWindow orderId={order.id} userId={order.userId}/>
+        <ChatWindow orderId={order.id}/>
       </div>
     </div>
   );

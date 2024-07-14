@@ -4,6 +4,7 @@ import io, { Socket } from 'socket.io-client';
 import React, {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -11,29 +12,30 @@ import React, {
 import { useAuth } from './AuthContext';
 
 export interface Room {
-  roomId: string
-  chatLog:Record<string, any>
+  roomId: string;
+  chatLog: Record<string, any>;
 }
 
 interface Message {
-  text: string;
-  orderId: number;
+  chatLogId: number;
+  message: string;
   userId: number;
 }
 
 interface ChatSocketContextType {
   isConnected: boolean;
-  orderId: number | null;
-  chatLogId:number | null
-  roomId: string | null
-  rooms: Room[]
-  messages: Record<number, Message[]>; 
+  chatLogId: number | null;
+  roomId: string | null;
+  rooms: Room[];
+  chatLogs: Record<number, any>;
   connectToRoom: (orderId: number, description: string) => void;
   joinNewRoom: (roomId: string) => void;
-  sendMessage: (orderId: number, message: string, userId: number) => void;
+  sendMessage: (chatLogId: number, message: string, userId: number) => void;
   addMessage: (message: Message) => void;
-  setMessages: (orderId: number, messages: Message[]) => void;  
+  setChatLogs: (chatLogId: number, messages: Message[]) => void;
+  setChatLogId: (chatLogId: number) => void;
 }
+
 const SocketContext = createContext<ChatSocketContextType | undefined>(
   undefined,
 );
@@ -41,96 +43,95 @@ const SocketContext = createContext<ChatSocketContextType | undefined>(
 export const useSocket = () => {
   const context = useContext(SocketContext);
   if (!context) {
-    throw new Error('Use socket must be used within a SocketProvider');
+    throw new Error('useSocket must be used within a SocketProvider');
   }
   return context;
 };
 
-
-
-// Define the URL based on the environment
 const URL =
   process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000';
 
-// Initialize the socket with the specified URL and options
 export const socket: Socket = io(URL, { autoConnect: false });
-
 
 export const SocketProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const {user} = useAuth()
+  const { user } = useAuth();
   const [isConnected, setIsConnected] = useState<boolean>(socket.connected);
-  const [orderId, setOrderId] = useState<number | null>(null);
-  const [rooms, setRooms] = useState<Room[]>([])
-  const [roomId, setRoomId] = useState<string | null>(null)
-  const [messages, setMessagesState] = useState<Record<number, Message[]>>({});
-  const [chatLogId, setChatLogId] = useState<number|null>(null)
-
-
- 
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [roomId, setRoomId] = useState<string | null>(null);
+  const [chatLogs, setChatLogsState] = useState<Record<number, any>>({});
+  const [chatLogId, setChatLogId] = useState<number | null>(null);
 
   useEffect(() => {
     if (user) {
-      socket.connect()
-      if (user.role === "admin") {
+      socket.connect();
+      if (user.role === 'admin') {
         socket.emit('adminConnected');
       }
     }
 
     const onConnect = () => {
       setIsConnected(true);
-      console.log("role", user!.role)
+      console.log('Connected as role:', user!.role);
     };
+
     const onDisconnect = () => {
       setIsConnected(false);
-      setRoomId("")
-      setChatLogId(null)
-    
+      setRoomId(null);
+      setChatLogId(null);
+      setChatLogsState({});
     };
 
     const onCreateRoomResponse = (response: any) => {
       console.log('Create Room Response:', response);
       if (response.success) {
-        setIsConnected(true)
-        setRoomId(response.roomId)
-        setChatLogId(response.chatLog.id)
+        setRoomId(response.roomId);
+        setChatLogId(response.chatLog.id);
         console.log('Connected to room:', response.roomId);
       } else {
         console.error('Failed to create room:', response.error);
       }
     };
-   
-     const onNewRoom = (roomId: string, chatLog: Record<string, string>) => {
-       setRooms((prevRooms) => [...prevRooms, { roomId, chatLog }]);
-       socket.emit('joinRoom', roomId);
+
+    const onNewRoom = (roomId: string, chatLog: Record<string, string>) => {
+      setRooms((prevRooms) => [...prevRooms, { roomId, chatLog }]);
+      socket.emit('joinRoom', roomId);
     };
 
     const onJoinedRoom = (roomId: string, fetchedMessages: Message[]) => {
-      const orderId = parseInt(roomId, 10)
-      setMessages(orderId, fetchedMessages)
-    }
-    
+      const chatLogId = parseInt(roomId, 10);
+      if (!isNaN(chatLogId)) {
+        setChatLogs(chatLogId, fetchedMessages);
+      }
+    };
+
+    const onMessage = (message: any) => {
+      addMessage(message);
+    };
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('createRoomResponse', onCreateRoomResponse);
-    socket.on("newRoom", onNewRoom)
-    socket.on("joinedRoom", onJoinedRoom)
+    socket.on('newRoom', onNewRoom);
+    socket.on('joinedRoom', onJoinedRoom);
+    socket.on('on-message', onMessage);
+
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off('createRoomResponse', onCreateRoomResponse);
-      socket.off("newRoom", onNewRoom)
+      socket.off('newRoom', onNewRoom);
       socket.off('joinedRoom', onJoinedRoom);
+      socket.off('on-message', onMessage);
     };
   }, [user]);
 
-  const connectToRoom = (orderId: number, description: string) => {
-    setOrderId(orderId);
+  const connectToRoom = useCallback((orderId: number, description: string) => {
     socket.emit('createRoom', { orderId, description });
-  };
+  }, []);
 
-  const joinNewRoom = (roomId: string) => {
+  const joinNewRoom = useCallback((roomId: string) => {
     setRooms((prevRooms) => {
       if (!prevRooms.some((room) => room.roomId === roomId)) {
         return [...prevRooms, { roomId, chatLog: {} }];
@@ -138,38 +139,56 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({
       return prevRooms;
     });
     socket.emit('joinRoom', roomId);
-  };
+  }, []);
 
- 
+  const sendMessage = useCallback(
+    (chatLogId: number, message: string, userId: number) => {
+      const newMessage = {
+        text: message,
+        userId,
+        chatLogId
+      };
+      socket.emit('send-message', newMessage);
+      addMessage(newMessage);
+    },
+    [],
+  );
 
-   const sendMessage = (chatLogId: number, message: string, userId: number, orderId:number) => {
-     const newMessage = { text: message, userId, chatLogId   };     
-     socket.emit('send-message', newMessage);
-     addMessage({text:message, orderId, userId})
-  };
-  
-   const addMessage = (message: Message) => {
-     setMessagesState((prevMessages) => {
-       const updatedMessages = { ...prevMessages };
-       if (!updatedMessages[message.orderId]) {
-         updatedMessages[message.orderId] = [];
-       }
-       updatedMessages[message.orderId]!.push(message);
-       return updatedMessages;
-     });
-  };
-  
-   const setMessages = (orderId: number, messages: Message[]) => {
-     setMessagesState((prevMessages) => ({
-       ...prevMessages,
-       [orderId]: messages,
-     }));
-   };
- 
+  const addMessage = useCallback((message: any) => {
+    setChatLogsState((prevMessages) => {
+      const updatedMessages = { ...prevMessages };
+      const chatLogId = message?.chatLog?.id;
+      if (!updatedMessages[chatLogId]) {
+        updatedMessages[chatLogId] = [];
+      }
+      updatedMessages[chatLogId]!.push(message);
+      return updatedMessages;
+    });
+  }, []);
+
+  const setChatLogs = useCallback((chatLogId: number, messages: Message[]) => {
+    setChatLogsState((prevMessages) => ({
+      ...prevMessages,
+      [chatLogId]: messages,
+    }));
+  }, []);
 
   return (
-    <SocketContext.Provider value={{ isConnected, orderId, connectToRoom, joinNewRoom, sendMessage, roomId, rooms, messages, addMessage,
-  setMessages, chatLogId }}>
+    <SocketContext.Provider
+      value={{
+        isConnected,
+        chatLogId,
+        roomId,
+        rooms,
+        chatLogs,
+        connectToRoom,
+        joinNewRoom,
+        sendMessage,
+        addMessage,
+        setChatLogs,
+        setChatLogId,
+      }}
+    >
       {children}
     </SocketContext.Provider>
   );

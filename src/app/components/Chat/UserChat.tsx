@@ -5,11 +5,10 @@ import ChatBox from './ChatBox';
 
 
 interface ChatWindowProps {
-  orderId: number;
-  userId:number
+  orderId: number;  
 }
 
-const ChatWindow: React.FC<ChatWindowProps> = ({ orderId, userId }) => {
+const ChatWindow: React.FC<ChatWindowProps> = ({ orderId }) => {
   const [problem, setProblem] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const { isConnected, roomId, connectToRoom } = useSocket();
@@ -71,7 +70,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ orderId, userId }) => {
           </button>
         </div>
       ) : (
-          <ChatBox orderId={orderId} userId={userId} />
+          <ChatBox/>
       )}
     </div>
   );
