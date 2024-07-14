@@ -6,6 +6,7 @@ import { getCategoryById } from '@/helpers/peticionesSuperAdmin';
 import { Category } from '@/types';
 import ConfirmModal from '../SuperAdminProducts/confirmModal';
 import { useAuth } from '@/app/contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 
 interface CategoryEditProps {
@@ -50,11 +51,26 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({categoryId}) => {
     try {
       setLoading(true);
       setModalOpen(true);
-      await updateCategory(categoryId, data, accessToken);
+
+      const updateData = {
+        name: data.name,
+        icon: data.icon,
+      };
+
+      await updateCategory(categoryId, updateData, accessToken);
     //  router.push('/dashboard');
     } catch (error) {
       console.error('Error al actualizar la categoría', error);
       setError('No se pudo actualizar la categoría. Por favor, inténtalo nuevamente.');
+      toast.error('No se pudo actualizar la categoría. Por Favor, inténtelo nuevamente.', {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }finally {
       setLoading(false);
     }
@@ -71,9 +87,27 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({categoryId}) => {
       setModalOpen(false);
       const updatedCategory = await getCategoryById(categoryId, accessToken);
       setCategory(updatedCategory);
+      toast.success('¡Categoría actualizada correctamente!', {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
       console.error('Error al actualizar la categoría.', error);
       setError('No se pudo actualizar la categoría. Por favor, inténtalo nuevamente.');
+      toast.error('Error al actualizar la categoría. Por favor, inténtalo nuevamente.', {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 

@@ -115,7 +115,7 @@ const ProductList: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => (
+          {products.map((product,) => (
             <tr key={product.id}>
               <td className="border px-4 py-2">{product.name}</td>
               <td className="border px-4 py-2">
@@ -134,7 +134,7 @@ const ProductList: React.FC = () => {
                 </button>
                 <button
                   onClick={() => openDeleteModal(product.id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded"
+                  className="text-red-500 px-2 py-1 rounded"
                 >
                    <HiOutlineTrash className="text-4xl"/>
                 </button>

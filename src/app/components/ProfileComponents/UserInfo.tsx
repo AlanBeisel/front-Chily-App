@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DataField from './DataField';
 import { useAuth } from '@/app/contexts/AuthContext';
 import PhoneModal from './PhoneModal';
@@ -9,7 +9,6 @@ type Role = 'user' | 'admin' | 'superadmin';
 interface Credential {
   id: string;
   NIN: string;
-  phone: string;
 }
 
 interface User {
@@ -19,7 +18,7 @@ interface User {
   NIN: string;
   email: string;
   googleAuth: boolean;
-  phone: string;
+  phone?: string;
   creditCardNumber: string;
   virtualWallet: string;
   preferredPaymentMethod: string;
@@ -31,6 +30,16 @@ const UserInfo = ({ user }: { user: User | null }) => {
   const { address, isAuthenticated } = useAuth();
   const[isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
   const[isNameModalOpen, setIsNameModalOpen] = useState(false);
+  const [, setUserPhone] =useState('');
+  const [, setUserName] =useState('');
+  const {accessToken} = useAuth();
+
+  useEffect(() =>{
+    if(user) {
+      setUserName(user.name);
+      setUserPhone(user.phone ?? '');
+    }
+  })
 
   const openPhoneModal = () => setIsPhoneModalOpen(true);
   const closePhoneModal = () => setIsPhoneModalOpen(false);
@@ -40,12 +49,17 @@ const UserInfo = ({ user }: { user: User | null }) => {
 
   const handlePhoneSave = (newPhone: string) => {
     console.log('Nuevo teléfono guardado:', newPhone);
+    setUserPhone(newPhone);
   };
 
   const handleNameSave = (newName: string) => {
     console.log('Nuevo teléfono guardado:', newName);
+    setUserName(newName);
   };
 
+  console.log('Usuario:', user);
+  console.log('Dirección:', address);
+  console.log('¿Autenticado?', isAuthenticated);
  
 
   if (!user || !isAuthenticated) {
@@ -63,7 +77,7 @@ const UserInfo = ({ user }: { user: User | null }) => {
       </header>
       <DataField label="Nombre" value={user.name} editable={true}  onEdit={openNameModal}/>
       <DataField label="Email" value={user.email} editable={false}  />
-      <DataField label="Teléfono" value={user.credential.phone} editable={true} onEdit={openPhoneModal}/>
+      <DataField label="Teléfono" value={user.phone ?? ''} editable={true} onEdit={openPhoneModal}/>
 
 
       {address && (
@@ -79,8 +93,9 @@ const UserInfo = ({ user }: { user: User | null }) => {
       isOpen={isPhoneModalOpen}
       onClose={closePhoneModal}
       onSave={handlePhoneSave}
-      initialPhone = {user.credential.phone}
+      initialPhone = {user.phone ?? ''}
       userId={parseInt(user.id)}
+      accessToken = {accessToken || ''}
       />
       <NameModal
       isOpen={isNameModalOpen}
@@ -88,6 +103,7 @@ const UserInfo = ({ user }: { user: User | null }) => {
       onSave={handleNameSave}
       initialName = {user.name}
       userId={parseInt(user.id)}
+      accessToken = {accessToken || ''}
       />
     </div>
   );

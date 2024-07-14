@@ -3,7 +3,7 @@ import { PopularProduct } from '@/helpers/peticionesSuperAdmin';
 import { useAuth } from '@/app/contexts/AuthContext';
 
 interface PopularProductSwitchProps {
-  productId: string;
+  productId: number;
   isInitiallyPopular: boolean;
 }
 
