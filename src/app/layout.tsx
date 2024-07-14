@@ -6,8 +6,10 @@ import { Navbar } from './components/NavBar/navBar';
 import { AuthProvider } from './contexts/AuthContext';
 import { CacheProvider } from './contexts/CacheContext';
 import ToastProvider from './contexts/ToastProvider';
+import { SocketProvider } from './contexts/socketContext';
 import ReactQueryProvider from './contexts/ReactQueryProvider';
 import ChatBot from '@/components/ui/chatbot';
+
 
 
 
@@ -37,11 +39,13 @@ export default function RootLayout({
       >
         <AuthProvider>
           <CacheProvider>
-            <Navbar />
-            <ReactQueryProvider>
+            <SocketProvider>
+              <Navbar />
+              <ReactQueryProvider>
               <ToastProvider>{children}</ToastProvider>
-            </ReactQueryProvider>
-            <Footer />
+              </ReactQueryProvider>
+              <Footer />
+            </SocketProvider>
           </CacheProvider>
         </AuthProvider>
         <ChatBot/>
