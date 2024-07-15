@@ -42,7 +42,7 @@ const UserDashboard: React.FC = () => {
       ):(
         <div className="text-center mt-20"> Cargando...</div>
       )}
-       <div className="flex flex-col md:flex-row justify-center w-full">
+      <div className="flex flex-col md:flex-row justify-center w-full">
       {!isAdmin() && !isSuperAdmin() && (
       <>
       <Link href="/address" passHref>
