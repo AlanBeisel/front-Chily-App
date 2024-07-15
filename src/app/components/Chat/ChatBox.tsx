@@ -29,10 +29,12 @@ const ChatBox: React.FC = () => {
   };
 
   return (
-    <div>
-      <div>
+    <div className="flex flex-col max-w-md mx-auto border border-gray-300 rounded-lg shadow-md">
+      <div className="flex-1 overflow-y-auto p-4 bg-gray-50 rounded-t-lg">
         {chatMessages.map((msg: Record<string, any>, index: number) => (
-          <div key={index}>{msg.text}</div>
+          <div key={index} className="bg-white p-3 my-2 rounded-lg shadow-sm">
+            {msg.text}
+          </div>
         ))}
       </div>
       <input
@@ -41,36 +43,12 @@ const ChatBox: React.FC = () => {
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Type your message..."
-        style={{
-          width: '100%',
-          padding: '10px',
-          marginBottom: '10px',
-          borderRadius: '4px',
-          border: '1px solid #e9e7e7',
-          color: 'black',
-          boxShadow: '0 2px 4px rgba(0, 0, 0, 0,.1)',
-          backgroundColor: '#fff',
-          boxSizing: 'border-box',
-        }}
+        className="w-full p-2 mb-2 rounded-lg border border-gray-300 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400"
         disabled={!isConnected}
       />
       <button
         onClick={handleSendMessage}
-        style={{
-          width: '100%',
-          padding: '12px',
-          backgroundColor: '#f44336',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          fontSize:'1rem',
-          marginTop: '10px',
-          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-          transition: 'background-color 0.3s, color 0.3s',
-          boxSizing: 'border-box',
-          fontWeight: '600'
-        }}
+        className="w-full p-3 bg-red-500 text-white border-none rounded-lg cursor-pointer text-lg mt-2 shadow-sm transition-all duration-300 ease-in-out hover:bg-red-600 disabled:opacity-50"
         disabled={!isConnected}
       >
         Send

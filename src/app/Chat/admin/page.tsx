@@ -13,7 +13,7 @@ const AdminChatPage: React.FC = () => {
 
   return (
     <>
-    <RouteGuard allowedRoles={['user']}>
+    <RouteGuard allowedRoles={['user', 'admin']}>
       <div className="flex justify-between items-center p-4">
         <div>
           <BackButton />

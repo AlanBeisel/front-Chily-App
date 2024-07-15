@@ -68,66 +68,66 @@ const AdminChat: React.FC = () => {
   }, []);
 
   return (
-    <div className="admin-chat" style={{maxWidth: '800px', margin: '0 auto', padding: '20px'}}>
-      <h2 style= {{marginBottom: '20px', fontSize:'1.5rem', fontWeight: 'bold', color: '#f44336'}}>Admin Chat Box</h2>
-      <div className="chats" style={{marginBottom: '20px'}}>
-        {rooms.map((room, index) => (
-          <div
-            key={index}
-            onClick={() => handleSelectChat(room)}
-            className="chat"
-            style={{
-              padding: '10px',
-              borderRadius: '4px',
-              marginBottom: '10px',
-              backgroundColor: '#f2f2f2',
-              cursor: 'pointer',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-              transition: 'background-color 0.3s'
-            }}
-          >
-            <span style= {{fontWeight: 'bold'}}>Order ID:</span> {room.roomId}
+    <div className="flex flex-col max-w-5xl mx-auto p-5">
+      <h2 className="mb-5 text-2xl font-bold text-red-500">Admin Chat Box</h2>
+
+      <div className="flex">
+        {/* Chat Rooms List */}
+        <div className="w-1/3 pr-4">
+          <h3 className="mb-4 text-xl font-semibold">Chats</h3>
+          <div className="overflow-y-auto max-h-96">
+            {rooms.map((room, index) => (
+              <div
+                key={index}
+                onClick={() => handleSelectChat(room)}
+                className="p-3 mb-3 bg-gray-100 rounded-lg cursor-pointer shadow-md hover:bg-gray-200 transition-colors"
+              >
+                <span className="font-bold">Order ID:</span> {room.roomId}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <div className="chat-details">
-        {selectedChat && (
-          <div style={{ marginBottom: '20px'}}>
-            <h3 style= {{marginBottom: '10px', fontSize: '1.2rem'}}>Order ID: {selectedChat.roomId}</h3>
-            <div style={{backgroundColor: '#f2f2f2', padding: '10px', borderRadius: '4px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'}}> <h3>{JSON.stringify(selectedChat.chatLog)}</h3>
-          </div>
-          </div>
-        )}
-        <div>
-          <h2 style={{ marginBottom: '10px', fontSize: '1.3rem', fontWeight: 'bold', color: '#f44336'}}>Previous Chats</h2>
-          <div className="chats">
+        </div>
+
+        {/* Chat Details and Messages */}
+        <div className="w-2/3 pl-4">
+          {selectedChat && (
+            <div className="mb-5">
+              <h3 className="mb-2 text-xl font-semibold">
+                Order ID: {selectedChat.roomId}
+              </h3>
+              <div className="p-3 bg-gray-100 rounded-lg shadow-md">
+                <pre>{JSON.stringify(selectedChat.chatLog, null, 2)}</pre>
+              </div>
+            </div>
+          )}
+
+          <h2 className="mb-4 text-xl font-semibold text-red-500">
+            Previous Chats
+          </h2>
+          <div className="overflow-y-auto max-h-96">
             {chatRooms.map((chatLog: ChatLog, index: number) => (
               <div
                 key={index}
-                className="chat"
-                style={{
-                  padding: '10px',
-                  borderRadius: '4px',
-                  marginBottom: '10px',
-                  backgroundColor: '#f2f2f2',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                }}
+                className="p-3 mb-3 bg-gray-100 rounded-lg shadow-md"
               >
-                <h4 style={{marginBottom: '5px', fontSize: '1rem'}}>Order ID: {chatLog.order.id}</h4>
+                <h4 className="mb-2 text-lg font-semibold">
+                  Order ID: {chatLog.order.id}
+                </h4>
                 <div>
                   {chatLog.chats.map((chat: Chat) => (
-                    <p key={chat.id} style={{marginBottom: '5px', fontSize: '0.9rem'}}>{chat.text}</p>
+                    <p key={chat.id} className="mb-2 text-sm">
+                      {chat.text}
+                    </p>
                   ))}
                 </div>
               </div>
             ))}
           </div>
-          <div className="chat-details">         
-          </div>
         </div>
       </div>
+
       {selectedChat && userId !== null && chatLogId !== null ? (
-        <div style={{marginTop: '20px'}}>
+        <div className="mt-5">
           <ChatBox />
         </div>
       ) : null}
