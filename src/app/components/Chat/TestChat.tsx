@@ -55,7 +55,7 @@ const mockOrders: Order = {
   ],
   formBuy: 'tarjeta',
   total: 14.97,
-  status: 'Pendiente',
+  status: 'Entregada',
   date: new Date().toISOString(),
 };
 
@@ -64,11 +64,11 @@ export const mockArr: Order[] = [mockOrders];
 // TestChat Component
 const TestChat: React.FC<OrderListProps> = ({ orders }) => {
   return (
-    <div>
-      <div>
+    <div className="p-4 space-y-8">
+      <div className="bg-white p-4 rounded-lg shadow-lg">
         <AdminChat />
       </div>
-      <div>
+      <div className="bg-white p-4 rounded-lg shadow-lg">
         <OrderList orders={orders} />
       </div>
     </div>

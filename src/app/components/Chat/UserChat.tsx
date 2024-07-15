@@ -5,9 +5,10 @@ import ChatBox from './ChatBox';
 
 interface ChatWindowProps {
   orderId: number;
+  isOpen: boolean;
 }
 
-const ChatWindow: React.FC<ChatWindowProps> = ({ orderId }) => {
+const ChatWindow: React.FC<ChatWindowProps> = ({ orderId, isOpen }) => {
   const [problem, setProblem] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const { isConnected, roomId, connectToRoom } = useSocket();
@@ -23,11 +24,15 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ orderId }) => {
     }
   };
 
+  if(!isOpen) {
+    return null;
+  }
+
   return (
     <div
       style={{
         backgroundColor: '#f44336',
-        color: 'white',
+        color: 'black',
         padding: '20px',
         borderRadius: '8px',
         width: '80%',
@@ -39,7 +44,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ orderId }) => {
     >
       {!isConnected || !roomId ? (
         <div>
-          <div style={{ marginBottom: '10px', fontSize:'1.2rem', fontWeight: 'bold' }}>Problem Description</div>
+          <div style={{ marginBottom: '10px', fontSize:'1.2rem', fontWeight: 'bold', color:'white' }}>Problem Description</div>
           <input
             type="text"
             value={problem}
