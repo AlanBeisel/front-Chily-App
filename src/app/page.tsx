@@ -1,5 +1,6 @@
 import { Popular } from '../app/components/HomeComponents/Popular';
 import { CategoryFilter } from '../app/components/MenuComponents/CategoryFilter';
+import TestChat, { mockArr } from './components/Chat/TestChat';
 import Horarios from './components/HomeComponents/Horarios';
 import { RenderCategory } from './components/HomeComponents/RenderCategory';
 
@@ -15,6 +16,7 @@ export default function Home() {
           <Horarios />
           <Popular />          
           <RenderCategory />
+          <TestChat orders={mockArr} />
         </main>
       </div>
     </>
