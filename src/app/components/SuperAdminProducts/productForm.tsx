@@ -275,7 +275,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   isDropdownOpen ? 'rotate-180' : ''
                 }`}
               >
-               V
+              V
               </span>
             </button>
             {isDropdownOpen && (

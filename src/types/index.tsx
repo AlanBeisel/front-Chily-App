@@ -57,6 +57,7 @@ export interface CartItemProps {
 export interface CartItemType {
   id: number;
   name: string;
+  stock: number;
   price: number;
   quantity: number;
   img: string;
