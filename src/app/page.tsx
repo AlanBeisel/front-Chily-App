@@ -3,6 +3,7 @@ import { CategoryFilter } from '../app/components/MenuComponents/CategoryFilter'
 import Horarios from './components/HomeComponents/Horarios';
 import { RenderCategory } from './components/HomeComponents/RenderCategory';
 
+
 export default function Home() {
 
   return (
@@ -12,7 +13,7 @@ export default function Home() {
         <main className="w-full flex-grow p-4">
           <CategoryFilter />
           <Horarios />
-          <Popular />
+          <Popular />          
           <RenderCategory />
         </main>
       </div>

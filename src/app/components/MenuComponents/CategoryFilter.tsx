@@ -77,13 +77,13 @@ export const CategoryFilter = () => {
             {categories
               .filter(
                 (category) =>
-                  parseInt(category.id) <= 16 && category.products.length > 0,
+                  parseInt(category.id.toString()) <= 16 && category.products.length > 0,
               )
               .map((category) => (
                 <button
                   key={category.id}
                   className="flex flex-col items-center focus:outline-none group flex-shrink-0"
-                  onClick={() => scrollToCategory(category.id)}
+                  onClick={() => scrollToCategory(category.id.toString())}
                 >
                   <div className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 relative mb-2 rounded-full overflow-hidden transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg">
                     <Image

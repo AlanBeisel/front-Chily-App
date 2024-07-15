@@ -108,7 +108,7 @@ const UsersList: React.FC = ()=> {
               <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>
               <button className="bg-white text-green-500 px-2 py-1 rounded mr-2">
                   <Link
-                    href={`/superadmin/products/edit/${user.id.toString()}`}
+                    href={`/superadmin/users/edit/${user.id}`}
                   >
                    <FiEdit className="text-4xl"/>
                   </Link>

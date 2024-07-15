@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import DataField from './DataField';
-import { useAuth } from '@/app/contexts/AuthContext';
+import { useAuth, AuthContextType } from '@/app/contexts/AuthContext';
 import PhoneModal from './PhoneModal';
 
 
@@ -9,6 +9,7 @@ type Role = 'user' | 'admin' | 'superadmin';
 interface Credential {
   id: string;
   NIN: string;
+  phone: string;
 }
 
 interface User {
@@ -27,9 +28,8 @@ interface User {
 }
 
 const UserInfo = ({ user }: { user: User | null }) => {
-  const { address, isAuthenticated } = useAuth();
+  const { address, isAuthenticated, updateUser } = useAuth() as AuthContextType;
   const[isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
-
   const [, setUserPhone] =useState('');
 
   const {accessToken, isAdmin, isSuperAdmin} = useAuth();
@@ -38,16 +38,39 @@ const UserInfo = ({ user }: { user: User | null }) => {
     if(user) {
       setUserPhone(user.phone);
     }
-  })
+  }, [user])
 
   const openPhoneModal = () => setIsPhoneModalOpen(true);
   const closePhoneModal = () => setIsPhoneModalOpen(false);
 
-  const handlePhoneSave = (newPhone: string) => {
-    console.log('Nuevo teléfono guardado:', newPhone);
-    setUserPhone(newPhone);
-  };
+  const handlePhoneSave = async (newPhone: string) => {
+    try{
+      if(!user) return;
+      const response = await fetch(`process.env.NEXT_PUBLIC_API_URL/user/${user.id}`,{
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({phone:newPhone}),
+      });
+      
+      if(!response.ok) {
+        throw new Error(`Error al actualizar el teléfono: ${response.status} - ${response.statusText}`);
+      }
 
+      
+        const updatedUser: User = {
+          ...user, 
+          phone: newPhone
+        };
+      updateUser(updatedUser);
+      setUserPhone(newPhone);
+      closePhoneModal();
+    } catch (error) {
+      console.error('Error al actualizar el teléfono:', error);
+    }
+  };
 
   console.log('Usuario:', user);
   console.log('Dirección:', address);

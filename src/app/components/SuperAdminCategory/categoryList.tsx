@@ -65,7 +65,7 @@ const CategoryList: React.FC = ()=> {
 
     try{
       await deleteCategory(categoryToDelete, accessToken);
-      setCategory(category.filter((category) => category.id !== categoryToDelete));
+      setCategory(category.filter((category) => category.id.toString() !== categoryToDelete));
       closeModal();
     } catch (error) {
       console.error('Error al eliminar la categoria', error);
@@ -110,7 +110,7 @@ const CategoryList: React.FC = ()=> {
                 </Link>
                 </button>
                 <button
-                onClick={() => openDeleteModal(category.id)}
+                onClick={() => openDeleteModal(category.id.toString())}
                 className="text-red-500 px-2 py-1 rounded mr-2"
                 >
                   <HiOutlineTrash className="text-4xl"/>

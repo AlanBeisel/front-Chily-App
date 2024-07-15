@@ -4,7 +4,7 @@ import ProductEdit from '@/app/components/SuperAdminProducts/productEdit';
 
 
 interface EditProductPageProps {
-  params: { id: string };
+  params: { id: number };
 }
 
 const EditProductPage: React.FC<EditProductPageProps> = ({ params }) => {

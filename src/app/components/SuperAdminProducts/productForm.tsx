@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { getAllCategories } from '@/helpers/peticiones';
 
 type Category = {
-  id: string;
+  id: number;
   name: string;
 };
 
@@ -30,8 +30,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
   });
 
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    defaultValues?.category || [],
+  const [selectedCategories, setSelectedCategories] = useState<number[]>(
+    defaultValues?.category?.map((cat: any) => cat?.id) || [],
   );
   const [, setShowCategoryCard] = useState<boolean>(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -58,7 +58,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
   useEffect(() => {
     if (defaultValues?.category) {
-      setSelectedCategories(defaultValues.category);
+      setSelectedCategories(
+        defaultValues.category
+          .filter((cat: any) => cat !== null)
+          .map((cat: any) => cat.id),
+      );
     }
   }, [defaultValues]);
 
@@ -78,7 +82,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     };
   }, []);
 
-  const handleCategorySelect = (categoryId: string) => {
+  const handleCategorySelect = (categoryId: number) => {
     setSelectedCategories((prevCategories) => {
       if (!prevCategories.includes(categoryId)) {
         return [...prevCategories, categoryId];
@@ -91,7 +95,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     }
   };
 
-  const removeCategory = (categoryId: string) => {
+  const removeCategory = (categoryId: number) => {
     setSelectedCategories(selectedCategories.filter((id) => id !== categoryId));
     setShowCategoryCard(false);
   };
@@ -187,7 +191,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
               className="w-full h-auto mb-2 rounded-lg shadow-lg"
             />
           ) : null}
-          <label className="block text-grey-300 font-bold">
+          <label className="block text-gray-500 font-bold">
             Imagen (Archivo)
           </label>
           <div className="flex items-center">
@@ -196,7 +200,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
               {...register('imageURL')}
               onChange={handleImageChange}
               accept="image/*"
-              className="w-full p-2 border border-gray-300 rounded-lg shadow-sm"
+              className="w-full p-2 border border-gray-500 rounded-lg shadow-sm"
             />
           </div>
           {errors.imageURL && (
@@ -212,12 +216,12 @@ const ProductForm: React.FC<ProductFormProps> = ({
           {errors.name && <div className="text-red-500">Nombre invalido</div>}
         </div>
         <div className="col-span-1 mb-4">
-          <label className="block text-grey-300 font-bold">Descripción</label>
+          <label className="block text-gray-500 font-bold">Descripción</label>
           <textarea
             {...register('description', {
               required: 'Descripción es requerida',
             })}
-            className="w-full p-2 border border-gray-300 rounded-lg shadow-sm"
+            className="w-full p-2 border border-gray-500 rounded-lg shadow-sm"
           />
           {errors.description && (
             <div className="text-red-500">Descripcion invalida</div>
@@ -236,7 +240,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
               validate: (value) =>
                 value > 0 || 'El precio debe ser un número positivo',
             })}
-            className="w-full p-2 border border-gray-300 rounded-lg shadow-sm"
+            className="w-full p-2 border border-gray-500 rounded-lg shadow-sm"
           />
           {errors.price && <div className="text-red-500">Precio invalido</div>}
         </div>
@@ -253,7 +257,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
               validate: (value) =>
                 value >= 0 || 'El stock debe ser un número entero no negativo',
             })}
-            className="w-full p-2 border border-gray-300 rounded-lg shadow-sm"
+            className="w-full p-2 border border-gray-500 rounded-lg shadow-sm"
           />
           {errors.stock && <div className="text-red-500">Stock inválido</div>}
         </div>
@@ -262,7 +266,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           <div className="relative">
             <button
               type="button"
-              className="w-full p-2 border border-gray-300 rounded-lg shadow-sm bg-white flex justify-between items-center"
+              className="w-full p-2 border border-gray-500 rounded-lg shadow-sm bg-white flex justify-between items-center"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
               Seleccionar categorías
@@ -275,7 +279,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
               </span>
             </button>
             {isDropdownOpen && (
-              <ul className="absolute z-10 w-full border border-gray-300 rounded-lg shadow-lg bg-white mt-2">
+              <ul className="absolute z-10 w-full border border-gray-500 rounded-lg shadow-lg bg-white mt-2">
                 {categories.map((category) => (
                   <li
                     key={category.id}

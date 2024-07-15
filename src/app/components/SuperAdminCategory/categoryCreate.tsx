@@ -6,7 +6,7 @@ import BackButton from '../ProductIdComponents/BackButton';
 import { toast } from 'react-toastify';
 import ConfirmModal from '../SuperAdminProducts/confirmModal';
 import { useAuth } from '@/app/contexts/AuthContext';
-//import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 
 interface CategoryData {
@@ -16,7 +16,7 @@ interface CategoryData {
 }
 
 const CategoryCreate: React.FC = () => {
- // const router = useRouter();
+ const router = useRouter();
  const [error, setError] = useState<string | null>(null);
  const [isModalOpen, setModalOpen] = useState(false);
  const [formData, setFormData] = useState<CategoryData>({
@@ -60,6 +60,7 @@ const CategoryCreate: React.FC = () => {
       draggable: true,
       progress: undefined,
       });
+      router.push('/superadmin/categories')
       } else {
         setError('Error al crear la categoría');
         toast.error('Error al crear la categoría',{

@@ -1,3 +1,4 @@
+'use client'
 import React, {useEffect, useState} from 'react';
 import { useAuth } from '@/app/contexts/AuthContext';
 import { fetchTransactionInfo } from '@/helpers/peticionesSuperAdmin';
@@ -15,7 +16,7 @@ export interface TransactionInfo {
 const TransactionInfoPage: React.FC =  () => {
   const [transactions, setTransactions] = useState<TransactionInfo[]>([]);
   const [page, setPage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(10);
+  const [limit] = useState<number>(10);
   const [date, setDate] = useState<string | undefined> (undefined);
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [error, setError] = useState<string | null> (null);
@@ -27,12 +28,15 @@ const TransactionInfoPage: React.FC =  () => {
     const fetchTransactions = async () => {
       try{
         if(token) {
+          console.log('Token válido:', token);
         const data = await fetchTransactionInfo(token, page, limit, date, amount);
+        console.log('Datos de transacciones recibidos:', data);
         setTransactions(data);
         }else {
           throw new Error('Token no válido');
         }
       } catch (error:any) {
+        console.error('Error al obtener transacciones:', error);
         setError(error.message);
       }
     };
@@ -44,13 +48,6 @@ const TransactionInfoPage: React.FC =  () => {
     setDate(e.target.value);
   };
 
-  const handlePageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPage(parseInt(e.target.value, 10));
-  };
-
-  const handleLimitChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLimit(parseInt(e.target.value, 10));
-  };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(parseFloat(e.target.value));
@@ -77,8 +74,9 @@ const TransactionInfoPage: React.FC =  () => {
         </div>
       </div>
     {error && <div style = {{ color: 'red'}}>{error}</div>}
-    <table>
-      <thead>
+    <div className="mx-auto  max-w-4xl">
+    <table className="w-full bg-white shadow-md rounded-lg overflow-hidden my-6">
+      <thead className="bg-white text-gray-600 uppercase text-sm leading-normal">
         <tr>
           <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">ID</th>
           <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Cantidad</th>
@@ -88,9 +86,9 @@ const TransactionInfoPage: React.FC =  () => {
           <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Tarjeta</th>
           </tr>
       </thead>
-      <tbody>
+      <tbody className="text-gray-600 text-sm font-light">
         {transactions.map((transaction, index) => (
-          <tr key= {transaction.id}>
+          <tr key= {transaction.id} className="border-b border-gray-200 hover: bg-white">
             <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{transaction.id}</td>
             <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{transaction.amount}</td>
             <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{transaction.currency}</td>
@@ -101,6 +99,7 @@ const TransactionInfoPage: React.FC =  () => {
         ))}
       </tbody>
     </table>
+    </div>
      <div className="mt-4 flex justify-center items-center">
         <button
          onClick={() => setPage(page - 1)}
@@ -122,3 +121,4 @@ const TransactionInfoPage: React.FC =  () => {
 };
 
 export default TransactionInfoPage;
+

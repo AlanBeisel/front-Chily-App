@@ -67,7 +67,7 @@ export async function getProducts(
 }
 
 
-export async function getProductById(id: string): Promise<Product> {
+export async function getProductById(id: number): Promise<Product> {
   try {
     const response = await fetch(`${API_URL}/products/${id}`);
     if (!response.ok) {
@@ -82,7 +82,7 @@ export async function getProductById(id: string): Promise<Product> {
 
 
 export async function getProductsByCategoryId(
-  id: string,
+  id: number,
   page: number,
   limit: number,
   appliedFilters?: string[],

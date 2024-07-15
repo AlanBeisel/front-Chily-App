@@ -7,6 +7,8 @@ import { Category } from '@/types';
 import ConfirmModal from '../SuperAdminProducts/confirmModal';
 import { useAuth } from '@/app/contexts/AuthContext';
 import { toast } from 'react-toastify';
+import  {useRouter} from 'next/navigation';
+
 
 
 interface CategoryEditProps {
@@ -18,6 +20,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({categoryId}) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const router = useRouter();
   const {accessToken} = useAuth();
 
 
@@ -58,7 +61,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({categoryId}) => {
       };
 
       await updateCategory(categoryId, updateData, accessToken);
-    //  router.push('/dashboard');
+    router.push('/superadmin/categories');
     } catch (error) {
       console.error('Error al actualizar la categoría', error);
       setError('No se pudo actualizar la categoría. Por favor, inténtalo nuevamente.');
@@ -125,7 +128,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({categoryId}) => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4 text-red-500">Categoría ID:{categoryId}</h2>
+      <h2 className="text-2xl font-bold mb-4 text-red-500">Editar categoría</h2>
       {category && (
       <>
       <div className="flex items-center">

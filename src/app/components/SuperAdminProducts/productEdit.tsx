@@ -9,18 +9,20 @@ import PopularProductSwitch from './popularSwitch';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/app/contexts/AuthContext';
 import BackButton from '../ProductIdComponents/BackButton';
+import { useRouter } from 'next/navigation'; 
 
 
 
 interface ProductEditProps {
-  productId: string;
+  productId: number;
 }
 
 const ProductEdit: React.FC<ProductEditProps> = ({productId}) => {
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const router = useRouter();
   const {accessToken} = useAuth();
   const token = accessToken;
 
@@ -60,19 +62,21 @@ const handleUpdate = async (data: Partial<Product>) => {
     return;
   }
 
-    const updateData: any = {};
-
-    if (data.stock !== undefined) updateData.stock = data.stock;
-    if (data.price !== undefined) updateData.price = data.price;
-    if (data.img !== undefined) updateData.img = data.img
-    if (data.name !== undefined) updateData.name = data.name;
-    if (data.category !== undefined) updateData.category = data.category;
+    const updateData: any = {
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      category: data.category,
+      img: data.img,
+    };
 
   try {
-    setLoading(true);
-    setModalOpen(true);
+
     console.log('Actualizando popularidad del producto:', productId);
     await updateProduct(productId, updateData, token);
+    setError(null);
+    setModalOpen(true);
+    setProduct((prevProduct: any) => ({...prevProduct, ...updateData}));
     toast.success('Producto actualizado correctamente', {
       position: 'top-center',
       autoClose: 3000,
@@ -82,7 +86,7 @@ const handleUpdate = async (data: Partial<Product>) => {
       draggable: true,
       progress: undefined,
     });
-     // router.push('/dashboard');
+    router.push('/superadmin/products');
   } catch (error) {
     console.error('Error al actualizar el producto', error);
     setError(
@@ -102,14 +106,14 @@ const handleUpdate = async (data: Partial<Product>) => {
     );
   } finally {
     setLoading(false);
+    setModalOpen(false);
   }
 };
 
-  const confirmUpdate = async () => {
-    
+ /* const confirmUpdate = async () => {
     try {
-      console.log('Confirmando actualización del producto:', productId);
-      await updateProduct(productId, product!, token!);
+      console.log('Confirmando actualización del producto:', product);
+      await updateProduct(productId, updateData!, token!);
       setError(null);
       setModalOpen(false);
       const updatedProduct = await getProductById(productId);
@@ -141,6 +145,10 @@ const handleUpdate = async (data: Partial<Product>) => {
         },
       );
     }
+  };*/
+
+  const openModal = () => {
+    setModalOpen(true);
   };
 
   const closeModal = () => {
@@ -168,10 +176,13 @@ const handleUpdate = async (data: Partial<Product>) => {
       <div className="flex items-center">
         <PopularProductSwitch productId={productId} isInitiallyPopular={product.isPopular} />
       </div>
-      <ProductForm defaultValues={{...product, category: product.category, imageURL: product.img}} onSubmit={handleUpdate} isEditMode/>
+      <ProductForm defaultValues={{...product, category: product.category, imageURL: product.img}} onSubmit={(data) => {
+              handleUpdate(data);
+              openModal();
+            }} isEditMode/>
       <ConfirmModal
       isOpen={modalOpen}
-      onConfirm={confirmUpdate}
+      onConfirm={() => handleUpdate(product!)}
       onCancel={closeModal}
       title="Confirmar actualización"
       message="¿Estás seguro de que quieres actualizar este producto?"

@@ -37,7 +37,7 @@ const categoryMapping: Record<string, string> = {
 };
 
 const CategoryPage = ({ params }: { params: { category: string } }) => {
-  const categoryId = params.category;
+  const categoryId = parseInt(params.category, 10);
   const categoryName = categoryMapping[categoryId] || 'Categoría Desconocida';
 
   const [products, setProducts] = useState<Product[]>([]);
