@@ -187,7 +187,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
               className="w-full h-auto mb-2 rounded-lg shadow-lg"
             />
           ) : null}
-          <label className="block text-grey-500 font-bold">
+          <label className="block text-grey-300 font-bold">
             Imagen (Archivo)
           </label>
           <div className="flex items-center">
@@ -212,7 +212,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           {errors.name && <div className="text-red-500">Nombre invalido</div>}
         </div>
         <div className="col-span-1 mb-4">
-          <label className="block text-grey-500 font-bold">Descripción</label>
+          <label className="block text-grey-300 font-bold">Descripción</label>
           <textarea
             {...register('description', {
               required: 'Descripción es requerida',
@@ -228,7 +228,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             Precio
           </label>
           <input
-            type="number"
+            type="text  "
             id="price"
             {...register('price', {
               required: 'El precio es requerido',
@@ -271,7 +271,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   isDropdownOpen ? 'rotate-180' : ''
                 }`}
               >
-                ▼
+               V
               </span>
             </button>
             {isDropdownOpen && (
@@ -299,7 +299,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
               return category ? (
                 <div
                   key={category.id}
-                  className="px-4 py-2 bg-gray-200 rounded-full shadow-sm flex items-center"
+                  className="px-4 py-2 bg-white rounded-full shadow-lg flex items-center"
                 >
                   <span className="mr-2">{category.name}</span>
                   <button
@@ -307,7 +307,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                     className="text-red-500 font-bold"
                     onClick={() => removeCategory(category.id)}
                   >
-                    ×
+                    X
                   </button>
                 </div>
               ) : null;
@@ -317,7 +317,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         <div className="col-span-2 flex justify-end">
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-sm hover:bg-blue-600"
+            className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-sm hover:bg-red-600"
           >
             {isEditMode ? 'Actualizar Producto' : 'Crear Producto'}
           </button>

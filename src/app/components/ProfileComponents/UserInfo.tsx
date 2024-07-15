@@ -32,7 +32,7 @@ const UserInfo = ({ user }: { user: User | null }) => {
 
   const [, setUserPhone] =useState('');
 
-  const {accessToken} = useAuth();
+  const {accessToken, isAdmin, isSuperAdmin} = useAuth();
 
   useEffect(() =>{
     if(user) {
@@ -67,11 +67,12 @@ const UserInfo = ({ user }: { user: User | null }) => {
       <header className="flex items-center justify-center w-full mb-4">
         <h1 className="text-2xl font-bold text-red-500">Mi Cuenta</h1>
       </header>
-      <DataField label="Nombre" value={user.name} editable={true} />
+      <DataField label="Nombre" value={user.name} editable={false} />
       <DataField label="Email" value={user.email} editable={false}  />
       <DataField label="Teléfono" value={user.phone} editable={true} onEdit={openPhoneModal}/>
 
-
+      {!isAdmin() && !isSuperAdmin() && (
+      <>
       {address && (
         <div>
           <h2 className="text-lg font-semibold text-red-500">Tus direcciones:</h2>
@@ -79,6 +80,8 @@ const UserInfo = ({ user }: { user: User | null }) => {
             <DataField label="Dirección" value={address.address} editable={false} />
           </div>
         </div>
+      )}
+      </>
       )}
 
       <PhoneModal

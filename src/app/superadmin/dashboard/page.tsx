@@ -20,6 +20,11 @@ const DashboardPage: React.FC = () => {
         </Link>
         </div>
         <div className="w-full max-w-md">
+        <Link href="/transactions">
+        <div className="bg-red-500 text-white px-4 py-2 mb-4 hover:bg-red-100 rounded mr-2 flex justify-between items-center">Gestionar Transacciones</div>
+        </Link>
+      </div>
+      <div className="w-full max-w-md">
         <Link href="/superadmin/users">
         <div className=" bg-red-500 text-white px-4 py-2 mb-4 hover:bg-red-100 rounded mr-2 flex justify-between items-center">Gestionar Cuentas</div>
         </Link>
@@ -29,6 +34,7 @@ const DashboardPage: React.FC = () => {
         <div className="bg-red-500 text-white px-4 py-2 mb-4 hover:bg-red-100 rounded mr-2 flex justify-between items-center">Gestionar Cupones de descuento</div>
         </Link>
       </div>
+      
     </div>
     </div>
     </RouteGuard>

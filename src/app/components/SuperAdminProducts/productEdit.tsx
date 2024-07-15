@@ -8,6 +8,7 @@ import ConfirmModal from './confirmModal';
 import PopularProductSwitch from './popularSwitch';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/app/contexts/AuthContext';
+import BackButton from '../ProductIdComponents/BackButton';
 
 
 
@@ -59,11 +60,11 @@ const handleUpdate = async (data: Partial<Product>) => {
     return;
   }
 
-    const updateData: Partial<Product> = {};
+    const updateData: any = {};
 
     if (data.stock !== undefined) updateData.stock = data.stock;
     if (data.price !== undefined) updateData.price = data.price;
-    if (data.img !== undefined) updateData.img = data.img;
+    if (data.img !== undefined) updateData.img = data.img
     if (data.name !== undefined) updateData.name = data.name;
     if (data.category !== undefined) updateData.category = data.category;
 
@@ -157,8 +158,11 @@ const handleUpdate = async (data: Partial<Product>) => {
   }
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4 text-red-500">Producto ID:{productId}</h2>
+    <div className="container mx-auto px-4 w-full">
+        <div className="flex items-center justify-start  mb-4">
+          <BackButton />
+        </div>
+      <h2 className="text-2xl font-bold mb-4 text-red-500">{product?.name}</h2>
       {product && (
       <>
       <div className="flex items-center">

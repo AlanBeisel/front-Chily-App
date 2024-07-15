@@ -6,11 +6,13 @@ import { HiOutlineTrash } from "react-icons/hi";
 import { useAuth } from "@/app/contexts/AuthContext";
 import BackButton from "../ProductIdComponents/BackButton";
 import {User} from "@/types";
+import { FiEdit } from "react-icons/fi";
+import Link from "next/link";
 
 const PAGE_SIZE = 10;
 
 const UsersList: React.FC = ()=> {
-  const[user, setUser] = useState<User[]>([]);
+  const[users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
@@ -26,9 +28,18 @@ const UsersList: React.FC = ()=> {
     const fetchData = async () => {
       try{
       setLoading(true);
-      const userData = await fecthUsers(currentPage,PAGE_SIZE)
-      setUser(userData);
-      setTotalPages(Math.ceil(userData.length / PAGE_SIZE));
+      if(!accessToken) {
+        throw new Error('No se encontró el token de autenticación.');
+      }
+      const response = await fecthUsers(currentPage,PAGE_SIZE, accessToken);
+      console.log('Response from fecthUsers:', response);
+      if(response.data && Array.isArray(response.data.data)) {
+      setUsers(response.data.data);
+      setTotalPages(response.data.totalPages || 1);
+      } else {
+        setUsers([]);
+        setTotalPages(1);
+      }
     } catch (error) {
       console.error('Error al obtener los usuarios', error);
     } finally {
@@ -59,7 +70,7 @@ const UsersList: React.FC = ()=> {
 
     try{
       await deleteUser(userToDelete, accessToken);
-      setUser(user.filter((user) => user.id !== userToDelete));
+      setUsers(users.filter(user => user.id !== userToDelete));
       closeModal();
     } catch (error) {
       console.error('Error al eliminar el usuario', error);
@@ -68,14 +79,13 @@ const UsersList: React.FC = ()=> {
 
 
 
-  if(loading) return <div>Cargando...</div>;
-  if(user.length === 0) return <div>No hay usuarios disponibles.</div>
+
   
   return (
     <div className="container mx-auto px-4 w-full">
       <div className="flex justify-between items-center mb-4">
         <BackButton className="mr-4"/>
-        <h2 className="text-2xl font-bold text-red-500">Usuarios</h2>
+        <h2 className="text-2xl font-bold text-red-500 mx-auto">Usuarios</h2>
       </div>
       <table className="w-full table-auto">
         <thead>
@@ -86,11 +96,23 @@ const UsersList: React.FC = ()=> {
           </tr>
         </thead>
         <tbody>
-          {user.map((user, index)=>(
+          {loading ? (
+            <tr>
+              <td colSpan={3} className="text-center py-4"> Cargando usuarios...</td>
+            </tr>
+          ): users.length > 0 ? (
+          users.map((user, index)=>(
             <tr key= {user.id}>
               <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{user.name}</td>
               <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{user.email}</td>
               <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>
+              <button className="bg-white text-green-500 px-2 py-1 rounded mr-2">
+                  <Link
+                    href={`/superadmin/products/edit/${user.id.toString()}`}
+                  >
+                   <FiEdit className="text-4xl"/>
+                  </Link>
+                </button>
                 <button
                 onClick={() => openDeleteModal(user.id)}
                 className="text-red-500 px-2 py-1 rounded mr-2"
@@ -99,7 +121,12 @@ const UsersList: React.FC = ()=> {
                 </button>
               </td>
             </tr>
-          ))}
+          )) 
+        ) : (
+            <tr>
+              <td colSpan={3} className="text-center py-4">No hay usuarios disponibles.</td>
+            </tr>
+            )}
         </tbody>
       </table>
       <div className="mt-4 flex justify-center items-center">
@@ -123,7 +150,7 @@ const UsersList: React.FC = ()=> {
        onConfirm={confirmDelete}
        onCancel={closeModal}
        title="Confirmar eliminación"
-       message="¿Estás seguro de que quieres eliminar esta categoria? Esta acción no se puede deshacer."
+       message="¿Estás seguro de que quieres eliminar este usuario? Esta acción no se puede deshacer."
        />
     </div>
 
@@ -131,3 +158,4 @@ const UsersList: React.FC = ()=> {
 };
 
 export default UsersList;
+

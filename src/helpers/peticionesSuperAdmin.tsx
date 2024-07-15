@@ -1,4 +1,5 @@
-import { Category, Product, User } from '@/types';
+import { Category, Product} from '@/types';
+import { TransactionInfo } from '@/app/components/SuperAdminStripe/TransactionList';
 
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -232,13 +233,80 @@ export const deleteUser = async (id: string, token: string) => {
   }
 }
 
-export const fecthUsers = async (page: number, limit: number) => {
-  const response = await fetch (`${API_URL}/user?page=${page}&limit=${limit}`);
-  if (!response.ok) {
-    throw new Error('Error al obtener los usuarios');
+export const fecthUsers = async (page: number, limit: number, token: string) => {
+  try{
+    console.log(`Fetching users with page=${page}, limit=${limit}, token=${token}`);
+  const response = await fetch (`${API_URL}/user?page=${page}&limit=${limit}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return handleResponse(response);
+} catch (error) {
+  console.error('Error al obtener los usuarios', error);
+  throw error;
+}
+};
+
+export const getUserById = async (id:string, token: string) => {
+  try{
+    const response = await fetch(`${API_URL}/user/${id}`,{
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  } catch (error) {
+    console.error('Error al obtener el usuario', error);
+    throw error;
+  }
+};
+
+export const updateUser = async (id: string, data: any, token: string) => {
+  try{
+    const response = await fetch (`${API_URL}/user/${id}`, {
+      method: 'PUT',
+      headers:{
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+    return handleResponse(response);
+  } catch (error) {
+    console.error('Error al actualizar el usuario', error);
+    throw error;
+  }
+};
+
+export const fetchTransactionInfo = async (token: string, page: number, limit: number, date?:string, amount?: number): Promise<TransactionInfo[]> => {
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+  });
+
+  if(date) {
+    queryParams.append('date', date);
   }
 
-const users: User[] = await response.json();
-return users;
-
+  if(amount !==undefined) {
+    queryParams.append('amount', amount.toString());
+  }
+  
+  try {
+   const response = await fetch(`${API_URL}/payments/order-info?${queryParams.toString()}`, {
+    method: 'GET',
+    headers: {
+    'Content-Type':'application/json',
+    Authorization: `Bearer ${token}`,
+  },
+});
+const result = await handleResponse(response);
+return result.data as TransactionInfo[];
+} catch (error) {
+  console.error('Error al obtener la informacion', error);
+  throw error;
+}
 };
