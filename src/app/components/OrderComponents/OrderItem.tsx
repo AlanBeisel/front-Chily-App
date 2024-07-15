@@ -27,6 +27,11 @@ interface Order {
 
 const OrderDetails: React.FC<OrderProps> = ({ order }) => {
   const [showStatusTracker, setShowStatusTracker] = useState(false);
+  const [showClaimChat,setShowClaimChat] = useState(false);
+
+  const handleShowClaimChat = () => {
+    setShowClaimChat(true);
+  };
 
   useEffect(() => {
     let hideTimer: NodeJS.Timeout | null = null;
@@ -82,7 +87,14 @@ const OrderDetails: React.FC<OrderProps> = ({ order }) => {
         {showStatusTracker && <StatusTracker status={order.status} />}
       </div>
       <div>
-        <ChatWindow orderId={order.id}/>
+        {showClaimChat && <ChatWindow orderId={order.id} isOpen={true}/>}
+        {order.status === 'Entregada' && (
+          <button
+          onClick={handleShowClaimChat}
+          className="bg-white text-red-500 rounded-md py-2 px-4 mt-4 hover:bg-red-100 transition-colors duration-300">
+            ¿Hubo un problema con tu pedido?
+          </button>
+        )}
       </div>
     </div>
   );

@@ -1,9 +1,7 @@
 // vista de prueba, org como mostrar.
 
 "use client"
-import ChatBox from '../components/Chat/ChatBox';
-import ChatWindow from '../components/Chat/UserChat';
-import AdminChat from '../components/Chat/AdminChat';
+import TestChat, { mockArr } from '../components/Chat/TestChat';
 import RouteGuard from '@/helpers/routeGuard';
 import React from 'react';
 
@@ -14,9 +12,7 @@ const CheckoutPage: React.FC = () => {
   return (
     <>
     <RouteGuard allowedRoles={['user']}>
-      <AdminChat/>
-      <ChatWindow orderId={0}/>
-      <ChatBox/>
+      <TestChat orders={mockArr}/>
     </RouteGuard>
     </>
   );
