@@ -74,7 +74,7 @@ const handleSubmit = async () => {
   try {
     const response = await updateUser(userId, updateData, accessToken);
     console.log('Response from updateUser:', response);
-    toast.success('Usuario actualizado exitosamentr', {
+    toast.success('Usuario actualizado exitosamente', {
       position: 'top-center',
       autoClose: 3000,
       hideProgressBar: true,
@@ -124,7 +124,7 @@ const closeModal = () => {
             name="name"
             value={user.name}
             onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-400 leading-tight focus:outline-none focus:shadow-outline"
             required
           />
         </div>
@@ -138,7 +138,7 @@ const closeModal = () => {
             name="email"
             value={user.email}
             onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-400 leading-tight focus:outline-none focus:shadow-outline"
             required
           />
         </div>

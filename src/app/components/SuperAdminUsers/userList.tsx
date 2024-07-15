@@ -8,11 +8,13 @@ import BackButton from "../ProductIdComponents/BackButton";
 import {User} from "@/types";
 import { FiEdit } from "react-icons/fi";
 import Link from "next/link";
+import { AiOutlineSearch } from "react-icons/ai";
 
 const PAGE_SIZE = 10;
 
 const UsersList: React.FC = ()=> {
   const[users, setUsers] = useState<User[]>([]);
+  const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
@@ -32,10 +34,9 @@ const UsersList: React.FC = ()=> {
         throw new Error('No se encontró el token de autenticación.');
       }
       const response = await fecthUsers(currentPage,PAGE_SIZE, accessToken);
-      console.log('Response from fecthUsers:', response);
       if(response.data && Array.isArray(response.data.data)) {
       setUsers(response.data.data);
-      setTotalPages(response.data.totalPages || 1);
+      setTotalPages(response.data.totalPages);
       } else {
         setUsers([]);
         setTotalPages(1);
@@ -77,6 +78,9 @@ const UsersList: React.FC = ()=> {
     }
   };
 
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchTerm.toLocaleLowerCase())
+  );
 
 
 
@@ -86,12 +90,25 @@ const UsersList: React.FC = ()=> {
       <div className="flex justify-between items-center mb-4">
         <BackButton className="mr-4"/>
         <h2 className="text-2xl font-bold text-red-500 mx-auto">Usuarios</h2>
+        </div>
+      <div className="flex items-center mb-4 relative">
+      <input
+      type="text"
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      placeholder="Buscar usuarios..."
+      className="border-gray-300 rounded-full border p-2  pl-10 focus:border-red-500 w-full"
+      />
+      <AiOutlineSearch className="absolute left-3 top-3 text-gray-400"/>
       </div>
+      {filteredUsers.length === 0 && !loading &&(
+        <div className="text-center text-gray-500 my-4"> No hay usuarios que coincidan con la búsqueda. </div>
+      )}
       <table className="w-full table-auto">
         <thead>
           <tr>
             <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Nombre</th>
-            <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Mail</th>
+            <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Email</th>
             <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Gestión</th>
           </tr>
         </thead>
@@ -101,7 +118,7 @@ const UsersList: React.FC = ()=> {
               <td colSpan={3} className="text-center py-4"> Cargando usuarios...</td>
             </tr>
           ): users.length > 0 ? (
-          users.map((user, index)=>(
+          filteredUsers.map((user, index)=>(
             <tr key= {user.id}>
               <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{user.name}</td>
               <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{user.email}</td>
@@ -121,7 +138,7 @@ const UsersList: React.FC = ()=> {
                 </button>
               </td>
             </tr>
-          )) 
+          ))
         ) : (
             <tr>
               <td colSpan={3} className="text-center py-4">No hay usuarios disponibles.</td>
