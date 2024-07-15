@@ -49,8 +49,7 @@ export const useSocket = () => {
   return context;
 };
 
-const URL =
-  process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000';
+const URL = `${process.env.NEXT_PUBLIC_API_URL}/socket`;
 
 export const socket: Socket = io(URL, { autoConnect: false });
 
