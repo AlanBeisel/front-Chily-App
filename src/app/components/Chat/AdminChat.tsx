@@ -50,7 +50,7 @@ const AdminChat: React.FC = () => {
       console.log('Fetching all chats...');
       try {
         const response = await fetch(
-          'http://localhost:3000/chat/logs?page=1&limit=20',
+          'http://localhost:3002/chat/logs?page=1&limit=20',
         );
         if (!response.ok) {
           const errorData = await response.json();

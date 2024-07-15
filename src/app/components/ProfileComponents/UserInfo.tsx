@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DataField from './DataField';
 import { useAuth, AuthContextType } from '@/app/contexts/AuthContext';
 import PhoneModal from './PhoneModal';
-
 
 type Role = 'user' | 'admin' | 'superadmin';
 
@@ -27,60 +26,44 @@ interface User {
   credential: Credential;
 }
 
-const UserInfo = ({ user }: { user: User | null }) => {
-  const { address, isAuthenticated, updateUser } = useAuth() as AuthContextType;
-  const[isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
-  const [, setUserPhone] =useState('');
+const UserInfo = ({ user: initialUser }: { user: User | null }) => {
+  const { address, isAuthenticated, updateUser, accessToken, isAdmin, isSuperAdmin } = useAuth() as AuthContextType;
+  const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(initialUser);
+  const [editMode, setEditMode] = useState(false); // Estado para manejar el modo de edición
+  const [phoneFieldKey, setPhoneFieldKey] = useState<number>(0); // Clave dinámica para reiniciar DataField
 
-  const {accessToken, isAdmin, isSuperAdmin} = useAuth();
-
-  useEffect(() =>{
-    if(user) {
-      setUserPhone(user.phone);
+  useEffect(() => {
+    if (initialUser) {
+      setUser(initialUser);
     }
-  }, [user])
+  }, [initialUser]);
 
-  const openPhoneModal = () => setIsPhoneModalOpen(true);
-  const closePhoneModal = () => setIsPhoneModalOpen(false);
-
-  const handlePhoneSave = async (newPhone: string) => {
-    try{
-      if(!user) return;
-      const response = await fetch(`process.env.NEXT_PUBLIC_API_URL/user/${user.id}`,{
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({phone:newPhone}),
-      });
-      
-      if(!response.ok) {
-        throw new Error(`Error al actualizar el teléfono: ${response.status} - ${response.statusText}`);
-      }
-
-      
-        const updatedUser: User = {
-          ...user, 
-          phone: newPhone
-        };
-      updateUser(updatedUser);
-      setUserPhone(newPhone);
-      closePhoneModal();
-    } catch (error) {
-      console.error('Error al actualizar el teléfono:', error);
-    }
+  const openPhoneModal = () => {
+    setIsPhoneModalOpen(true);
+    setEditMode(true); // Al abrir el modal, activar el modo de edición
   };
 
-  console.log('Usuario:', user);
-  console.log('Dirección:', address);
-  console.log('¿Autenticado?', isAuthenticated);
- 
+  const closePhoneModal = () => {
+    setIsPhoneModalOpen(false);
+    setEditMode(false); // Al cerrar el modal, desactivar el modo de edición
+  };
+
+  const handlePhoneSave = (newPhone: string) => {
+    if (user) {
+      const updatedUser = { ...user, phone: newPhone };
+      setUser(updatedUser);
+      updateUser(updatedUser); // Opcional: actualizar el usuario en el contexto si es necesario
+      setPhoneFieldKey((prevKey) => prevKey + 1); // Incrementar la clave para reiniciar DataField
+    }
+  };
 
   if (!user || !isAuthenticated) {
     return (
       <div className="bg-white rounded-lg shadow-lg p-6 h-screen w-screen flex justify-center items-center">
-        <p className="text-red-500 text-xl">Usuario no autenticado. Por favor inicie sesión.</p>
+        <p className="text-red-500 text-xl">
+          Usuario no autenticado. Por favor inicie sesión.
+        </p>
       </div>
     );
   }
@@ -90,33 +73,47 @@ const UserInfo = ({ user }: { user: User | null }) => {
       <header className="flex items-center justify-center w-full mb-4">
         <h1 className="text-2xl font-bold text-red-500">Mi Cuenta</h1>
       </header>
-      <DataField label="Nombre" value={user.name} editable={false} />
-      <DataField label="Email" value={user.email} editable={false}  />
-      <DataField label="Teléfono" value={user.phone} editable={true} onEdit={openPhoneModal}/>
+      <div key={phoneFieldKey}>
+        <DataField label="Nombre" value={user.name} editable={false} />
+        <DataField label="Email" value={user.email} editable={false} />
+        <DataField
+          label="Teléfono"
+          value={user.phone}
+          editable={!editMode} // Hacer editable si no estamos en modo de edición
+          onEdit={openPhoneModal}
+        />
+      </div>
 
       {!isAdmin() && !isSuperAdmin() && (
-      <>
-      {address && (
-        <div>
-          <h2 className="text-lg font-semibold text-red-500">Tus direcciones:</h2>
-          <div className="mt-2">
-            <DataField label="Dirección" value={address.address} editable={false} />
-          </div>
-        </div>
-      )}
-      </>
+        <>
+          {address && (
+            <div>
+              <h2 className="text-lg font-semibold text-red-500">
+                Tus direcciones:
+              </h2>
+              <div className="mt-2">
+                <DataField
+                  label="Dirección"
+                  value={address.address}
+                  editable={false}
+                />
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       <PhoneModal
-      isOpen={isPhoneModalOpen}
-      onClose={closePhoneModal}
-      onSave={handlePhoneSave}
-      initialPhone = {user.phone}
-      userId={parseInt(user.id)}
-      accessToken = {accessToken || ''}
+        isOpen={isPhoneModalOpen}
+        onClose={closePhoneModal}
+        onSave={handlePhoneSave}
+        initialPhone={user.phone}
+        userId={parseInt(user.id)}
+        accessToken={accessToken || ''}
       />
     </div>
   );
 };
 
 export default UserInfo;
+
