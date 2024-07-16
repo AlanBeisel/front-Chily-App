@@ -23,7 +23,10 @@ export const Navbar: React.FC = () => {
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setMenuOpen(false);
+        // Verifica si el clic fue en un enlace dentro del menú
+        if (!(event.target as HTMLElement).closest('a')) {
+          setMenuOpen(false);
+        }
       }
       if (
         dropdownRef.current &&
@@ -59,6 +62,10 @@ export const Navbar: React.FC = () => {
         progress: undefined,
       });
     }
+  };
+
+  const handleMenuLinkClick = () => {
+    setMenuOpen(false);
   };
 
   return (
@@ -115,16 +122,10 @@ export const Navbar: React.FC = () => {
                         {user?.role === 'superadmin' && (
                           <>
                             <Link
-                              href="/superadmin/dashboard"
+                              href="/cupons"
                               className="block p-2 hover:text-gray-700"
                             >
-                              Super Admin
-                            </Link>
-                            <Link
-                              href="/superadmin/categories"
-                              className="block p-2 hover:text-gray-700"
-                            >
-                              Menu Categorias
+                              Cupones descuento
                             </Link>
                             <Link
                               href="/superadmin/categories"
@@ -195,13 +196,21 @@ export const Navbar: React.FC = () => {
 
       {menuOpen && (
         <div className="relative left-0 right-0 bg-red-500 text-white p-4 z-10 w-full md:w-4/5 mx-auto rounded-xl border-2 shadow-lg">
-          <Link href="/" className="block p-2 hover:text-gray-300">
+          <Link
+            href="/"
+            className="block p-2 hover:text-gray-300"
+            onClick={handleMenuLinkClick}
+          >
             Home
           </Link>
 
           {isAuthenticated ? (
             <>
-              <Link href="/profile" className="block p-2 hover:text-gray-300">
+              <Link
+                href="/profile"
+                className="block p-2 hover:text-gray-300"
+                onClick={handleMenuLinkClick}
+              >
                 Mi perfil
               </Link>
 
@@ -218,12 +227,14 @@ export const Navbar: React.FC = () => {
                       <Link
                         href="/admin-history"
                         className="block p-2 hover:text-gray-700"
+                        onClick={handleMenuLinkClick}
                       >
                         Panel Ordenes
                       </Link>
                       <Link
                         href="/superadmin/products"
                         className="block p-2 hover:text-gray-700"
+                        onClick={handleMenuLinkClick}
                       >
                         Menu Products
                       </Link>
@@ -232,31 +243,38 @@ export const Navbar: React.FC = () => {
                           <Link
                             href="/superadmin/dashboard"
                             className="block p-2 hover:text-gray-700"
+                            onClick={handleMenuLinkClick}
                           >
                             Dashboard
                           </Link>
                           <Link
                             href="/superadmin/categories"
                             className="block p-2 hover:text-gray-700"
+                            onClick={handleMenuLinkClick}
                           >
                             Categorias
                           </Link>
                           <Link
                             href="/cupons"
                             className="block p-2 hover:text-gray-700"
+                            onClick={handleMenuLinkClick}
                           >
                             Cupones
                           </Link>
                           <Link
                             href="/adminaccounts"
                             className="block p-2 hover:text-gray-700"
+                            onClick={handleMenuLinkClick}
                           >
                             Accounts
                           </Link>
                         </>
                       )}
                       <button
-                        onClick={handleLogout}
+                        onClick={() => {
+                          handleLogout();
+                          setMenuOpen(false);
+                        }}
                         className="block w-full text-left p-2 hover:text-gray-300"
                       >
                         Cerrar sesión
@@ -267,7 +285,10 @@ export const Navbar: React.FC = () => {
               ) : (
                 <>
                   <button
-                    onClick={handleLogout}
+                    onClick={() => {
+                      handleLogout();
+                      setMenuOpen(false);
+                    }}
                     className="block w-full text-left p-2 hover:text-gray-300"
                   >
                     Cerrar sesión
@@ -275,7 +296,10 @@ export const Navbar: React.FC = () => {
                   <Link
                     href="/cart"
                     className="block p-2 hover:text-gray-300"
-                    onClick={handleCartClick}
+                    onClick={(e) => {
+                      handleCartClick(e);
+                      handleMenuLinkClick();
+                    }}
                   >
                     <AiOutlineShoppingCart className="text-2xl" />
                   </Link>
@@ -284,10 +308,18 @@ export const Navbar: React.FC = () => {
             </>
           ) : (
             <>
-              <Link href="/login" className="block p-2 hover:text-gray-300">
+              <Link
+                href="/login"
+                className="block p-2 hover:text-gray-300"
+                onClick={handleMenuLinkClick}
+              >
                 Iniciar sesión
               </Link>
-              <Link href="/register" className="block p-2 hover:text-gray-300">
+              <Link
+                href="/register"
+                className="block p-2 hover:text-gray-300"
+                onClick={handleMenuLinkClick}
+              >
                 Registrarme
               </Link>
             </>

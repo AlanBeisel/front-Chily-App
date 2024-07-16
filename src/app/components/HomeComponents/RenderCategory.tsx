@@ -26,7 +26,7 @@ useEffect(() => {
               const categoryId = parseInt(category.id.toString()); //modificacion
               return (
                 categoryId >= 1 &&
-                categoryId <= 16 &&
+                categoryId <= 32 &&
                 category.products.length > 0
               );
             })
