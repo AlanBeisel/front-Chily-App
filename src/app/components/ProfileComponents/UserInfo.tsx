@@ -30,8 +30,8 @@ const UserInfo = ({ user: initialUser }: { user: User | null }) => {
   const { address, isAuthenticated, updateUser, accessToken, isAdmin, isSuperAdmin } = useAuth() as AuthContextType;
   const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(initialUser);
-  const [editMode, setEditMode] = useState(false); // Estado para manejar el modo de edición
-  const [phoneFieldKey, setPhoneFieldKey] = useState<number>(0); // Clave dinámica para reiniciar DataField
+  const [editMode, setEditMode] = useState(false);
+  const [phoneFieldKey, setPhoneFieldKey] = useState<number>(0);
 
   useEffect(() => {
     if (initialUser) {
@@ -41,20 +41,20 @@ const UserInfo = ({ user: initialUser }: { user: User | null }) => {
 
   const openPhoneModal = () => {
     setIsPhoneModalOpen(true);
-    setEditMode(true); // Al abrir el modal, activar el modo de edición
+    setEditMode(true); 
   };
 
   const closePhoneModal = () => {
     setIsPhoneModalOpen(false);
-    setEditMode(false); // Al cerrar el modal, desactivar el modo de edición
+    setEditMode(false); 
   };
 
   const handlePhoneSave = (newPhone: string) => {
     if (user) {
       const updatedUser = { ...user, phone: newPhone };
       setUser(updatedUser);
-      updateUser(updatedUser); // Opcional: actualizar el usuario en el contexto si es necesario
-      setPhoneFieldKey((prevKey) => prevKey + 1); // Incrementar la clave para reiniciar DataField
+      updateUser(updatedUser);
+      setPhoneFieldKey((prevKey) => prevKey + 1);
     }
   };
 
@@ -79,7 +79,7 @@ const UserInfo = ({ user: initialUser }: { user: User | null }) => {
         <DataField
           label="Teléfono"
           value={user.phone}
-          editable={!editMode} // Hacer editable si no estamos en modo de edición
+          editable={!editMode}
           onEdit={openPhoneModal}
         />
       </div>

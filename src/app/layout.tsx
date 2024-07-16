@@ -9,6 +9,7 @@ import ToastProvider from './contexts/ToastProvider';
 import { SocketProvider } from './contexts/socketContext';
 import ReactQueryProvider from './contexts/ReactQueryProvider';
 import ChatBot from '@/components/ui/chatbot';
+import BtnUp from '../components/ui/btn-up';
 
 
 
@@ -42,13 +43,14 @@ export default function RootLayout({
             <SocketProvider>
               <Navbar />
               <ReactQueryProvider>
-              <ToastProvider>{children}</ToastProvider>
+                <ToastProvider>{children}</ToastProvider>
               </ReactQueryProvider>
               <Footer />
             </SocketProvider>
           </CacheProvider>
         </AuthProvider>
-        <ChatBot/>
+        <ChatBot />
+        <BtnUp />
       </body>
     </html>
   );

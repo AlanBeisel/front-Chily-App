@@ -11,7 +11,7 @@ interface ChatWindowProps {
 const ChatWindow: React.FC<ChatWindowProps> = ({ orderId, isOpen, onClose }) => {
   const [problem, setProblem] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const { isConnected, roomId, connectToRoom } = useSocket();
+  const { isConnected, roomId, connectToRoom, errorMessage } = useSocket();
 
   const handleDescription = () => {
     setDescription(problem);

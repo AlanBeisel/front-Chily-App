@@ -9,22 +9,28 @@ import { useAuth } from '@/app/contexts/AuthContext';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { FiEdit } from "react-icons/fi";
 import BackButton from '../ProductIdComponents/BackButton';
+import { AiOutlineSearch } from 'react-icons/ai';
 
 const PAGE_SIZE = 10;
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const {accessToken} = useAuth();
+  const {accessToken, isSuperAdmin} = useAuth();
   const token = accessToken;
 
   useEffect(() => {
     fetchData();
   }, [currentPage]);
+
+  useEffect(() => {
+    setTotalPages(Math.ceil(products.length/PAGE_SIZE));
+  }, [products]);
 
   const fetchData = async () => {
     try {
@@ -34,7 +40,6 @@ const ProductList: React.FC = () => {
       const productsData = await fetchProducts();
       const slicedProducts = productsData.slice(startIndex, endIndex);
       setProducts(slicedProducts);
-      setTotalPages(Math.ceil(productsData.length / PAGE_SIZE));
     } catch (error) {
       console.error('Error al obtener los productos', error);
     } finally {
@@ -94,6 +99,10 @@ const ProductList: React.FC = () => {
     }
   };
 
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLocaleLowerCase())
+  );
+
   if (loading) return <div>Cargando...</div>;
   if (products.length === 0) return <div>No hay productos disponibles.</div>;
 
@@ -102,12 +111,28 @@ const ProductList: React.FC = () => {
       <div className="flex justify-between items-center mb-4">
         <BackButton className="mr-4"/>
         <h2 className="text-2xl font-bold text-red-500">Productos</h2>
+        {isSuperAdmin() && (
         <Link href="/superadmin/products/create">
           <button className="bg-red-500 text-white px-4 py-2 rounded">
             Crear Producto
           </button>
         </Link>
+        )}
       </div>
+      <div className="flex items-center mb-4 relative">
+        <input
+        type="text"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Buscar productos..."
+        className="border-gray-300 rounded-full border p-2  pl-10 focus:border-red-500 w-full"
+        />
+        */
+        <AiOutlineSearch className="absolute left-3 top-3 text-gray-400"/>
+      </div>
+      {filteredProducts.length === 0 && !loading &&(
+        <div className="text-center text-gray-500 my-4"> No hay productos que coincidan con la búsqueda. </div>
+      )}
       <table className="w-full table-auto">
         <thead>
           <tr>
@@ -118,7 +143,7 @@ const ProductList: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {products.map((product, index) => (
+          {filteredProducts.map((product, index) => (
             <tr key={product.id}>
               <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{product.name}</td>
               <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>
@@ -135,12 +160,14 @@ const ProductList: React.FC = () => {
                    <FiEdit className="text-4xl"/>
                   </Link>
                 </button>
+                {isSuperAdmin() && (
                 <button
                   onClick={() => openDeleteModal(product.id)}
                   className="text-red-500 px-2 py-1 rounded"
                 >
                    <HiOutlineTrash className="text-4xl"/>
                 </button>
+                )}
               </td>
             </tr>
           ))}

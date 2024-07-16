@@ -95,7 +95,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ defaultValues, onSubmit, is
           ) : defaultValues?.icon ? (
             <img src={defaultValues.icon} alt="Product Image" className="w-full h-auto mb-2 rounded-lg shadow-lg" />
           ) : null}
-          <label className="block text-grey-500 font-bold">Imagen (Archivo)</label>
+          <label className="block text-gray-500 font-bold">Imagen (Archivo)</label>
           <div className="flex items-center">
             <input
               type="file"

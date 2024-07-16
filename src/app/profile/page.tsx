@@ -11,6 +11,7 @@ import Link from 'next/link';
 const UserDashboard: React.FC = () => {
 
   const { user, isAuthenticated, isLoading, isAdmin, isSuperAdmin } = useAuth();
+  const isGoogleUser = user?.googleAuth ?? false;
 
   if (isLoading) {
     return (
@@ -29,7 +30,6 @@ const UserDashboard: React.FC = () => {
       </div>
     );
   }
-
 
 
 
@@ -59,12 +59,14 @@ const UserDashboard: React.FC = () => {
       </Link>
       </>
       )}
+      {!isGoogleUser && (
       <Link href="/change-password" passHref>
       <div className= "md:mr-4  mt-4 px-6 py-3 bg-red-500 text-white text-lg font-semibold flex items-center justify-between cursor-pointer">
       <span>Cambiar contraseña</span>
       <HiChevronRight />
       </div>
       </Link>
+      )}
       </div>
     </div>
     </div>

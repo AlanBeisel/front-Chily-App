@@ -22,8 +22,6 @@ const PopularProductSwitch: React.FC<PopularProductSwitchProps> = ({productId, i
         throw new Error('Token no disponible');
       }
       const updateIsPopular = !isPopular;
-      console.log('Cambiando popularidad del producto:', productId);
-    console.log('Nuevo estado de popularidad (booleano):', updateIsPopular);
       setIsPopular(updateIsPopular);
       await PopularProduct(productId, updateIsPopular, token);
     } catch (error) {

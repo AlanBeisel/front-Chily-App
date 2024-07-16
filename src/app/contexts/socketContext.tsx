@@ -27,6 +27,7 @@ interface ChatSocketContextType {
   chatLogId: number | null;
   roomId: string | null;
   rooms: Room[];
+  errorMessage:string
   chatLogs: Record<number, any>;
   connectToRoom: (orderId: number, description: string) => void;
   joinNewRoom: (roomId: string) => void;
@@ -48,8 +49,7 @@ export const useSocket = () => {
   return context;
 };
 
-const URL =
-  process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3002';
+const URL = `${process.env.NEXT_PUBLIC_API_URL}/socket`;
 
 export const socket: Socket = io(URL, { autoConnect: false });
 
@@ -62,6 +62,7 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({
   const [roomId, setRoomId] = useState<string | null>(null);
   const [chatLogs, setChatLogsState] = useState<Record<number, any>>({});
   const [chatLogId, setChatLogId] = useState<number | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string>("")
 
   useEffect(() => {
     if (user) {
@@ -73,7 +74,7 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({
 
     const onConnect = () => {
       setIsConnected(true);
-      console.log('Connected as role:', user!.role);
+      console.log('Connected as role:', user!.role);      
     };
 
     const onDisconnect = () => {
@@ -81,6 +82,7 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({
       setRoomId(null);
       setChatLogId(null);
       setChatLogsState({});
+      setErrorMessage("")
     };
 
     const onCreateRoomResponse = (response: any) => {
@@ -89,8 +91,10 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({
         setRoomId(response.roomId);
         setChatLogId(response.chatLog.id);
         console.log('Connected to room:', response.roomId);
+      } else if(response.errorMessage) {
+        setErrorMessage(response.errorMessage)
       } else {
-        console.error('Failed to create room:', response.error);
+        console.error(response.error)
       }
     };
 
@@ -187,6 +191,7 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({
         addMessage,
         setChatLogs,
         setChatLogId,
+        errorMessage
       }}
     >
       {children}

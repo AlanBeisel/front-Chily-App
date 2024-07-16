@@ -32,7 +32,6 @@ const ProductEdit: React.FC<ProductEditProps> = ({productId}) => {
       try{
           setLoading(true)
           const productData = await getProductById(productId);
-          console.log('Datos del producto cargado:', productData);
           setProduct(productData);
       }catch (error) {
         console.error('Error al obtener el producto', error);
@@ -71,8 +70,6 @@ const handleUpdate = async (data: Partial<Product>) => {
     };
 
   try {
-
-    console.log('Actualizando popularidad del producto:', productId);
     await updateProduct(productId, updateData, token);
     setError(null);
     setModalOpen(true);
@@ -86,7 +83,7 @@ const handleUpdate = async (data: Partial<Product>) => {
       draggable: true,
       progress: undefined,
     });
-    router.push('/superadmin/products');
+    router.push('/superadmin/products')
   } catch (error) {
     console.error('Error al actualizar el producto', error);
     setError(
@@ -110,42 +107,6 @@ const handleUpdate = async (data: Partial<Product>) => {
   }
 };
 
- /* const confirmUpdate = async () => {
-    try {
-      console.log('Confirmando actualización del producto:', product);
-      await updateProduct(productId, updateData!, token!);
-      setError(null);
-      setModalOpen(false);
-      const updatedProduct = await getProductById(productId);
-      setProduct(updatedProduct);
-      toast.success('Producto actualizado correctamente', {
-        position: 'top-center',
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    } catch (error) {
-      console.error('Error al actualizar el producto.', error);
-      setError(
-        'No se pudo actualizar el producto. Por favor, inténtalo nuevamente.',
-      );
-      toast.error(
-        'Error al actualizar el producto. Por favor inténtalo nuevamente.',
-        {
-          position: 'top-center',
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        },
-      );
-    }
-  };*/
 
   const openModal = () => {
     setModalOpen(true);
@@ -182,7 +143,11 @@ const handleUpdate = async (data: Partial<Product>) => {
             }} isEditMode/>
       <ConfirmModal
       isOpen={modalOpen}
-      onConfirm={() => handleUpdate(product!)}
+      onConfirm={() => { 
+        handleUpdate(product!);
+        closeModal();
+        
+      }}
       onCancel={closeModal}
       title="Confirmar actualización"
       message="¿Estás seguro de que quieres actualizar este producto?"
