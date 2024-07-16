@@ -1,14 +1,14 @@
-'use client';
-import { useSocket } from '@/app/contexts/socketContext';
 import React, { useState } from 'react';
+import { useSocket } from '@/app/contexts/socketContext';
 import ChatBox from './ChatBox';
 
 interface ChatWindowProps {
   orderId: number;
   isOpen: boolean;
+  onClose: () => void;
 }
 
-const ChatWindow: React.FC<ChatWindowProps> = ({ orderId, isOpen }) => {
+const ChatWindow: React.FC<ChatWindowProps> = ({ orderId, isOpen, onClose }) => {
   const [problem, setProblem] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const { isConnected, roomId, connectToRoom } = useSocket();
@@ -24,68 +24,44 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ orderId, isOpen }) => {
     }
   };
 
-  if(!isOpen) {
+  const handleCloseChat = () => {
+    onClose(); 
+  };
+
+  if (!isOpen) {
     return null;
   }
 
   return (
-    <div
-      style={{
-        backgroundColor: '#f44336',
-        color: 'black',
-        padding: '20px',
-        borderRadius: '8px',
-        width: '80%',
-        maxWidth: '400px',
-        margin: '20px auto',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-        textAlign: 'center',
-      }}
-    >
-      {!isConnected || !roomId ? (
-        <div>
-          <div style={{ marginBottom: '10px', fontSize:'1.2rem', fontWeight: 'bold', color:'white' }}>Problem Description</div>
-          <input
-            type="text"
-            value={problem}
-            onChange={(e) => setProblem(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Describe the problem..."
-            style={{
-              width: '100%',
-              padding: '10px',
-              marginBottom: '10px',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-              fontSize: '1rem',
-              boxSizing:'border-box',
-              color: 'j',
-            }}
-          />
-          <button
-            onClick={handleDescription}
-            style={{
-              width: '100%',
-              padding: '12px',
-              backgroundColor: '#fff',
-              color: '#f44336',
-              border: '1px solid #e9e7e7',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize:'1rem',
-              marginTop: '10px',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-              transition: 'background-color 0.3s, color 0.3s',
-              boxSizing: 'border-box',
-              fontWeight: '600'
-            }}
-          >
-            Start Chat
-          </button>
-        </div>
-      ) : (
-        <ChatBox />
-      )}
+    <div className="fixed bottom-4 right-4 z-50">
+      <div
+        className="bg-red-300 rounded-xl shadow-md overflow-hidden border-red-500"
+        style={{ width: '350px' }}
+      >
+        {!isConnected || !roomId ? (
+          <div className="p-4">
+            <div className="text-lg font-bold mb-4 text-gray-800">
+              Cuentanos tu problema
+            </div>
+            <input
+              type="text"
+              value={problem}
+              onChange={(e) => setProblem(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Describe the problem..."
+              className="w-full px-3 py-2 border text-black font-bold border-red-300 rounded-md mb-4 focus:outline-none  focus:border-red-500"
+            />
+            <button
+              onClick={handleDescription}
+              className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300"
+            >
+              Start Chat
+            </button>
+          </div>
+        ) : (
+          <ChatBox onClose={handleCloseChat} />
+        )}
+      </div>
     </div>
   );
 };

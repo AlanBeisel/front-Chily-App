@@ -114,18 +114,9 @@ export const Navbar: React.FC = () => {
                         </Link>
                         {user?.role === 'superadmin' && (
                           <>
-                            <Link
-                              href="/superadmin/dashboard"
-                              className="block p-2 hover:text-gray-700"
-                            >
-                              Super Admin
-                            </Link>
-                            <Link
-                              href="/superadmin/categories"
-                              className="block p-2 hover:text-gray-700"
-                            >
-                              Menu Categorias
-                            </Link>
+                          <Link href="/cupons" className='block p-2 hover:text-gray-700'>
+                          Cupones descuento
+                          </Link>
                             <Link
                               href="/superadmin/categories"
                               className="block p-2 hover:text-gray-700"

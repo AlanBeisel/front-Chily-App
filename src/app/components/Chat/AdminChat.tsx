@@ -1,8 +1,8 @@
 'use client';
 import { Room, useSocket } from '@/app/contexts/socketContext';
 import { useEffect, useState } from 'react';
-import ChatBox from './ChatBox';
 import { useAuth } from '@/app/contexts/AuthContext';
+import ChatBoxAdmin from './ChatBoxAdmin';
 
 interface Chat {
   id: number;
@@ -128,7 +128,7 @@ const AdminChat: React.FC = () => {
 
       {selectedChat && userId !== null && chatLogId !== null ? (
         <div className="mt-5">
-          <ChatBox />
+          <ChatBoxAdmin />
         </div>
       ) : null}
     </div>
