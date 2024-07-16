@@ -31,7 +31,7 @@ const TransactionInfoPage: React.FC =  () => {
           console.log('Token válido:', token);
         const data = await fetchTransactionInfo(token, page, limit, date, amount);
         console.log('Datos de transacciones recibidos:', data);
-        setTransactions(data);
+        setTransactions(data.orders);
         }else {
           throw new Error('Token no válido');
         }
@@ -100,21 +100,21 @@ const TransactionInfoPage: React.FC =  () => {
       </tbody>
     </table>
     </div>
-     <div className="mt-4 flex justify-center items-center">
+    <div className="mt-4 flex justify-center items-center">
         <button
-         onClick={() => setPage(page - 1)}
-         disabled= {page === 1}
-         className="bg-gray-200 text-gray-600 px-3 py-1 rounded mr-2"
-         >
+        onClick={() => setPage(page - 1)}
+        disabled= {page === 1}
+        className="bg-gray-200 text-gray-600 px-3 py-1 rounded mr-2"
+        >
           Anterior
-         </button>
-         <button
-         onClick={() => setPage(page + 1)}
-         disabled= {transactions.length < limit}
-         className="bg-gray-200 text-gray-600 px-3 py-1 rounded mr-2"
-         >
+        </button>
+        <button
+        onClick={() => setPage(page + 1)}
+        disabled= {transactions.length < limit}
+        className="bg-gray-200 text-gray-600 px-3 py-1 rounded mr-2"
+        >
           Siguiente
-         </button>
+        </button>
       </div>
     </div>
   );

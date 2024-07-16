@@ -9,7 +9,6 @@ import ToastProvider from './contexts/ToastProvider';
 import { SocketProvider } from './contexts/socketContext';
 import ReactQueryProvider from './contexts/ReactQueryProvider';
 import ChatBot from '@/components/ui/chatbot';
-import BtnUp from '../components/ui/btn-up';
 
 
 
@@ -50,7 +49,6 @@ export default function RootLayout({
           </CacheProvider>
         </AuthProvider>
         <ChatBot />
-        <BtnUp />
       </body>
     </html>
   );
