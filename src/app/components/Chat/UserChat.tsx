@@ -19,7 +19,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
   const handleDescription = () => {
     setDescription(problem);
-    connectToRoom(orderId, description);
+    connectToRoom(Number(orderId), description);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -56,7 +56,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               className="w-full px-3 py-2 border text-black font-bold border-red-300 rounded-md mb-4 focus:outline-none  focus:border-red-500"
             />
             <button
-              onClick={handleDescription}
+              onClick={()=>handleDescription}
               className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300"
             >
               Start Chat
