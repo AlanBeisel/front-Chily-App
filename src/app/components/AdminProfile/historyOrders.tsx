@@ -46,14 +46,19 @@ interface Order {
 
 const ITEMS_PER_PAGE = 5;
 
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-CA');
+};
+
 export function HistoryOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
-
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [totalPages, setTotalPages] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
+  const [noResults, setNoResults] = useState(false); // Estado para manejar sin resultados
   const queryClient = useQueryClient();
 
   const statusOptions = [
@@ -67,6 +72,7 @@ export function HistoryOrders() {
   const handleSelectChange = (value: string) => {
     const filtered = orders.filter((order) => order.status === value);
     setFilteredOrders(filtered);
+    setNoResults(filtered.length === 0);
   };
 
   const handleStatusEditChange = async (value: string, id: string) => {
@@ -144,15 +150,19 @@ export function HistoryOrders() {
       setOrders(data.orders);
       setFilteredOrders(data.orders);
       setTotalPages(Math.ceil(data.total / ITEMS_PER_PAGE));
+      setNoResults(data.orders.length === 0);
     }
   }, [data]);
 
-  if (isLoading) return <div>Cargando órdenes...</div>;
-  if (isError) return <div>Hubo un error, intenta nuevamente</div>;
+  if (isLoading) return <div className="min-h-screen">Cargando órdenes...</div>;
+  if (isError)
+    return (
+      <div className="min-h-screen">Hubo un error, intenta nuevamente</div>
+    );
 
   return (
     <div className="flex flex-col min-h-screen m-2">
-      <div className="flex flex-col md:flex-row m-2 justify-between">
+      <div className="flex flex-wrap md:flex-row m-2 justify-between">
         <div className="m-2 p-2">
           <Select
             options={statusOptions}
@@ -160,10 +170,61 @@ export function HistoryOrders() {
             placeholder="Selecciona un estado"
           />
         </div>
-
-        <div className="m-2 p-2 flex-1">
+        <div className="m-2 p-2">
           <SearchBar onSearch={handleSearch} searchValue={searchQuery} />
         </div>
+      </div>
+      <div className="overflow-x-auto">
+        {noResults ? (
+          <div className="text-red-600 text-center my-4">
+            <pre>
+              {' '}
+              No se han encontrado resultados para tu búsqueda. Asegúrate de que
+              todas las palabras estén escritas correctamente.
+            </pre>
+          </div>
+        ) : (
+          <Table className="min-w-full">
+            <TableCaption>Historial de órdenes</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>#ID</TableHead>
+                <TableHead>Fecha</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead>Precio</TableHead>
+                <TableHead>Correo electrónico</TableHead>
+                <TableHead className="text-right">Detalles</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredOrders?.map((order) => (
+                <TableRow key={order.id}>
+                  <TableCell className="font-medium">{order.id}</TableCell>
+                  <TableCell>{formatDate(order.date)}</TableCell>
+                  <TableCell className={getStatusStyle(order.status)}>
+                    <Select
+                      options={statusOptions}
+                      onChange={(e) => handleStatusEditChange(e, order.id)}
+                      placeholder={order.status}
+                    />
+                  </TableCell>
+                  <TableCell>{order.price}</TableCell>
+                  <TableCell>{order.email}</TableCell>
+                  <TableCell className="text-right">
+                    {order?.products?.length > 0 && (
+                      <Button
+                        className="bg-red-500 hover:bg-gray-500"
+                        onClick={() => detailOrderAdmin(order.id)}
+                      >
+                        Ver Detalle
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
         <div className="m-2 p-2">
           <Pagination>
             <PaginationContent>
@@ -206,48 +267,6 @@ export function HistoryOrders() {
             </PaginationContent>
           </Pagination>
         </div>
-      </div>
-      <div className="overflow-x-auto">
-        <Table className="min-w-full">
-          <TableCaption>Historial de órdenes</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>#ID</TableHead>
-              <TableHead>Fecha</TableHead>
-              <TableHead>Estado</TableHead>
-              <TableHead>Precio</TableHead>
-              <TableHead>Correo electrónico</TableHead>
-              <TableHead className="text-right">Detalles</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredOrders?.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell className="font-medium">{order.id}</TableCell>
-                <TableCell>{order.date}</TableCell>
-                <TableCell className={getStatusStyle(order.status)}>
-                  <Select
-                    options={statusOptions}
-                    onChange={(e) => handleStatusEditChange(e, order.id)}
-                    placeholder={order.status}
-                  />
-                </TableCell>
-                <TableCell>{order.price}</TableCell>
-                <TableCell>{order.email}</TableCell>
-                <TableCell className="text-right">
-                  {order?.products?.length > 0 && (
-                    <Button
-                      className="bg-red-500 hover:bg-gray-500"
-                      onClick={() => detailOrderAdmin(order.id)}
-                    >
-                      Ver Detalle
-                    </Button>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
       </div>
 
       <OrderDetailModal order={selectedOrder} onClose={handleCloseModal} />

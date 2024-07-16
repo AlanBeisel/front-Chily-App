@@ -8,10 +8,14 @@ interface ChatWindowProps {
   onClose: () => void;
 }
 
-const ChatWindow: React.FC<ChatWindowProps> = ({ orderId, isOpen, onClose }) => {
+const ChatWindow: React.FC<ChatWindowProps> = ({
+  orderId,
+  isOpen,
+  onClose,
+}) => {
   const [problem, setProblem] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const { isConnected, roomId, connectToRoom, errorMessage } = useSocket();
+  const { isConnected, roomId, connectToRoom } = useSocket();
 
   const handleDescription = () => {
     setDescription(problem);
@@ -25,7 +29,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ orderId, isOpen, onClose }) => 
   };
 
   const handleCloseChat = () => {
-    onClose(); 
+    onClose();
   };
 
   if (!isOpen) {
