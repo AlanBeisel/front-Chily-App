@@ -1,7 +1,7 @@
 'use client'
 import React, {useEffect, useState} from 'react';
 import { useAuth } from '@/app/contexts/AuthContext';
-import { fetchTransactionInfo } from '@/helpers/peticionesSuperAdmin';
+import { fetchTransactionInfo, TransactionResponse } from '@/helpers/peticionesSuperAdmin';
 import BackButton from '../ProductIdComponents/BackButton';
 
 export interface TransactionInfo {
@@ -12,6 +12,7 @@ export interface TransactionInfo {
   created: string,
   card_brand: string,
 }
+
 
 const TransactionInfoPage: React.FC =  () => {
   const [transactions, setTransactions] = useState<TransactionInfo[]>([]);
@@ -29,9 +30,9 @@ const TransactionInfoPage: React.FC =  () => {
       try{
         if(token) {
           console.log('Token válido:', token);
-        const data = await fetchTransactionInfo(token, page, limit, date, amount);
+        const data: TransactionResponse = await fetchTransactionInfo(token, page, limit, date, amount);
         console.log('Datos de transacciones recibidos:', data);
-        setTransactions(data);
+        setTransactions(data.orders);
         }else {
           throw new Error('Token no válido');
         }
@@ -53,6 +54,11 @@ const TransactionInfoPage: React.FC =  () => {
     setAmount(parseFloat(e.target.value));
   };
 
+  const handleClearFilters = () => {
+    setDate(undefined);
+    setAmount(undefined);
+  }
+
   return(
     <div className="container mx-auto px-4 w-full">
       <div className="flex justify-between items-center mb-4">
@@ -71,6 +77,11 @@ const TransactionInfoPage: React.FC =  () => {
         </label>
         <input type="number" value={amount ?? ''} onChange={handleAmountChange} className="border border-gray-300 px-2 py-1 rounded-md w-36"/>
         </div>
+        <button
+        onClick={handleClearFilters}
+        className="ml-4 bg-red-500 text-white px-3 py-1 rounded">
+          Limpiar Filtros
+        </button>
         </div>
       </div>
     {error && <div style = {{ color: 'red'}}>{error}</div>}

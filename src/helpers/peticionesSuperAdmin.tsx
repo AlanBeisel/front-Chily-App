@@ -1,6 +1,9 @@
 import { Category, Product} from '@/types';
 import { TransactionInfo } from '@/app/components/SuperAdminStripe/TransactionList';
-
+ export interface TransactionResponse {
+  orders: TransactionInfo[],
+  total: number;
+ }
 
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -222,7 +225,7 @@ export async function getCategoryById(
 
 export const deleteUser = async (id: string, token: string) => {
   try {
-    const response = await fetch(`${API_URL}/user/delete/${id}`, {
+    const response = await fetch(`${API_URL}/user/${id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -260,7 +263,6 @@ export const getUserById = async (userId:number, token: string) => {
       },
     });
     const data = await handleResponse(response);
-    console.log('Data de getUserById', data);
     return data;
   } catch (error) {
     console.error('Error al obtener el usuario', error);
@@ -285,7 +287,7 @@ export const updateUser = async (userId: number, data: any, token: string) => {
   }
 };
 
-export const fetchTransactionInfo = async (token: string, page: number, limit: number, date?:string, amount?: number): Promise<TransactionInfo[]> => {
+export const fetchTransactionInfo = async (token: string, page: number, limit: number, date?:string, amount?: number): Promise<TransactionResponse> => {
   const queryParams = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
@@ -308,7 +310,7 @@ export const fetchTransactionInfo = async (token: string, page: number, limit: n
   },
 });
 const result = await handleResponse(response);
-return result.data as TransactionInfo[];
+return result.data as TransactionResponse;
 } catch (error) {
   console.error('Error al obtener la informacion', error);
   throw error;
