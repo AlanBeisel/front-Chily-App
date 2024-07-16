@@ -13,7 +13,7 @@ interface Props {
 const DataField: React.FC<Props>= ({ label, value, editable, type= "text", onEdit}) => {
   const [currentValue, setCurrentValue] = useState(value);
   const [isEditing, setIsEditing] = useState(false);
-  const [originalValue, setOriginalValue] = useState(value);
+  const [, setOriginalValue] = useState(value);
 
 
   const handleEditClick = () => {
@@ -24,19 +24,11 @@ const DataField: React.FC<Props>= ({ label, value, editable, type= "text", onEdi
     } 
   };
 
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-    setCurrentValue(originalValue);
-  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCurrentValue(event.target.value);
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    setOriginalValue(currentValue);
-  };
 
   return (
     <div className="flex justify-between items-center w-full border-b border-gray-200 py-2">

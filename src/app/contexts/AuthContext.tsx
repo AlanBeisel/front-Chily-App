@@ -35,7 +35,7 @@ interface User {
   credential: Credential;
 }
 
-type AuthContextType = {
+export type AuthContextType = {
   user: User | null;
   isAuthenticated: boolean;
   accessToken: string | null;
@@ -47,6 +47,7 @@ type AuthContextType = {
   isUser: () => boolean;
   isAdmin: () => boolean;
   isSuperAdmin: () => boolean;
+  updateUser: (updatedUser: User) => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -61,6 +62,7 @@ const AuthContext = createContext<AuthContextType>({
   isUser: () => false,
   isAdmin: () => false,
   isSuperAdmin: () => false,
+  updateUser: (_updatedUser: User) => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -127,6 +129,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setCookie('address', JSON.stringify(newAddress));
   };
 
+  const updateUser = (updatedUser: User) => {
+    setUser(updatedUser);
+    setCookie('user', JSON.stringify(updatedUser));
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -141,6 +148,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isSuperAdmin,
         accessToken,
         isLoading, // Nuevo valor en el contexto
+        updateUser
       }}
     >
       {children}

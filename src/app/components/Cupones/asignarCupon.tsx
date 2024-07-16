@@ -1,4 +1,5 @@
 'use client';
+import { useAuth } from '@/app/contexts/AuthContext';
 import React, { useState, useEffect } from 'react';
 
 interface Usuario {
@@ -22,6 +23,7 @@ const AsignarCupon: React.FC<AsignarCuponProps> = ({
   const [error, setError] = useState('');
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState('');
   const [filter, setFilter] = useState('');
+  const {accessToken} = useAuth()
 
   const fetchUsuarios = async () => {
     setLoading(true);
@@ -66,6 +68,7 @@ const AsignarCupon: React.FC<AsignarCuponProps> = ({
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
           },
         },
       );

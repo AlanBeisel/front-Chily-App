@@ -5,7 +5,8 @@ import { createCategory } from '@/helpers/peticionesSuperAdmin';
 import BackButton from '../ProductIdComponents/BackButton';
 import { toast } from 'react-toastify';
 import ConfirmModal from '../SuperAdminProducts/confirmModal';
-//import { useRouter } from 'next/router';
+import { useAuth } from '@/app/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
 
 interface CategoryData {
@@ -15,7 +16,7 @@ interface CategoryData {
 }
 
 const CategoryCreate: React.FC = () => {
- // const router = useRouter();
+ const router = useRouter();
  const [error, setError] = useState<string | null>(null);
  const [isModalOpen, setModalOpen] = useState(false);
  const [formData, setFormData] = useState<CategoryData>({
@@ -25,6 +26,7 @@ const CategoryCreate: React.FC = () => {
 
 
  const [modalAction, setModalAction] = useState<()=> void>(()=>{});
+ const {accessToken} = useAuth();
 
 
   const handleCreate = async (data: CategoryData, icon?: string) => {
@@ -36,7 +38,11 @@ const CategoryCreate: React.FC = () => {
       };
 
       setModalAction(() => async()=>{
-        const response = await createCategory(formattedData);
+        if(!accessToken) {
+          setError('No se encontró el token de autentocación.');
+          return;
+        }
+        const response = await createCategory(formattedData, accessToken);
 
 
       if(response.success){
@@ -54,9 +60,10 @@ const CategoryCreate: React.FC = () => {
       draggable: true,
       progress: undefined,
       });
+      router.push('/superadmin/categories')
       } else {
-        setError(response.error || 'Error al crear la categoría');
-        toast.error(response.error || 'Error al crear la categoría',{
+        setError('Error al crear la categoría');
+        toast.error('Error al crear la categoría',{
          position: 'top-center',
       autoClose: 3000,
       hideProgressBar: true,

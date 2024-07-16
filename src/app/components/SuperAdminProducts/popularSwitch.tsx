@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import { PopularProduct } from '@/helpers/peticionesSuperAdmin';
+import { useAuth } from '@/app/contexts/AuthContext';
 
 interface PopularProductSwitchProps {
-  productId: string;
+  productId: number;
   isInitiallyPopular: boolean;
-  onUpdatePopular: (isPopular: boolean) => void;
 }
 
-const PopularProductSwitch: React.FC<PopularProductSwitchProps> = ({productId, isInitiallyPopular, onUpdatePopular}) => {
+const PopularProductSwitch: React.FC<PopularProductSwitchProps> = ({productId, isInitiallyPopular}) => {
   const [isPopular, setIsPopular] = useState<boolean>(isInitiallyPopular);
+  const {accessToken} = useAuth();
+  const token= accessToken;
 
   useEffect(() =>{
     setIsPopular(isInitiallyPopular);
@@ -16,12 +18,12 @@ const PopularProductSwitch: React.FC<PopularProductSwitchProps> = ({productId, i
 
   const handlePopularSwitch = async () => {
     try{
+      if (!token) {
+        throw new Error('Token no disponible');
+      }
       const updateIsPopular = !isPopular;
-      console.log('Cambiando popularidad del producto:', productId);
-    console.log('Nuevo estado de popularidad (booleano):', updateIsPopular);
       setIsPopular(updateIsPopular);
-      await PopularProduct(productId, updateIsPopular);
-      onUpdatePopular(updateIsPopular);
+      await PopularProduct(productId, updateIsPopular, token);
     } catch (error) {
       console.error('Error al cambiar la popularidad del producto', error);
       setIsPopular(!isPopular);

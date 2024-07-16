@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import AsignarCupon from './asignarCupon';
 import { User } from '@/types';
+import { useAuth } from '@/app/contexts/AuthContext';
 
 interface Cupon {
   id: string;
@@ -17,6 +18,7 @@ const ListaCupones = () => {
   const [cuponSeleccionado, setCuponSeleccionado] = useState<string | null>(
     null,
   );
+  const {accessToken} = useAuth();
 
   const fetchCupones = async () => {
     setLoading(true);
@@ -52,6 +54,10 @@ const ListaCupones = () => {
         `${process.env.NEXT_PUBLIC_API_URL}/discount/delete/${cuponId}`,
         {
           method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
         },
       );
       if (!response.ok) {

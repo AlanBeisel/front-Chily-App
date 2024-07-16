@@ -23,17 +23,17 @@ useEffect(() => {
         <div>
           {categories
             .filter((category) => {
-              const categoryId = parseInt(category.id);
+              const categoryId = parseInt(category.id.toString()); //modificacion
               return (
                 categoryId >= 1 &&
-                categoryId <= 16 &&
+                categoryId <= 32 &&
                 category.products.length > 0
               );
             })
             .map((category) => (
               <CategoryProducts
                 key={category.id}
-                categoryId={category.id}
+                categoryId={category.id.toString()}
                 name={category.name}
                 products={category.products} // Pasamos los productos directamente
               />

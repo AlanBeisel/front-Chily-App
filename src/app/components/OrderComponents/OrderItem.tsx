@@ -27,6 +27,7 @@ interface Order {
 const OrderDetails: React.FC<OrderProps> = ({ order }) => {
   const [showStatusTracker, setShowStatusTracker] = useState(false);
 
+
   useEffect(() => {
     let hideTimer: NodeJS.Timeout | null = null;
 
@@ -45,6 +46,8 @@ const OrderDetails: React.FC<OrderProps> = ({ order }) => {
       setShowStatusTracker(false);
     }
 
+    
+    
     return () => {
       if (hideTimer) {
         clearTimeout(hideTimer);
@@ -61,17 +64,22 @@ const OrderDetails: React.FC<OrderProps> = ({ order }) => {
       </div>
       <div className="mb-4">
         <div className="text-lg font-bold mb-2">Productos:</div>
-        <div className="text-white">Forma de pago: {order.formBuy} </div>
+
         {order.details.map((product, index) => (
-          <div key={index} className="items-center mb-2">
-            <div className="mr-2">{product.name}</div>
-            <div className="flex flex-col sm:flex-row justify-between items-center">
-              <div className="text-white">Cantidad: {product.quantity}</div>
-              
+          <div key={index} className="mb-2">
+            <div className="flex flex-col sm:flex-row items-center">
+              <div className="inline-block bg-yellow-400 text-gray-700 rounded-xl p-1 mr-2">
+                {product.name}
+              </div>
+              <div className="inline-block bg-red-400 text-white rounded-xl p-1">
+                Cantidad: {product.quantity}
+              </div>
             </div>
           </div>
         ))}
-        
+        <div className="inline-block text-gray-700 bg-green-400 rounded-xl p-1 mb-2">
+          Forma de pago: {order.formBuy}{' '}
+        </div>
         <div className="text-lg text-yellow-300 font-bold mt-2">
           Total: ${order.total.toFixed(2)}
         </div>
