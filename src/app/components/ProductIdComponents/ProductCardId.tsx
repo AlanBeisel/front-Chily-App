@@ -59,7 +59,7 @@ const ProductIDCard: React.FC<ProductIDCardProps> = ({ params }) => {
   };
 
   const handleDecrease = () => {
-    setQuantity(Math.max(quantity - 1, 0));
+    setQuantity(Math.max(quantity - 1, 1));
   };
 
   const addToCart = () => {
