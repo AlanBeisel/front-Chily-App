@@ -158,7 +158,9 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({
        chatLogId,
      };
      socket.emit('send-message', newMessage);
+     console.log("send-messege emit:", newMessage)
      addMessage(newMessage);
+
    },
    [],
  );
