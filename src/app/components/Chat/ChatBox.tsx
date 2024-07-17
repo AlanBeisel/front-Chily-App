@@ -96,7 +96,11 @@ const ChatBox: React.FC<ChatBoxProps> = ({ onClose }) => {
             chatMessages.map((msg: Record<string, any>, index: number) => (
               <div
                 key={index}
-                className="bg-red-400 p-3 my-2 text-gray-800 rounded-lg shadow-sm"
+                className={`max-w-[70%] p-3 my-2 rounded-2xl ${
+                  msg.isSent
+                    ? 'ml-auto bg-red-500 text-white'
+                    : 'mr-auto bg-white text-gray-800'
+                }`}
               >
                 {msg.text}
               </div>

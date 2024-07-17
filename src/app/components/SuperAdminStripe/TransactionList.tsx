@@ -31,7 +31,7 @@ const TransactionInfoPage: React.FC =  () => {
           console.log('Token válido:', token);
         const data = await fetchTransactionInfo(token, page, limit, date, amount);
         console.log('Datos de transacciones recibidos:', data);
-        setTransactions(data);
+        setTransactions(data.orders);
         }else {
           throw new Error('Token no válido');
         }

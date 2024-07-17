@@ -11,11 +11,11 @@ interface ChatWindowProps {
 const ChatWindow: React.FC<ChatWindowProps> = ({ orderId, isOpen, onClose }) => {
   const [problem, setProblem] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const { isConnected, roomId, connectToRoom, errorMessage } = useSocket();
+  const { isConnected, roomId, connectToRoom} = useSocket();
 
   const handleDescription = () => {
     setDescription(problem);
-    connectToRoom(orderId, description);
+    connectToRoom(Number(orderId), description);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {

@@ -13,7 +13,6 @@ const CheckoutPage: React.FC = () => {
     <>
     
       <TestChat orders={mockArr}/>
-   
     </>
   );
 };

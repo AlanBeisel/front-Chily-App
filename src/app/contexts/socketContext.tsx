@@ -49,7 +49,7 @@ export const useSocket = () => {
   return context;
 };
 
-const URL = `${process.env.NEXT_PUBLIC_API_URL}/socket`;
+const URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 
 export const socket: Socket = io(URL, { autoConnect: false });
 
@@ -145,23 +145,34 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({
     socket.emit('joinRoom', roomId);
   }, []);
 
-  const sendMessage = useCallback(
-    (chatLogId: number, message: string, userId: number) => {
-      const newMessage = {
-        text: message,
-        userId,
-        chatLogId
-      };
-      socket.emit('send-message', newMessage);
-      addMessage(newMessage);
-    },
-    [],
-  );
+const sendMessage = useCallback(
+  (chatLogId: number, message: string, userId: number) => {
+    if (chatLogId === undefined) {
+      console.error('Cannot send message without a valid chatLogId.');
+      return;
+    }
+
+    const newMessage = {
+      text: message,
+      userId,
+      chatLogId,
+    };
+    socket.emit('send-message', newMessage);
+    addMessage(newMessage);
+  },
+  [],
+);
+
 
   const addMessage = useCallback((message: any) => {
+    const chatLogId = message?.chatLogId;
+    if (chatLogId === undefined) {
+      console.error('Cannot add message without a valid chatLogId.');
+      return;
+    }
+
     setChatLogsState((prevMessages) => {
       const updatedMessages = { ...prevMessages };
-      const chatLogId = message?.chatLog?.id;
       if (!updatedMessages[chatLogId]) {
         updatedMessages[chatLogId] = [];
       }
