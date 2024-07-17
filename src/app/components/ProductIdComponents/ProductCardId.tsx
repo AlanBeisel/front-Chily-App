@@ -85,8 +85,8 @@ const ProductIDCard: React.FC<ProductIDCardProps> = ({ params }) => {
         draggable: true,
         progress: undefined,
       });
-      return;
-    }
+    return;
+  }
     if(!product) {
       return;
     }
