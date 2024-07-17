@@ -18,7 +18,7 @@ const TransactionInfoPage: React.FC =  () => {
   const [page, setPage] = useState<number>(1);
   const [limit] = useState<number>(10);
   const [date, setDate] = useState<string | undefined> (undefined);
-  const [amount, setAmount] = useState<number | undefined>(undefined);
+  const [amount, setAmount] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | null> (null);
 
   const {accessToken} = useAuth();
@@ -29,7 +29,7 @@ const TransactionInfoPage: React.FC =  () => {
       try{
         if(token) {
           console.log('Token válido:', token);
-        const data: TransactionResponse = await fetchTransactionInfo(token, page, limit, date, amount);
+        const data: TransactionResponse = await fetchTransactionInfo(token, page, limit, date,amount ? parseFloat(amount) : undefined);
         console.log('Datos de transacciones recibidos:', data);
         setTransactions(data.orders);
         }else {
@@ -50,7 +50,8 @@ const TransactionInfoPage: React.FC =  () => {
 
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(parseFloat(e.target.value));
+    const value = e.target.value.replace(',','.');
+    setAmount(value);
   };
 
   const handleClearFilters = () => {

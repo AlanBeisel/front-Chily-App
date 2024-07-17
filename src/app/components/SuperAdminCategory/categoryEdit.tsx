@@ -5,6 +5,7 @@ import { updateCategory } from '@/helpers/peticionesSuperAdmin';
 import { getCategoryById } from '@/helpers/peticionesSuperAdmin';
 import { Category } from '@/types';
 import ConfirmModal from '../SuperAdminProducts/confirmModal';
+import BackButton from '../ProductIdComponents/BackButton';
 import { useAuth } from '@/app/contexts/AuthContext';
 import { toast } from 'react-toastify';
 import  {useRouter} from 'next/navigation';
@@ -107,7 +108,10 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({categoryId}) => {
   }
 
   return (
-    <div>
+    <div className="container mx-auto px-4 w-full">
+    <div className="flex items-center justify-start  mb-4">
+      <BackButton />
+    </div>
       <h2 className="text-2xl font-bold mb-4 text-red-500">Editar categoría</h2>
       {category && (
       <>
