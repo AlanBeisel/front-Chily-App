@@ -21,7 +21,7 @@ const ProductList: React.FC = () => {
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const {accessToken, isSuperAdmin} = useAuth();
+  const { accessToken, isSuperAdmin } = useAuth();
   const token = accessToken;
 
   useEffect(() => {
@@ -29,17 +29,15 @@ const ProductList: React.FC = () => {
   }, [currentPage]);
 
   useEffect(() => {
-    setTotalPages(Math.ceil(products.length/PAGE_SIZE));
+    setTotalPages(Math.ceil(products.length / PAGE_SIZE));
   }, [products]);
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const startIndex = (currentPage - 1) * PAGE_SIZE;
-      const endIndex = startIndex + PAGE_SIZE;
       const productsData = await fetchProducts();
-      const slicedProducts = productsData.slice(startIndex, endIndex);
-      setProducts(slicedProducts);
+      setProducts(productsData);
+      setTotalPages(Math.ceil(products.length / PAGE_SIZE));
     } catch (error) {
       console.error('Error al obtener los productos', error);
     } finally {
@@ -50,6 +48,7 @@ const ProductList: React.FC = () => {
   };
 
   const handlePageChange = (page: number) => {
+    if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
   };
 
@@ -103,76 +102,85 @@ const ProductList: React.FC = () => {
     product.name.toLowerCase().includes(searchTerm.toLocaleLowerCase())
   );
 
-  if (loading) return <div>Cargando...</div>;
+  if (loading) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <div className="flex-grow flex items-center justify-center">
+          <div className="text-gray-300 text-xl">Cargando...</div>
+        </div>
+      </div>
+    );
+  }
   if (products.length === 0) return <div>No hay productos disponibles.</div>;
 
   return (
-    <div className="container mx-auto px-4 w-full">
-      <div className="flex justify-between items-center mb-4">
-        <BackButton className="mr-4"/>
-        <h2 className="text-2xl font-bold text-red-500">Productos</h2>
-        {isSuperAdmin() && (
-        <Link href="/superadmin/products/create">
-          <button className="bg-red-500 text-white px-4 py-2 rounded">
-            Crear Producto
-          </button>
-        </Link>
+    <div className="min-h-screen flex flex-col">
+      <div className="container mx-auto px-4 w-full flex-1">
+        <div className="flex justify-between items-center mb-4">
+          <BackButton className="mr-4" />
+          <h2 className="text-2xl font-bold text-red-500">Productos</h2>
+          {isSuperAdmin() && (
+            <Link href="/superadmin/products/create">
+              <button className="bg-red-500 text-white px-4 py-2 rounded">
+                Crear Producto
+              </button>
+            </Link>
+          )}
+        </div>
+        <div className="flex items-center mb-4 relative">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Buscar productos..."
+            className="border-gray-300 rounded-full border p-2 pl-10 focus:border-red-500 w-full"
+          />
+          <AiOutlineSearch className="absolute left-3 top-3 text-gray-400" />
+        </div>
+        {filteredProducts.length === 0 && !loading && (
+          <div className="text-center text-gray-500 my-4"> No hay productos que coincidan con la búsqueda. </div>
+        )}
+        {filteredProducts.length > 0 && (
+          <table className="w-full table-auto">
+            <thead>
+              <tr>
+                <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wider">Producto</th>
+                <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Categoría</th>
+                <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Precio</th>
+                <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Gestión</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProducts.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE).map((product, index) => (
+                <tr key={product.id}>
+                  <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{product.name}</td>
+                  <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>
+                    {Array.isArray(product.category)
+                      ? product.category.map((cat: any) => cat.name).join(',')
+                      : product.category}
+                  </td>
+                  <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>${product.price}</td>
+                  <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>
+                    <button className="bg-white text-green-500 px-2 py-1 rounded mr-2">
+                      <Link href={`/superadmin/products/edit/${product.id.toString()}`}>
+                        <FiEdit className="text-4xl" />
+                      </Link>
+                    </button>
+                    {isSuperAdmin() && (
+                      <button
+                        onClick={() => openDeleteModal(product.id)}
+                        className="text-red-500 px-2 py-1 rounded"
+                      >
+                        <HiOutlineTrash className="text-4xl" />
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
-      <div className="flex items-center mb-4 relative">
-        <input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Buscar productos..."
-        className="border-gray-300 rounded-full border p-2  pl-10 focus:border-red-500 w-full"
-        />
-        */
-        <AiOutlineSearch className="absolute left-3 top-3 text-gray-400"/>
-      </div>
-      {filteredProducts.length === 0 && !loading &&(
-        <div className="text-center text-gray-500 my-4"> No hay productos que coincidan con la búsqueda. </div>
-      )}
-      <table className="w-full table-auto">
-        <thead>
-          <tr>
-            <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wider">Producto</th>
-            <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Categoría</th>
-            <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Precio</th>
-            <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Gestión</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredProducts.map((product, index) => (
-            <tr key={product.id}>
-              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{product.name}</td>
-              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>
-                {Array.isArray(product.category)
-                  ? product.category.map((cat: any) => cat.name).join(',')
-                  : product.category}
-              </td>
-              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>${product.price}</td>
-              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>
-                <button className="bg-white text-green-500 px-2 py-1 rounded mr-2">
-                  <Link
-                    href={`/superadmin/products/edit/${product.id.toString()}`}
-                  >
-                   <FiEdit className="text-4xl"/>
-                  </Link>
-                </button>
-                {isSuperAdmin() && (
-                <button
-                  onClick={() => openDeleteModal(product.id)}
-                  className="text-red-500 px-2 py-1 rounded"
-                >
-                   <HiOutlineTrash className="text-4xl"/>
-                </button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
       <div className="mt-4 flex justify-center items-center">
         <button
           onClick={() => handlePageChange(currentPage - 1)}

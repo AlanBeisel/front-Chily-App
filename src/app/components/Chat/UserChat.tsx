@@ -8,10 +8,15 @@ interface ChatWindowProps {
   onClose: () => void;
 }
 
-const ChatWindow: React.FC<ChatWindowProps> = ({ orderId, isOpen, onClose }) => {
+const ChatWindow: React.FC<ChatWindowProps> = ({
+  orderId,
+  isOpen,
+  onClose,
+}) => {
   const [problem, setProblem] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const { isConnected, roomId, connectToRoom} = useSocket();
+
 
   const handleDescription = () => {
     setDescription(problem);
@@ -25,7 +30,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ orderId, isOpen, onClose }) => 
   };
 
   const handleCloseChat = () => {
-    onClose(); 
+    onClose();
   };
 
   if (!isOpen) {
@@ -52,7 +57,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ orderId, isOpen, onClose }) => 
               className="w-full px-3 py-2 border text-black font-bold border-red-300 rounded-md mb-4 focus:outline-none  focus:border-red-500"
             />
             <button
-              onClick={handleDescription}
+              onClick={()=>handleDescription}
               className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300"
             >
               Start Chat

@@ -145,6 +145,7 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({
     socket.emit('joinRoom', roomId);
   }, []);
 
+
 const sendMessage = useCallback(
   (chatLogId: number, message: string, userId: number) => {
     if (chatLogId === undefined) {
@@ -162,7 +163,6 @@ const sendMessage = useCallback(
   },
   [],
 );
-
 
   const addMessage = useCallback((message: any) => {
     const chatLogId = message?.chatLogId;
