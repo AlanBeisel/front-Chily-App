@@ -15,6 +15,7 @@ export const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const currentPage = 'Chily';
@@ -23,16 +24,20 @@ export const Navbar: React.FC = () => {
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        // Verifica si el clic fue en un enlace dentro del menú
-        if (!(event.target as HTMLElement).closest('a')) {
-          setMenuOpen(false);
-        }
       }
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
-        setDropdownOpen(false);
+      }
+
+      if (
+        panelRef.current &&
+        !panelRef.current.contains(event.target as Node)
+      ) {
+        const isInsidePanelLink = (event.target as HTMLElement).closest('a');
+        if (!isInsidePanelLink) {
+        }
       }
     }
 
@@ -195,7 +200,10 @@ export const Navbar: React.FC = () => {
       </nav>
 
       {menuOpen && (
-        <div className="relative left-0 right-0 bg-red-500 text-white p-4 z-10 w-full md:w-4/5 mx-auto rounded-xl border-2 shadow-lg">
+        <div
+          className="relative left-0 right-0 bg-red-500 text-white p-4 z-10 w-full md:w-4/5 mx-auto rounded-xl border-2 shadow-lg"
+          ref={menuRef}
+        >
           <Link
             href="/"
             className="block p-2 hover:text-gray-300"
@@ -223,7 +231,7 @@ export const Navbar: React.FC = () => {
                     Panel {dropdownOpen ? '▲' : '▼'}
                   </button>
                   {dropdownOpen && (
-                    <div className="pl-4">
+                    <div className="pl-4" ref={panelRef}>
                       <Link
                         href="/admin-history"
                         className="block p-2 hover:text-gray-700"
@@ -237,6 +245,15 @@ export const Navbar: React.FC = () => {
                         onClick={handleMenuLinkClick}
                       >
                         Menu Products
+                      </Link>
+                      <Link
+                        href="/"
+                        onClick={() => {
+                          handleLogout();
+                        }}
+                        className="block w-full text-left p-2 hover:text-gray-300"
+                      >
+                        Cerrar sesión
                       </Link>
                       {user?.role === 'superadmin' && (
                         <>
@@ -270,21 +287,13 @@ export const Navbar: React.FC = () => {
                           </Link>
                         </>
                       )}
-                      <button
-                        onClick={() => {
-                          handleLogout();
-                          setMenuOpen(false);
-                        }}
-                        className="block w-full text-left p-2 hover:text-gray-300"
-                      >
-                        Cerrar sesión
-                      </button>
                     </div>
                   )}
                 </div>
               ) : (
                 <>
-                  <button
+                  <Link
+                    href="/"
                     onClick={() => {
                       handleLogout();
                       setMenuOpen(false);
@@ -292,7 +301,7 @@ export const Navbar: React.FC = () => {
                     className="block w-full text-left p-2 hover:text-gray-300"
                   >
                     Cerrar sesión
-                  </button>
+                  </Link>
                   <Link
                     href="/cart"
                     className="block p-2 hover:text-gray-300"
