@@ -5,8 +5,10 @@ import { getAllCategories } from "@/helpers/peticiones";
 import ConfirmModal from "../SuperAdminProducts/confirmModal";
 import { Category } from "@/types";
 import { HiOutlineTrash } from "react-icons/hi";
+import { FiEdit } from "react-icons/fi";
 import Link from "next/link";
 import { useAuth } from "@/app/contexts/AuthContext";
+import BackButton from "../ProductIdComponents/BackButton";
 
 const PAGE_SIZE = 10;
 
@@ -63,7 +65,7 @@ const CategoryList: React.FC = ()=> {
 
     try{
       await deleteCategory(categoryToDelete, accessToken);
-      setCategory(category.filter((category) => category.id !== categoryToDelete));
+      setCategory(category.filter((category) => category.id.toString() !== categoryToDelete));
       closeModal();
     } catch (error) {
       console.error('Error al eliminar la categoria', error);
@@ -76,8 +78,9 @@ const CategoryList: React.FC = ()=> {
   if(category.length === 0) return <div>No hay Categorias disponibles.</div>
   
   return (
-    <div>
+    <div className="container mx-auto px-4 w-full">
       <div className="flex justify-between items-center mb-4">
+        <BackButton className="mr-4"/>
         <h2 className="text-2xl font-bold text-red-500">Categorías</h2>
         <Link href="/superadmin/categories/create">
         <button className="bg-red-500 text-white px-4 py-2 rounded">
@@ -88,28 +91,26 @@ const CategoryList: React.FC = ()=> {
       <table className="w-full table-auto">
         <thead>
           <tr>
-            <th className="px-4 py-2 text-gray-600 font-light text-md">ID</th>
-            <th className="px-4 py-2 text-gray-600 font-light text-md">Nombre</th>
-            <th className="px-4 py-2 text-gray-600 font-light text-md">Imagen</th>
-            <th className="px-4 py-2text-gray-600 font-light text-md">Gestión</th>
+            <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Nombre</th>
+            <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Imagen</th>
+            <th className="px-6 py-3 text-gray-600 font-light text-md uppercase tracking-wide">Gestión</th>
           </tr>
         </thead>
         <tbody>
           {category.map((category, index)=>(
             <tr key= {category.id}>
-              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{category.id}</td>
               <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{category.name}</td>
               <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>
                 <img src={category.icon} alt={category.name} className="h-12 w-12 object-cover rounded-full"/>
                 </td>
-              <td className="border px-4 py-2">
-              <button className="bg-green-500 text-white px-2 py-1 rounded mr-2">
+              <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>
+              <button className="bg-white text-green-500 px-2 py-1 rounded mr-2">
                 <Link href={`/superadmin/categories/edit/${category.id.toString()}`}>
-                Editar
+                <FiEdit className="text-4xl"/>
                 </Link>
                 </button>
                 <button
-                onClick={() => openDeleteModal(category.id)}
+                onClick={() => openDeleteModal(category.id.toString())}
                 className="text-red-500 px-2 py-1 rounded mr-2"
                 >
                   <HiOutlineTrash className="text-4xl"/>

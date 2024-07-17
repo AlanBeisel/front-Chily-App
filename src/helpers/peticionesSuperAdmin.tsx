@@ -1,7 +1,13 @@
-import { Category, Product } from '@/types';
+import { Category, Product} from '@/types';
+import { TransactionInfo } from '@/app/components/SuperAdminStripe/TransactionList';
+ export interface TransactionResponse {
+  orders: TransactionInfo[],
+  total: number;
+ }
 
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 
 const handleResponse = async (response: Response) => {
   const contentType = response.headers.get('content-type');
@@ -39,7 +45,7 @@ export const createProduct = async (data: any, token: string) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify(data),
     });
@@ -51,13 +57,13 @@ export const createProduct = async (data: any, token: string) => {
   }
 };
 
-export const updateProduct = async (id: string, data: any, token: string) => {
+export const updateProduct = async (id: number, data: any, token: string) => {
   try {
     const response = await fetch(`${API_URL}/products/update/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify(data),
     });
@@ -73,7 +79,7 @@ export const deleteProduct = async (id: string, token: string) => {
     const response = await fetch(`${API_URL}/products/delete/${id}`, {
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
       },
     });
 
@@ -96,12 +102,12 @@ export const deleteProduct = async (id: string, token: string) => {
 };
 
 export const PopularProduct = async (
-  productId: string,
+  productId: number,
   status: boolean,
   token: string,
 ) => {
   try {
-    const productIdNumber = parseInt(productId, 10);
+    const productIdNumber = productId;
     const statusString = status ? 'true' : 'false';
     console.log('productId (original):', productId);
     console.log('productIdNumber (convertido):', productIdNumber);
@@ -113,7 +119,7 @@ export const PopularProduct = async (
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
         },
       },
     );
@@ -136,7 +142,7 @@ export async function updateProductStock(
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
         },
       },
     );
@@ -153,7 +159,7 @@ export const createCategory = async (data: any, token: string) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify(data),
     });
@@ -170,7 +176,7 @@ export const updateCategory = async (id: string, data: any, token: string) => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify(data),
     });
@@ -186,7 +192,7 @@ export const deleteCategory = async (id: string, token: string) => {
     const response = await fetch(`${API_URL}/category/delete/${id}`, {
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
       },
     });
     return handleResponse(response);
@@ -203,7 +209,7 @@ export async function getCategoryById(
   try {
     const response = await fetch(`${API_URL}/category/${id}`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
       },
     });
     const result = await handleResponse(response);
@@ -216,3 +222,97 @@ export async function getCategoryById(
     throw error;
   }
 }
+
+export const deleteUser = async (id: string, token: string) => {
+  try {
+    const response = await fetch(`${API_URL}/user/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return handleResponse(response);
+  } catch (error) {
+    console.error('Error al eliminar el usuario', error);
+    throw error;
+  }
+}
+
+export const fecthUsers = async (page: number, limit: number, token: string) => {
+  try{
+    console.log(`Fetching users with page=${page}, limit=${limit}, token=${token}`);
+  const response = await fetch (`${API_URL}/user?page=${page}&limit=${limit}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+  return handleResponse(response);
+} catch (error) {
+  console.error('Error al obtener los usuarios', error);
+  throw error;
+}
+};
+
+export const getUserById = async (userId:number, token: string) => {
+  try{
+    const response = await fetch(`${API_URL}/user/${userId}`,{
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    const data = await handleResponse(response);
+    return data;
+  } catch (error) {
+    console.error('Error al obtener el usuario', error);
+    throw error;
+  }
+};
+
+export const updateUser = async (userId: number, data: any, token: string) => {
+  try{
+    const response = await fetch (`${API_URL}/user/${userId}`, {
+      method: 'PUT',
+      headers:{
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+    return handleResponse(response);
+  } catch (error) {
+    console.error('Error al actualizar el usuario', error);
+    throw error;
+  }
+};
+
+export const fetchTransactionInfo = async (token: string, page: number, limit: number, date?:string, amount?: number): Promise<TransactionResponse> => {
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+  });
+
+  if(date) {
+    queryParams.append('date', date);
+  }
+
+  if(amount !==undefined) {
+    queryParams.append('amount', amount.toString());
+  }
+  
+  try {
+   const response = await fetch(`${API_URL}/payments/orders-info?${queryParams.toString()}`, {
+    method: 'GET',
+    headers: {
+    'Content-Type':'application/json',
+    'Authorization': `Bearer ${token}`,
+  },
+});
+const result = await handleResponse(response);
+return result.data as TransactionResponse;
+} catch (error) {
+  console.error('Error al obtener la informacion', error);
+  throw error;
+}
+};

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Address, ProductsInOrder } from '@/types';
 import StatusTracker from './StatusTracker';
+import ChatWindow from '../Chat/UserChat';
 
 interface OrderProps {
   order: Order;
@@ -26,6 +27,15 @@ interface Order {
 
 const OrderDetails: React.FC<OrderProps> = ({ order }) => {
   const [showStatusTracker, setShowStatusTracker] = useState(false);
+  const [showClaimChat,setShowClaimChat] = useState(false);
+
+  const handleShowClaimChat = () => {
+    setShowClaimChat(true);
+  };
+
+  const handleCloseChat = () => {
+    setShowClaimChat(false);
+  };
 
   useEffect(() => {
     let hideTimer: NodeJS.Timeout | null = null;
@@ -45,6 +55,8 @@ const OrderDetails: React.FC<OrderProps> = ({ order }) => {
       setShowStatusTracker(false);
     }
 
+    
+    
     return () => {
       if (hideTimer) {
         clearTimeout(hideTimer);
@@ -67,11 +79,10 @@ const OrderDetails: React.FC<OrderProps> = ({ order }) => {
             <div className="mr-2">{product.name}</div>
             <div className="flex flex-col sm:flex-row justify-between items-center">
               <div className="text-white">Cantidad: {product.quantity}</div>
-              
             </div>
           </div>
         ))}
-        
+
         <div className="text-lg text-yellow-300 font-bold mt-2">
           Total: ${order.total.toFixed(2)}
         </div>
@@ -79,6 +90,25 @@ const OrderDetails: React.FC<OrderProps> = ({ order }) => {
 
       <div className="text-sm mb-6 sm:mb-0 bg-white rounded-xl">
         {showStatusTracker && <StatusTracker status={order.status} />}
+      </div>
+      <div>
+        {showClaimChat && (
+          <ChatWindow
+            orderId={order.id}
+            isOpen={true}
+            onClose={handleCloseChat}
+          />
+        )}
+        {['En camino', 'En preparación', 'Entregada'].includes(
+          order.status,
+        ) && (
+          <button
+            onClick={handleShowClaimChat}
+            className="bg-white text-red-500 rounded-md py-2 px-4 mt-4 hover:bg-red-100 transition-colors duration-300"
+          >
+            ¿Hubo un problema con tu pedido?
+          </button>
+        )}
       </div>
     </div>
   );

@@ -7,7 +7,6 @@ import CheckoutForm from './CheckoutForm';
 import CustomModal from './modals';
 import { useRouter } from 'next/navigation';
 import CouponInput from './CuponInput';
-// import { Address } from '@/types';
 import { useAuth } from '@/app/contexts/AuthContext';
 import Link from 'next/link';
 
@@ -49,36 +48,32 @@ const Checkout: React.FC = () => {
   const token = accessToken;
   const calle = address?.address;
 
+
 useEffect(() => {
   const storedOrder = localStorage.getItem('order');
   const storedCouponDiscount = localStorage.getItem('couponDiscount');
 
   if (storedOrder) {
     const parsedOrder = JSON.parse(storedOrder);
-    setOrder((prevOrder) => {
-      if (!prevOrder) return parsedOrder;
 
-      const updatedOrder = {
-        ...prevOrder,
+    if (storedCouponDiscount) {
+      const { discount: discountPercentage, couponCode } =
+        JSON.parse(storedCouponDiscount);
+      const discountAmount = (parsedOrder.total * discountPercentage) / 100;
+
+      setOrder({
         ...parsedOrder,
-        total: parsedOrder.total + SHIPPING_COST,
-      };
+        couponDiscount: discountPercentage,
+        couponId: couponCode,
+        total: parsedOrder.total - discountAmount,
+      });
 
-      if (storedCouponDiscount) {
-        const { discount, couponCode } = JSON.parse(storedCouponDiscount);
-        return {
-          ...updatedOrder,
-          couponDiscount: discount,
-          couponId: couponCode,
-          total: updatedOrder.total - discount,
-        };
-      }
-
-      return updatedOrder;
-    });
+      setCouponDiscount(discountPercentage);
+    } else {
+      setOrder(parsedOrder);
+    }
   }
 }, []);
-
 
   useEffect(() => {
     if (order) {
@@ -130,19 +125,22 @@ useEffect(() => {
         throw new Error('Error al enviar la orden.');
       }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/orders`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(order),
         },
-        body: JSON.stringify(order),
-      });
+      );
       console.log('esta es la order:', order);
       if (!response.ok) {
         throw new Error('Error al enviar la orden.');
       }
-    
+
       localStorage.removeItem('couponDiscount');
       localStorage.removeItem('cartItems');
       localStorage.removeItem('order');
@@ -176,6 +174,7 @@ useEffect(() => {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
         },
       );
@@ -187,23 +186,26 @@ useEffect(() => {
       const data = await response.json();
 
       if (data.isValid) {
+        const discountPercentage = data.discount;
+        const discountAmount = (order.total  * discountPercentage) / 100;
+
         const discountData = {
-          discount: data.discount,
+          discount: discountPercentage,
           couponCode,
         };
 
         // Guardar en localStorage
         localStorage.setItem('couponDiscount', JSON.stringify(discountData));
 
-        setCouponDiscount(data.discount);
+        setCouponDiscount(discountPercentage);
         setOrder((prevOrder) => {
           if (!prevOrder) return prevOrder;
 
           return {
             ...prevOrder,
-            couponDiscount: data.discount,
+            couponDiscount: discountPercentage,
             couponId: couponCode,
-            total: prevOrder.total - data.discount,
+            total: prevOrder.total - discountAmount,
           };
         });
         setModalType('success');
@@ -238,26 +240,30 @@ useEffect(() => {
         {couponDiscount > 0 && (
           <div className="flex justify-between text-green-600">
             <span>Descuento del cupón:</span>
-            <span>-${couponDiscount.toFixed(2)}</span>
+            <span>-{couponDiscount.toFixed(2)}%</span>
           </div>
         )}
         <div className="flex justify-between border-t border-gray-300 pt-2 mt-2">
           <span className="font-bold">Total:</span>
-          <span className="font-bold">${order.total}</span>
+          <span className="font-bold">${(order.total + SHIPPING_COST).toFixed(2)}</span>
         </div>
         <div className="text-sm text-gray-500 mt-1">
           <div className="flex flex-col">
-    <div className="flex justify-between items-center">
-      <span>Dirección:</span>
-    <div className="flex justify-end mt-1"> {/* Ajusta el margen superior según necesites */}
-      <Link href={"/address"} className="text-blue-500">Cambiar dirección</Link>
-    </div>
-    </div>
-      <span>{calle}</span> 
+            <div className="flex justify-between items-center">
+              <span>Dirección:</span>
+              <div className="flex justify-end mt-1">
+                {' '}
+                {/* Ajusta el margen superior según necesites */}
+                <Link href={'/address'} className="text-blue-500">
+                  Cambiar dirección
+                </Link>
+              </div>
+            </div>
+            <span>{calle}</span>
           </div>
           Tiempo estimado: 15 – 30mins
         </div>
-  </div>
+      </div>
 
       <h2 className="text-lg font-semibold mb-4">Métodos de pago</h2>
       <div className="space-y-2 mb-4">

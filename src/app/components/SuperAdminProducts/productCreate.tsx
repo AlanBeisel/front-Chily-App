@@ -6,7 +6,7 @@ import BackButton from '../ProductIdComponents/BackButton';
 import { toast } from 'react-toastify';
 import ConfirmModal from './confirmModal';
 import { useAuth } from '@/app/contexts/AuthContext';
-//import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation'; 
 
 interface ProductData {
   name: string;
@@ -19,6 +19,7 @@ interface ProductData {
 const ProductCreate: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setModalOpen] = useState(false);
+  const router = useRouter();
   const [formData, setFormData] = useState<ProductData>({
     name: '',
     description: '',
@@ -64,6 +65,7 @@ const handleCreate = async (data: ProductData, imageURL?: string) => {
           draggable: true,
           progress: undefined,
         });
+        router.push('/superadmin/products');
       } else {
         setError(response.data || 'Error al crear el producto');
         toast.error(response.data || 'Error al crear el producto', {

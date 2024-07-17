@@ -12,9 +12,9 @@ export const Popular = ({
   };
 
   return (
-    <div className="category-container bg-gray-100 rounded-lg shadow-md p-4 mb-8">
-      <h2 className="text-xl text-yellow-400 font-bold mb-2">Popular</h2>
-      <div className="grid grid-cols-3 gap-4 justify-items-center">
+    <div className="category-container bg-gray-200 rounded-lg shadow-md p-4 mb-8">
+      <h2 className="text-xl text-yellow-500 font-bold mb-2">Productos más populares:</h2>
+      <div className="product-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {popularProducts.map((product) => (
           <ProductCard
             key={product.id}

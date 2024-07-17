@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DataField from './DataField';
-import { useAuth } from '@/app/contexts/AuthContext';
+import { useAuth, AuthContextType } from '@/app/contexts/AuthContext';
 import PhoneModal from './PhoneModal';
-import NameModal from './NameModal';
 
 type Role = 'user' | 'admin' | 'superadmin';
 
@@ -27,31 +26,44 @@ interface User {
   credential: Credential;
 }
 
-const UserInfo = ({ user }: { user: User | null }) => {
-  const { address, isAuthenticated } = useAuth();
-  const[isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
-  const[isNameModalOpen, setIsNameModalOpen] = useState(false);
+const UserInfo = ({ user: initialUser }: { user: User | null }) => {
+  const { address, isAuthenticated, updateUser, accessToken, isAdmin, isSuperAdmin } = useAuth() as AuthContextType;
+  const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(initialUser);
+  const [editMode, setEditMode] = useState(false);
+  const [phoneFieldKey, setPhoneFieldKey] = useState<number>(0);
 
-  const openPhoneModal = () => setIsPhoneModalOpen(true);
-  const closePhoneModal = () => setIsPhoneModalOpen(false);
+  useEffect(() => {
+    if (initialUser) {
+      setUser(initialUser);
+    }
+  }, [initialUser]);
 
-  const openNameModal = () => setIsNameModalOpen(true);
-  const closeNameModal = () => setIsNameModalOpen(false);
+  const openPhoneModal = () => {
+    setIsPhoneModalOpen(true);
+    setEditMode(true); 
+  };
+
+  const closePhoneModal = () => {
+    setIsPhoneModalOpen(false);
+    setEditMode(false); 
+  };
 
   const handlePhoneSave = (newPhone: string) => {
-    console.log('Nuevo teléfono guardado:', newPhone);
+    if (user) {
+      const updatedUser = { ...user, phone: newPhone };
+      setUser(updatedUser);
+      updateUser(updatedUser);
+      setPhoneFieldKey((prevKey) => prevKey + 1);
+    }
   };
-
-  const handleNameSave = (newName: string) => {
-    console.log('Nuevo teléfono guardado:', newName);
-  };
-
- 
 
   if (!user || !isAuthenticated) {
     return (
       <div className="bg-white rounded-lg shadow-lg p-6 h-screen w-screen flex justify-center items-center">
-        <p className="text-red-500 text-xl">Usuario no autenticado. Por favor inicie sesión.</p>
+        <p className="text-red-500 text-xl">
+          Usuario no autenticado. Por favor inicie sesión.
+        </p>
       </div>
     );
   }
@@ -61,36 +73,47 @@ const UserInfo = ({ user }: { user: User | null }) => {
       <header className="flex items-center justify-center w-full mb-4">
         <h1 className="text-2xl font-bold text-red-500">Mi Cuenta</h1>
       </header>
-      <DataField label="Nombre" value={user.name} editable={true}  onEdit={openNameModal}/>
-      <DataField label="Email" value={user.email} editable={false}  />
-      <DataField label="Teléfono" value={user.credential.phone} editable={true} onEdit={openPhoneModal}/>
+      <div key={phoneFieldKey}>
+        <DataField label="Nombre" value={user.name} editable={false} />
+        <DataField label="Email" value={user.email} editable={false} />
+        <DataField
+          label="Teléfono"
+          value={user.phone}
+          editable={!editMode}
+          onEdit={openPhoneModal}
+        />
+      </div>
 
-
-      {address && (
-        <div>
-          <h2 className="text-lg font-semibold text-red-500">Tus direcciones:</h2>
-          <div className="mt-2">
-            <DataField label="Dirección" value={address.address} editable={false} />
-          </div>
-        </div>
+      {!isAdmin() && !isSuperAdmin() && (
+        <>
+          {address && (
+            <div>
+              <h2 className="text-lg font-semibold text-red-500">
+                Tus direcciones:
+              </h2>
+              <div className="mt-2">
+                <DataField
+                  label="Dirección"
+                  value={address.address}
+                  editable={false}
+                />
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       <PhoneModal
-      isOpen={isPhoneModalOpen}
-      onClose={closePhoneModal}
-      onSave={handlePhoneSave}
-      initialPhone = {user.credential.phone}
-      userId={parseInt(user.id)}
-      />
-      <NameModal
-      isOpen={isNameModalOpen}
-      onClose={closeNameModal}
-      onSave={handleNameSave}
-      initialName = {user.name}
-      userId={parseInt(user.id)}
+        isOpen={isPhoneModalOpen}
+        onClose={closePhoneModal}
+        onSave={handlePhoneSave}
+        initialPhone={user.phone}
+        userId={parseInt(user.id)}
+        accessToken={accessToken || ''}
       />
     </div>
   );
 };
 
 export default UserInfo;
+

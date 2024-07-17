@@ -164,7 +164,7 @@ export default function Menu() {
         {/* Contenedor de productos */}
         <div className="md:flex-grow md:p-4">
           {products.length === 0 ? (
-            <div className="text-center text-gray-500">
+            <div className="text-center text-gray-500 min-h-screen">
               <p>No tenemos productos en esta categoría.</p>
             </div>
           ) : (

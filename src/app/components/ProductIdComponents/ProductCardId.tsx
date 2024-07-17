@@ -15,14 +15,14 @@ interface ProductIDCardProps {
 }
 
 const ProductIDCard: React.FC<ProductIDCardProps> = ({ params }) => {
-  const [quantity, setQuantity] = useState<number>(1);
+  const [quantity, setQuantity] = useState<number>(0);
   const [product, setProduct] = useState<Product | null>(null);
   const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productData = await getProductById(params.productId);
+        const productData = await getProductById(Number(params.productId));
         console.log('Product Data', productData);
         setProduct(productData);
 
@@ -59,7 +59,7 @@ const ProductIDCard: React.FC<ProductIDCardProps> = ({ params }) => {
   };
 
   const handleDecrease = () => {
-    setQuantity(Math.max(quantity - 1, 1));
+    setQuantity(Math.max(quantity - 1, 0));
   };
 
   const addToCart = () => {
@@ -75,19 +75,52 @@ const ProductIDCard: React.FC<ProductIDCardProps> = ({ params }) => {
       });
       return;
     }
+    if(!product) {
+      return;
+    }
 
     const storedCart = localStorage.getItem('cartItems');
-    const existCart = storedCart ? JSON.parse(storedCart) : [];
+    let cartItems = storedCart ? JSON.parse(storedCart) : [];
 
-    const updateCart = existCart.some(
-      (item: Product) => item.id === product?.id,
-    )
-      ? existCart.map((item: Product) =>
-          item.id === product?.id ? { ...item, quantity: quantity } : item,
-        )
-      : [...existCart, { ...product, quantity }];
+    const existingItem = cartItems.find((item:any) => item.id === product.id);
 
-    localStorage.setItem('cartItems', JSON.stringify(updateCart));
+    if(existingItem) {
+      if(existingItem.quantity >= product.stock) {
+        toast.warn('No hay suficiente stock disponible.', {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    cartItems = cartItems.map((item: any) =>
+    item.id === product?.id
+  ? {...item, quantity: item.quantity + quantity}
+:item,
+);
+    }else {
+      if(product.stock <= 0) {
+        toast.warn('No hay suficiente stock disponible.', {
+          position: 'top-center',
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        return;
+      }
+      cartItems.push({...product, quantity});
+    }
+
+
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
     toast.success('Producto añadido al carrito.', {
       position: 'top-center',
       autoClose: 3000,

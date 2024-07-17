@@ -109,7 +109,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <Link href={`/product/${product.id}`} passHref>
-      <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition duration-300 relative max-w-xs md:min-w-[200px]">
+      <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition duration-300 relative max-w-xs ">
         <div className="relative w-full h-32 sm:h-40 md:h-48 lg:h-56 mb-4">
           <Image
             src={product.img}

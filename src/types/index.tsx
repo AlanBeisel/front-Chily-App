@@ -10,7 +10,7 @@ export interface Product {
 }
 
 export interface Category {
-  id: string;
+  id: number;
   name: string;
   icon: string;
   products: Product[];
@@ -57,6 +57,7 @@ export interface CartItemProps {
 export interface CartItemType {
   id: number;
   name: string;
+  stock: number;
   price: number;
   quantity: number;
   img: string;

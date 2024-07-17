@@ -3,6 +3,9 @@ import { Popular } from '../app/components/HomeComponents/Popular';
 import { CategoryFilter } from '../app/components/MenuComponents/CategoryFilter';
 import Horarios from './components/HomeComponents/Horarios';
 import { RenderCategory } from './components/HomeComponents/RenderCategory';
+import {useEffect, useState} from 'react'
+import { IoIosArrowUp } from 'react-icons/io';
+
 
 export default async function Home() {
 
@@ -10,6 +13,7 @@ export default async function Home() {
   //Todo: Limited to 1000 products. 
    const products = await getProducts(1, 1000);
    const popularProducts = products.filter((product) => product.isPopular);
+
 
   return (
     <>

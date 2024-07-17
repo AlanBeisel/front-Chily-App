@@ -5,8 +5,10 @@ import Footer from './components/footer/footer';
 import { Navbar } from './components/NavBar/navBar';
 import { AuthProvider } from './contexts/AuthContext';
 import ToastProvider from './contexts/ToastProvider';
+import { SocketProvider } from './contexts/socketContext';
 import ReactQueryProvider from './contexts/ReactQueryProvider';
-//import ChatBot from '@/components/ui/chatbot';
+import ChatBot from '@/components/ui/chatbot';
+
 
 
 
@@ -41,6 +43,7 @@ export default function RootLayout({
             </ReactQueryProvider>
             <Footer />
         </AuthProvider>
+        <ChatBot />
       </body>
     </html>
   );

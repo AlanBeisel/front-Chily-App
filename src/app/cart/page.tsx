@@ -30,11 +30,26 @@ const CartPage: React.FC = () => {
       return;
     }
 
-    const updatedItems = items.map((item) =>
-      item.id === id
-        ? { ...item, quantity: Math.max(1, item.quantity + increment) }
-        : item,
-    );
+    const updatedItems = items.map((item) => {
+      if (item.id === id) {
+        const newQuantity = item.quantity + increment;
+        if (newQuantity > item.stock) {
+          toast.warn('No hay suficiente stock disponible.', {
+            position: 'top-center',
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          return item;
+        }
+        return { ...item, quantity: Math.max(1, newQuantity) };
+      }
+      return item;
+    });
+
     setItems(updatedItems);
     localStorage.setItem('cartItems', JSON.stringify(updatedItems));
   };
