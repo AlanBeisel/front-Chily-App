@@ -1,31 +1,15 @@
-"use client"
-import { useState, useEffect } from 'react';
-import { getProducts } from '@/helpers/peticiones';
+'use client';
 import { Product } from '@/types';
 import ProductCard from '../Cards/ProductCard';
 
-
-
-export const Popular = () => {
- const [popularProducts, setPopularProducts] = useState<Product[]>([]);
-
- useEffect(() => {
-   async function fetchPopularProducts() {
-     try {
-       const products = await getProducts(1, 1000);
-       const popularProducts = products.filter((product) => product.isPopular);
-       setPopularProducts(popularProducts);
-     } catch (error) {
-       console.error('Error al cargar productos populares:', error);
-     }
-   }
-
-   fetchPopularProducts();
- }, []);
-
- const handleAddToCart = (product: Product) => {
-  console.log(`Producto agregado al carrito: ${product.name}`);
- };
+export const Popular = ({
+  popularProducts,
+}: {
+  popularProducts: Product[];
+}) => {
+  const handleAddToCart = (product: Product) => {
+    console.log(`Producto agregado al carrito: ${product.name}`);
+  };
 
   return (
     <div className="category-container bg-gray-200 rounded-lg shadow-md p-4 mb-8">

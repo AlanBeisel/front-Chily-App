@@ -1,4 +1,4 @@
-"use client"
+import { getAllCategories, getProducts } from '@/helpers/peticiones';
 import { Popular } from '../app/components/HomeComponents/Popular';
 import { CategoryFilter } from '../app/components/MenuComponents/CategoryFilter';
 import Horarios from './components/HomeComponents/Horarios';
@@ -7,45 +7,23 @@ import {useEffect, useState} from 'react'
 import { IoIosArrowUp } from 'react-icons/io';
 
 
-export default function Home() {
-  const [showScrollTopButton, setShowScrollTopButton] = useState(false);
+export default async function Home() {
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 300) {
-        setShowScrollTopButton(true);
-      } else {
-        setShowScrollTopButton(false);
-      }
-    };
+  const categories = await getAllCategories();
+  //Todo: Limited to 1000 products. 
+   const products = await getProducts(1, 1000);
+   const popularProducts = products.filter((product) => product.isPopular);
 
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   return (
     <>
       <link rel="manifest" href="/manifest.json" />
       <div className="w-full flex justify-center">
         <main className="w-full flex-grow p-4">
-          <CategoryFilter />
+          <CategoryFilter categories={categories} />
           <Horarios />
-          <Popular />
-          <RenderCategory />
-          {showScrollTopButton && (
-            <button
-              className="fixed bottom-8 right-8 bg-red-500 text-white p-3 rounded-full shadow-lg hover:bg-red-700 transition-colors z-50"
-              onClick={scrollToTop}
-            >
-              <IoIosArrowUp className="text-2xl" />
-            </button>
-          )}
+          <Popular popularProducts={popularProducts}/>
+          <RenderCategory categories={categories} />
         </main>
       </div>
     </>
