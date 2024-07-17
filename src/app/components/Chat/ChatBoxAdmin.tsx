@@ -29,30 +29,59 @@ const ChatBoxAdmin: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col max-w-md mx-auto border border-gray-300 rounded-lg shadow-md">
-      <div className="flex-1 overflow-y-auto p-4 bg-gray-50 rounded-t-lg">
+    <div className="flex flex-col w-full h-full mx-auto bg-red-100 rounded-lg shadow-md">
+      <div className="flex-1 overflow-y-auto p-4">
         {chatMessages.map((msg: Record<string, any>, index: number) => (
-          <div key={index} className="bg-white p-3 my-2 rounded-lg shadow-sm">
+          <div
+            key={index}
+            className={`max-w-[70%] p-3 my-2 rounded-2xl ${
+              msg.isSent
+                ? 'ml-auto bg-red-500 text-white'
+                : 'mr-auto bg-white text-gray-800'
+            }`}
+          >
             {msg.text}
+            <div
+              className={`text-xs mt-1 ${msg.isSent ? 'text-red-200' : 'text-gray-500'}`}
+            >
+              {msg.time}
+            </div>
           </div>
         ))}
       </div>
-      <input
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Type your message..."
-        className="w-full p-2 mb-2 rounded-lg border border-gray-300 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400"
-        disabled={!isConnected}
-      />
-      <button
-        onClick={handleSendMessage}
-        className="w-full p-3 bg-red-500 text-white border-none rounded-lg cursor-pointer text-lg mt-2 shadow-sm transition-all duration-300 ease-in-out hover:bg-red-600 disabled:opacity-50"
-        disabled={!isConnected}
-      >
-        Send
-      </button>
+      <div className="bg-white p-4 rounded-b-lg">
+        <div className="flex items-center bg-gray-100 rounded-full">
+          <input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Type your message..."
+            className="flex-grow p-3 bg-transparent text-gray-800 focus:outline-none"
+            disabled={!isConnected}
+          />
+          <button
+            onClick={handleSendMessage}
+            className="p-3 bg-red-500 text-white rounded-full flex items-center justify-center"
+            disabled={!isConnected}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 10l7-7m0 0l7 7m-7-7v18"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

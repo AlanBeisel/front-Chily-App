@@ -10,12 +10,33 @@ interface Chat {
   createdAt: string;
 }
 
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  // Agrega otros campos del producto si son necesarios
+}
+
+
+interface OrderDetail {
+  id: string;
+  quantity: number;
+  price: number;
+  total: number;
+  product: Product;
+  // Agrega otros campos del detalle de la orden si son necesarios
+}
+
 interface Order {
   formBuy: string;
   id: string;
   date: string;
   price: number;
   couponId: string;
+  user: {
+    name: string;
+  };
+  details: OrderDetail[];
   couponDiscount: number;
   total: number;
   status: string;
@@ -33,15 +54,20 @@ interface ChatLog {
 
 const AdminChat: React.FC = () => {
   const { user } = useAuth();
-  const { rooms, chatLogId, setChatLogId } = useSocket();
+  const { rooms, chatLogId, setChatLogId, isConnected } = useSocket();
   const [selectedChat, setSelectedChat] = useState<Room | null>(null);
   const [chatRooms, setChatRooms] = useState<ChatLog[]>([]);
 
   const handleSelectChat = (room: Room) => {
     setSelectedChat(room);
     setChatLogId(room.chatLog.id);
-    console.log('when selecting chat:', chatLogId);
   };
+
+  useEffect(() => {
+    if (selectedChat) {
+      console.log('selectedChat:', JSON.stringify(selectedChat.chatLog, null, 2));
+    }
+  }, [selectedChat]);
 
   const userId = user && user.id ? Number(user.id) : null;
 
@@ -68,69 +94,96 @@ const AdminChat: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col max-w-5xl mx-auto p-5">
-      <h2 className="mb-5 text-2xl font-bold text-red-500">Admin Chat Box</h2>
-
-      <div className="flex">
-        {/* Chat Rooms List */}
-        <div className="w-1/3 pr-4">
-          <h3 className="mb-4 text-xl font-semibold">Chats</h3>
-          <div className="overflow-y-auto max-h-96">
+    <div className="flex h-screen">
+      {/* Lista de conversaciones (izquierda) */}
+      <div className="w-1/3 p-4 bg-gray-100 overflow-y-auto">
+        <h2 className="text-2xl font-bold mb-4">Conversaciones</h2>
+        {isConnected ? (
+          <>
+            <h3 className="text-lg font-semibold mb-2">Chats Activos</h3>
             {rooms.map((room, index) => (
               <div
                 key={index}
                 onClick={() => handleSelectChat(room)}
-                className="p-3 mb-3 bg-gray-100 rounded-lg cursor-pointer shadow-md hover:bg-gray-200 transition-colors"
+                className={`p-3 mb-2 rounded-lg cursor-pointer ${
+                  selectedChat?.roomId === room.roomId
+                    ? 'bg-red-200'
+                    : 'bg-white hover:bg-gray-200'
+                }`}
               >
                 <span className="font-bold">Order ID:</span> {room.roomId}
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* Chat Details and Messages */}
-        <div className="w-2/3 pl-4">
-          {selectedChat && (
-            <div className="mb-5">
-              <h3 className="mb-2 text-xl font-semibold">
-                Order ID: {selectedChat.roomId}
-              </h3>
-              <div className="p-3 bg-gray-100 rounded-lg shadow-md">
-                <pre>{JSON.stringify(selectedChat.chatLog, null, 2)}</pre>
-              </div>
-            </div>
-          )}
-
-          <h2 className="mb-4 text-xl font-semibold text-red-500">
-            Previous Chats
-          </h2>
-          <div className="overflow-y-auto max-h-96">
-            {chatRooms.map((chatLog: ChatLog, index: number) => (
+            <h3 className="text-lg font-semibold mt-4 mb-2">
+              Chats Anteriores
+            </h3>
+            {chatRooms.map((chatLog, index) => (
               <div
                 key={index}
-                className="p-3 mb-3 bg-gray-100 rounded-lg shadow-md"
+                className="p-3 mb-2 bg-white rounded-lg cursor-pointer hover:bg-gray-200"
               >
-                <h4 className="mb-2 text-lg font-semibold">
-                  Order ID: {chatLog.order.id}
-                </h4>
-                <div>
-                  {chatLog.chats.map((chat: Chat) => (
-                    <p key={chat.id} className="mb-2 text-sm">
-                      {chat.text}
-                    </p>
-                  ))}
-                </div>
+                <span className="font-bold">Order ID:</span> {chatLog.order.id}
               </div>
             ))}
-          </div>
-        </div>
+          </>
+        ) : (
+          <p className="text-red-500">Desconectado. Reconectando...</p>
+        )}
       </div>
 
-      {selectedChat && userId !== null && chatLogId !== null ? (
-        <div className="mt-5">
-          <ChatBoxAdmin />
-        </div>
-      ) : null}
+      <div className="w-2/3 p-4 flex flex-col">
+        {selectedChat && selectedChat.chatLog && selectedChat.chatLog.order ? (
+          <>
+            <h2 className="text-2xl font-bold mb-4">
+              Chat - Order ID: {selectedChat.roomId}
+            </h2>
+            <div className="flex-grow overflow-y-auto mb-4">
+              <div className="bg-gray-100 p-4 rounded">
+                <p className="mb-2">
+                  <span className="font-semibold">Cliente:</span>{' '}
+                  {selectedChat.chatLog.order.user?.name || 'N/A'}
+                </p>
+                <p className="mb-2">
+                  <span className="font-semibold">Forma de pago:</span>{' '}
+                  {selectedChat.chatLog.order.formBuy || 'N/A'}
+                </p>
+                <h3 className="font-bold text-lg mt-4 mb-2">
+                  Detalles de los productos:
+                </h3>
+                <ul>
+                  {selectedChat.chatLog.order.details?.map(
+                    (detail: OrderDetail, index: number) => (
+                      <li key={index} className="mb-2">
+                        <span className="font-semibold">
+                          {detail.product?.name || 'Producto desconocido'}
+                        </span>
+                        <br />
+                        Cantidad: {detail.quantity || 0}
+                      
+                      </li>
+                    ),
+                  ) || <li>No hay detalles disponibles</li>}
+                </ul>
+                <p className="mt-4 font-semibold">
+                  Total del pedido: $
+                  {(selectedChat.chatLog.order.total || 0).toFixed(2)}
+                </p>
+              </div>
+            </div>
+            {userId !== null && chatLogId !== null && isConnected && (
+              <ChatBoxAdmin />
+            )}
+          </>
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-gray-500 text-lg">
+              {selectedChat
+                ? 'Cargando detalles del chat...'
+                : 'Selecciona una conversación para ver los detalles'}
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

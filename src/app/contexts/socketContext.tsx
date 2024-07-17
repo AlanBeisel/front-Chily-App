@@ -145,24 +145,24 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({
     socket.emit('joinRoom', roomId);
   }, []);
 
- const sendMessage = useCallback(
-   (chatLogId: number, message: string, userId: number) => {
-     if (chatLogId === undefined) {
-       console.error('Cannot send message without a valid chatLogId.');
-       return;
-     }
 
-     const newMessage = {
-       text: message,
-       userId,
-       chatLogId,
-     };
-     socket.emit('send-message', newMessage);
-     addMessage(newMessage);
-   },
-   [],
- );
+const sendMessage = useCallback(
+  (chatLogId: number, message: string, userId: number) => {
+    if (chatLogId === undefined) {
+      console.error('Cannot send message without a valid chatLogId.');
+      return;
+    }
 
+    const newMessage = {
+      text: message,
+      userId,
+      chatLogId,
+    };
+    socket.emit('send-message', newMessage);
+    addMessage(newMessage);
+  },
+  [],
+);
 
   const addMessage = useCallback((message: any) => {
     const chatLogId = message?.chatLogId;
