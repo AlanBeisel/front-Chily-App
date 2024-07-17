@@ -31,6 +31,7 @@ export default function Home() {
 
   return (
     <>
+      <link rel="icon" href="/chilly.jpg"/>
       <link rel="manifest" href="/manifest.json" />
       <div className="w-full flex justify-center">
         <main className="w-full flex-grow p-4">
