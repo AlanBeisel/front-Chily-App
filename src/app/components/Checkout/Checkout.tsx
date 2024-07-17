@@ -255,7 +255,7 @@ const Checkout: React.FC = () => {
               <div className="flex justify-end mt-1">
                 {' '}
                 {/* Ajusta el margen superior según necesites */}
-                <Link href={'/address'} className="text-blue-500">
+                <Link href={'/address?from=checkout'} className="text-blue-500">
                   Cambiar dirección
                 </Link>
               </div>

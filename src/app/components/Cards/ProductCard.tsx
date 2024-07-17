@@ -14,12 +14,28 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { isAuthenticated } = useAuth();
-  const [quantity, setQuantity] = useState<number>(0);
+  
 
 
   if (product.stock <= 0) {
     return null;
   }
+
+
+  const getInitialQuantity = (productId: string): number => {
+    const storedCart = localStorage.getItem('cartItems');
+    if (storedCart) {
+      const cartItems = JSON.parse(storedCart);
+      const existingItem = cartItems.find((item: any) => item.id === productId);
+      return existingItem ? existingItem.quantity : 0;
+    }
+    return 0;
+  };
+
+
+  const [quantity, setQuantity] = useState<number>(() =>
+    getInitialQuantity(product.id),
+  );
 
   const handleAddToCart = () => {
     if (!isAuthenticated) {

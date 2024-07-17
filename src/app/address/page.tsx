@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import LocationConfirmation from '../components/Location/LocationConfirmation';
 import { useAuth } from '@/app/contexts/AuthContext';
 import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Address } from '@/types';
 
 const ConfirmLocationPage = () => {
@@ -17,6 +17,7 @@ const ConfirmLocationPage = () => {
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
   const router = useRouter();
   const token = accessToken;
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -69,11 +70,13 @@ const ConfirmLocationPage = () => {
         try {
           await setAddress(selectedAddress);
 
-          const fromCart = localStorage.getItem('fromCart');
-          if (fromCart) {
-            localStorage.removeItem('fromCart');
-            router.push('/cart');
+          const fromCheckout = searchParams.get('from') === 'checkout';
+
+          if (fromCheckout) {
+            // Si viene de checkout, volver a checkout
+            router.push('/checkout');
           } else {
+            // En cualquier otro caso, ir a la página principal
             router.push('/');
           }
         } catch (error) {
