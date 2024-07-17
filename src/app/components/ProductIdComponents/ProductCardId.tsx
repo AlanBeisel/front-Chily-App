@@ -75,6 +75,18 @@ const addToCart = () => {
     });
     return;
   }
+   if (!isAuthenticated) {
+      toast.warn('Debes iniciar sesión para agregar productos al carrito.', {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    return;
+  }
     if(!product) {
       return;
     }
