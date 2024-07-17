@@ -86,7 +86,7 @@ const UsersList: React.FC = ()=> {
 
   
   return (
-    <div className="container mx-auto px-4 w-full">
+    <div className="container mx-auto px-4 w-full flex flex-col min-h-screen">
       <div className="flex justify-between items-center mb-4">
         <BackButton className="mr-4"/>
         <h2 className="text-2xl font-bold text-red-500 mx-auto">Usuarios</h2>
@@ -101,9 +101,11 @@ const UsersList: React.FC = ()=> {
       />
       <AiOutlineSearch className="absolute left-3 top-3 text-gray-400"/>
       </div>
+      <div className="flex-grow">
       {filteredUsers.length === 0 && !loading &&(
         <div className="text-center text-gray-500 my-4"> No hay usuarios que coincidan con la búsqueda. </div>
       )}
+      {filteredUsers.length > 0 && !loading && (
       <table className="w-full table-auto">
         <thead>
           <tr>
@@ -117,7 +119,7 @@ const UsersList: React.FC = ()=> {
             <tr>
               <td colSpan={3} className="text-center py-4"> Cargando usuarios...</td>
             </tr>
-          ): users.length > 0 ? (
+          ): filteredUsers.length > 0 ? (
           filteredUsers.map((user, index)=>(
             <tr key= {user.id}>
               <td className={`border-t ${index === 0 ? 'border-b' : ''} px-4 py-2 space-x-2`}>{user.name}</td>
@@ -146,6 +148,8 @@ const UsersList: React.FC = ()=> {
             )}
         </tbody>
       </table>
+    )}
+    </div>
       <div className="mt-4 flex justify-center items-center">
         <button
          onClick={() => handlePageChange(currentPage - 1)}
