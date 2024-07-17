@@ -11,7 +11,9 @@ interface OrderDetailModalProps {
     id: string;
     date: string;
     price: string;
+    formBuy: string;
     email: string;
+    orderInstructions: string;
     products: Product[];
   } | null;
   onClose: () => void;
@@ -33,6 +35,9 @@ export function OrderDetailModal({ order, onClose }: OrderDetailModalProps) {
         <p className="mb-2">
           <strong>Precio:</strong> {order.price}
         </p>
+        <p className="mb-2">
+          <strong>Forma de pago:</strong> {order.formBuy}
+        </p>
         <p className="mb-4">
           <strong>Correo:</strong> {order.email}
         </p>
@@ -45,6 +50,11 @@ export function OrderDetailModal({ order, onClose }: OrderDetailModalProps) {
             </li>
           ))}
         </ul>
+        {order.orderInstructions && (
+          <p className="mb-2">
+            <strong>Instrucciones:</strong> {order.orderInstructions}
+          </p>
+        )}
         <Button
           className="bg-red-500 hover:bg-gray-500 mt-6 w-full py-2"
           onClick={onClose}

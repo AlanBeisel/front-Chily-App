@@ -35,6 +35,8 @@ interface Order {
   price: string;
   date: string;
   email: string;
+  formBuy: string;
+  orderInstructions: string;
   status:
     | 'En camino'
     | 'Pendiente'
@@ -138,6 +140,7 @@ export function HistoryOrders() {
         },
       ).then((res) => res.json());
 
+      console.log("esto llega", response)
       return response;
     },
     queryKey: ['orders', currentPage, searchQuery],

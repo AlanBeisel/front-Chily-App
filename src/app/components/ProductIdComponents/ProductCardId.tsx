@@ -59,10 +59,22 @@ const ProductIDCard: React.FC<ProductIDCardProps> = ({ params }) => {
   };
 
   const handleDecrease = () => {
-    setQuantity(Math.max(quantity - 1, 0));
+    setQuantity(Math.max(quantity - 1, 1));
   };
 
   const addToCart = () => {
+    if (quantity === 0) {
+      toast.warn('La cantidad debe ser mayor a 0 para agregar al carrito.', {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
     if (!isAuthenticated) {
       toast.warn('Debes iniciar sesión para agregar productos al carrito.', {
         position: 'top-center',
