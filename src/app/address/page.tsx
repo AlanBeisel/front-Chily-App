@@ -6,14 +6,11 @@ import { toast } from 'react-toastify';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Address } from '@/types';
 
-const ConfirmLocationPage = () => {
+const ConfirmLocationPageContent = () => {
   const { user, setAddress, accessToken } = useAuth();
   const [addresses, setAddresses] = useState<Address[]>([]);
-  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(
-    null,
-  );
-  const [showLocationConfirmation, setShowLocationConfirmation] =
-    useState<boolean>(false);
+  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
+  const [showLocationConfirmation, setShowLocationConfirmation] = useState<boolean>(false);
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
   const router = useRouter();
   const token = accessToken;
@@ -63,9 +60,7 @@ const ConfirmLocationPage = () => {
 
   const handleConfirmLocation = async () => {
     if (selectedAddressId) {
-      const selectedAddress = addresses.find(
-        (address) => address.id === selectedAddressId,
-      );
+      const selectedAddress = addresses.find((address) => address.id === selectedAddressId);
       if (selectedAddress) {
         try {
           await setAddress(selectedAddress);
@@ -156,4 +151,11 @@ const ConfirmLocationPage = () => {
   );
 };
 
+const ConfirmLocationPage = () => (
+  <Suspense fallback={<div>Cargando...</div>}>
+    <ConfirmLocationPageContent />
+  </Suspense>
+);
+
 export default ConfirmLocationPage;
+
