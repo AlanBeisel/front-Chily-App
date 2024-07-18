@@ -12,6 +12,16 @@ interface ProductCardProps {
   onAddToCart: (product: Product) => void;
 }
 
+ const getInitialQuantity = (productId: string): number => {
+    const storedCart = localStorage.getItem('cartItems');
+    if (storedCart) {
+      const cartItems = JSON.parse(storedCart);
+      const existingItem = cartItems.find((item: any) => item.id === productId);
+      return existingItem ? existingItem.quantity : 0;
+    }
+    return 0;
+  };
+
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { isAuthenticated } = useAuth();
   
@@ -22,15 +32,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   }
 
 
-  const getInitialQuantity = (productId: string): number => {
-    const storedCart = localStorage.getItem('cartItems');
-    if (storedCart) {
-      const cartItems = JSON.parse(storedCart);
-      const existingItem = cartItems.find((item: any) => item.id === productId);
-      return existingItem ? existingItem.quantity : 0;
-    }
-    return 0;
-  };
+ 
 
 
   const [quantity, setQuantity] = useState<number>(() =>
