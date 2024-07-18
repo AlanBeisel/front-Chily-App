@@ -182,13 +182,13 @@ const ProductForm: React.FC<ProductFormProps> = ({
             <img
               src={imagePreview}
               alt="Preview"
-              className="w-full h-auto mb-2 rounded-lg shadow-lg"
+              className="w-80 h-auto mb-2 rounded-lg shadow-lg"
             />
           ) : defaultValues?.imageURL ? (
             <img
               src={defaultValues.imageURL}
               alt="Product Image"
-              className="w-full h-auto mb-2 rounded-lg shadow-lg"
+              className="w-80 h-auto mb-2 rounded-lg shadow-lg"
             />
           ) : null}
           <label className="block text-gray-500 font-bold">

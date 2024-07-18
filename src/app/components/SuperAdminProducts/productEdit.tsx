@@ -4,7 +4,6 @@ import ProductForm from './productForm';
 import { getProductById } from '@/helpers/peticiones';
 import { updateProduct } from '@/helpers/peticionesSuperAdmin';
 import { Product } from '@/types';
-import ConfirmModal from './confirmModal';
 import PopularProductSwitch from './popularSwitch';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/app/contexts/AuthContext';
@@ -21,7 +20,6 @@ const ProductEdit: React.FC<ProductEditProps> = ({productId}) => {
   const [product, setProduct] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
   const {accessToken} = useAuth();
   const token = accessToken;
@@ -72,7 +70,6 @@ const handleUpdate = async (data: Partial<Product>) => {
   try {
     await updateProduct(productId, updateData, token);
     setError(null);
-    setModalOpen(true);
     setProduct((prevProduct: any) => ({...prevProduct, ...updateData}));
     toast.success('Producto actualizado correctamente', {
       position: 'top-center',
@@ -103,18 +100,10 @@ const handleUpdate = async (data: Partial<Product>) => {
     );
   } finally {
     setLoading(false);
-    setModalOpen(false);
+
   }
 };
 
-
-  const openModal = () => {
-    setModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
-  };
 
 
 
@@ -139,19 +128,7 @@ const handleUpdate = async (data: Partial<Product>) => {
       </div>
       <ProductForm defaultValues={{...product, category: product.category, imageURL: product.img}} onSubmit={(data) => {
               handleUpdate(data);
-              openModal();
             }} isEditMode/>
-      <ConfirmModal
-      isOpen={modalOpen}
-      onConfirm={() => { 
-        handleUpdate(product!);
-        closeModal();
-        
-      }}
-      onCancel={closeModal}
-      title="Confirmar actualización"
-      message="¿Estás seguro de que quieres actualizar este producto?"
-      />
       </>
     )}
     </div>

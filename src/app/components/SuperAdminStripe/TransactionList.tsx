@@ -1,7 +1,7 @@
 'use client'
 import React, {useEffect, useState} from 'react';
 import { useAuth } from '@/app/contexts/AuthContext';
-import { fetchTransactionInfo } from '@/helpers/peticionesSuperAdmin';
+import { fetchTransactionInfo, TransactionResponse } from '@/helpers/peticionesSuperAdmin';
 import BackButton from '../ProductIdComponents/BackButton';
 
 export interface TransactionInfo {
@@ -18,7 +18,7 @@ const TransactionInfoPage: React.FC =  () => {
   const [page, setPage] = useState<number>(1);
   const [limit] = useState<number>(10);
   const [date, setDate] = useState<string | undefined> (undefined);
-  const [amount, setAmount] = useState<number | undefined>(undefined);
+  const [amount, setAmount] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | null> (null);
 
   const {accessToken} = useAuth();
@@ -29,7 +29,7 @@ const TransactionInfoPage: React.FC =  () => {
       try{
         if(token) {
           console.log('Token válido:', token);
-        const data = await fetchTransactionInfo(token, page, limit, date, amount);
+        const data: TransactionResponse = await fetchTransactionInfo(token, page, limit, date,amount ? parseFloat(amount) : undefined);
         console.log('Datos de transacciones recibidos:', data);
         setTransactions(data.orders);
         }else {
@@ -50,11 +50,17 @@ const TransactionInfoPage: React.FC =  () => {
 
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(parseFloat(e.target.value));
+    const value = e.target.value.replace(',','.');
+    setAmount(value);
   };
 
+  const handleClearFilters = () => {
+    setDate(undefined);
+    setAmount(undefined);
+  }
+
   return(
-    <div className="container mx-auto px-4 w-full">
+    <div className="flex flex-col min-h-screen container mx-auto px-4 w-full mt-8">
       <div className="flex justify-between items-center mb-4">
       <BackButton className="mr-4"/>
       <h2 className="text-2xl font-bold text-red-500">Transacciones</h2>
@@ -71,10 +77,16 @@ const TransactionInfoPage: React.FC =  () => {
         </label>
         <input type="number" value={amount ?? ''} onChange={handleAmountChange} className="border border-gray-300 px-2 py-1 rounded-md w-36"/>
         </div>
+        <button
+        onClick ={handleClearFilters}
+        className="ml-4 bg-red-500 text-white px-3 py-1 rounded">
+          Limpiar filtros
+        </button>
         </div>
       </div>
     {error && <div style = {{ color: 'red'}}>{error}</div>}
-    <div className="mx-auto  max-w-4xl">
+    <div className="mx-auto flex-grow max-w-4xl">
+      {transactions.length > 0 ? (
     <table className="w-full bg-white shadow-md rounded-lg overflow-hidden my-6">
       <thead className="bg-white text-gray-600 uppercase text-sm leading-normal">
         <tr>
@@ -99,8 +111,11 @@ const TransactionInfoPage: React.FC =  () => {
         ))}
       </tbody>
     </table>
+      ):(
+        <div className="text-center text-gray-400 py-4"> No hay transacciones que coincidan con los filtros.</div>
+      )}
     </div>
-    <div className="mt-4 flex justify-center items-center">
+    <div className="mt-auto flex justify-center items-center mb-8">
         <button
         onClick={() => setPage(page - 1)}
         disabled= {page === 1}
@@ -121,4 +136,3 @@ const TransactionInfoPage: React.FC =  () => {
 };
 
 export default TransactionInfoPage;
-

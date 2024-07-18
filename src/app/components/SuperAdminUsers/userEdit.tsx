@@ -126,6 +126,7 @@ const closeModal = () => {
             onChange={handleInputChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-400 leading-tight focus:outline-none focus:shadow-outline"
             required
+            disabled
           />
         </div>
         <div className="mb-4">
@@ -140,6 +141,7 @@ const closeModal = () => {
             onChange={handleInputChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-400 leading-tight focus:outline-none focus:shadow-outline"
             required
+            disabled
           />
         </div>
         <div className="mb-4">

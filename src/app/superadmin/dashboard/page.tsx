@@ -6,7 +6,7 @@ import RouteGuard from '@/helpers/routeGuard';
 const DashboardPage: React.FC = () => {
   return(
     <RouteGuard allowedRoles={['superadmin']}>
-      <div className="min-h-screen flex flex-col items-center bg-white w-full h-full">
+      <div className="min-h-screen flex flex-col items-center bg-white w-full h-full mt-16">
       <h1 className="text-5xl font-bold text-red-500">¡Bienvenido!</h1>
       <div className="flex flex-col items-center mt-10 w-full self-start">
       <div className="w-full max-w-md">
