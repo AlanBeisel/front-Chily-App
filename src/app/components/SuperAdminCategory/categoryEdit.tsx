@@ -5,6 +5,7 @@ import { updateCategory } from '@/helpers/peticionesSuperAdmin';
 import { getCategoryById } from '@/helpers/peticionesSuperAdmin';
 import { Category } from '@/types';
 import ConfirmModal from '../SuperAdminProducts/confirmModal';
+import BackButton from '../ProductIdComponents/BackButton';
 import { useAuth } from '@/app/contexts/AuthContext';
 import { toast } from 'react-toastify';
 import  {useRouter} from 'next/navigation';
@@ -19,6 +20,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({categoryId}) => {
   const [category, setCategory] = useState<Category | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [updateData, setUpdateData] = useState<Category | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
   const {accessToken} = useAuth();
@@ -44,52 +46,29 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({categoryId}) => {
     };
 
     fetchCategory();
-  }, [categoryId]);
+  }, [categoryId, accessToken]);
 
-  const handleUpdate = async (data: Category) => {
-    if(!accessToken) {
-      console.error('No se encontró el token de autenticación.');
-      return;
-    }
-    try {
-      setLoading(true);
+  const handleUpdate= (data: Category) => {
+      setUpdateData(data);
       setModalOpen(true);
-
-      const updateData = {
-        name: data.name,
-        icon: data.icon,
-      };
-
-      await updateCategory(categoryId, updateData, accessToken);
-    router.push('/superadmin/categories');
-    } catch (error) {
-      console.error('Error al actualizar la categoría', error);
-      setError('No se pudo actualizar la categoría. Por favor, inténtalo nuevamente.');
-      toast.error('No se pudo actualizar la categoría. Por Favor, inténtelo nuevamente.', {
-        position: 'top-center',
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }finally {
-      setLoading(false);
-    }
   };
 
   const confirmUpdate = async () => {
-    if(!accessToken) {
-      console.error('No se encontró el token de autenticación.');
+    if(!accessToken || !updateData) {
+      console.error('No se encontró el token de autenticación o los datos de actualizacion.');
       return;
     }
+
     try{
-      await updateCategory(categoryId, category!, accessToken);
+      setLoading(true);
+      const updatePayload = {
+        name: updateData.name,
+        icon: updateData.icon,
+      };
+      await updateCategory(categoryId, updatePayload, accessToken);
       setError(null);
       setModalOpen(false);
-      const updatedCategory = await getCategoryById(categoryId, accessToken);
-      setCategory(updatedCategory);
+      router.push('/superadmin/categories');
       toast.success('¡Categoría actualizada correctamente!', {
         position: 'top-center',
         autoClose: 3000,
@@ -111,6 +90,8 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({categoryId}) => {
         draggable: true,
         progress: undefined,
       });
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -127,7 +108,10 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({categoryId}) => {
   }
 
   return (
-    <div>
+    <div className="container mx-auto px-4 w-full">
+    <div className="flex items-center justify-start  mb-4">
+      <BackButton />
+    </div>
       <h2 className="text-2xl font-bold mb-4 text-red-500">Editar categoría</h2>
       {category && (
       <>

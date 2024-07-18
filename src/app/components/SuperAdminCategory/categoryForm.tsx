@@ -91,9 +91,9 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ defaultValues, onSubmit, is
       <form onSubmit={handleSubmit(handleSubmitForm)} className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-white shadow-lg rounded-xl max-w-4xl mx-auto">
       <div className="col-span-1 md:col-span-2 mb-4">
           {iconPreview ? (
-            <img src={iconPreview} alt="Preview" className="w-full h-auto mb-2 rounded-lg shadow-lg" />
+            <img src={iconPreview} alt="Preview" className="w-80 h-auto mb-2 rounded-lg shadow-lg" />
           ) : defaultValues?.icon ? (
-            <img src={defaultValues.icon} alt="Product Image" className="w-full h-auto mb-2 rounded-lg shadow-lg" />
+            <img src={defaultValues.icon} alt="Product Image" className="w-80 h-auto mb-2 rounded-lg shadow-lg" />
           ) : null}
           <label className="block text-gray-500 font-bold">Imagen (Archivo)</label>
           <div className="flex items-center">
