@@ -24,7 +24,9 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { isAuthenticated } = useAuth();
-  
+    const [quantity, setQuantity] = useState<number>(() =>
+    getInitialQuantity(product.id),
+  );
 
 
   if (product.stock <= 0) {
@@ -35,9 +37,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
  
 
 
-  const [quantity, setQuantity] = useState<number>(() =>
-    getInitialQuantity(product.id),
-  );
 
   const handleAddToCart = () => {
     if (!isAuthenticated) {
