@@ -14,7 +14,7 @@ interface Order {
   details: ProductsInOrder[];
   formBuy: 'efectivo' | 'tarjeta';
   total: number;
-  status: 'Pendiente' | 'Confirmada' | 'En camino' | 'Entregada';
+  status: 'Pendiente' | 'Confirmada' | 'En camino' | 'Entregada' | 'En preparación';
   date: string;
 }
 
