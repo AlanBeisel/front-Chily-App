@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import LocationConfirmation from '../components/Location/LocationConfirmation';
 import { useAuth } from '@/app/contexts/AuthContext';
 import { toast } from 'react-toastify';
